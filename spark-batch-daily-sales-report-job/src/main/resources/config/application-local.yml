@@ -35,4 +35,4 @@ spark:
     memory: 2g
     cores: 2
   ui:
-    enabled: false
+    enabled: true

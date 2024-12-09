@@ -1,6 +1,5 @@
 package com.ksoot.spark.churn.conf;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

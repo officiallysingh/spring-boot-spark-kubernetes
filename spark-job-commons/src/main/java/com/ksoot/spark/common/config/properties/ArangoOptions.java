@@ -51,7 +51,6 @@ public class ArangoOptions {
 
   public Map<String, String> options() {
     return Map.of(
-        SparkOptions.Common.FORMAT, SparkOptions.Arango.FORMAT,
         SparkOptions.Arango.ENDPOINTS, this.endpoints(),
         SparkOptions.Arango.DATABASE, this.database,
         SparkOptions.Arango.USERNAME, this.username,

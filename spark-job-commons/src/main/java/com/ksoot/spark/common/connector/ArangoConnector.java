@@ -35,6 +35,7 @@ public class ArangoConnector {
     Assert.hasText(collection, "ArangoDB collection name required");
     return this.sparkSession
         .read()
+        .format(SparkOptions.Arango.FORMAT)
         .options(this.properties.getArangoOptions().options())
         .option(SparkOptions.Arango.TABLE, collection)
         .option(SparkOptions.Common.INFER_SCHEMA, true)
@@ -46,6 +47,7 @@ public class ArangoConnector {
     Assert.hasText(query, "ArangoDB query required");
     return this.sparkSession
         .read()
+        .format(SparkOptions.Arango.FORMAT)
         .options(this.properties.getArangoOptions().options())
         .option(SparkOptions.Arango.QUERY, query)
         .option(SparkOptions.Common.INFER_SCHEMA, true)
