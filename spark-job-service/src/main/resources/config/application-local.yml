@@ -1,0 +1,59 @@
+spring:
+  redis:
+    uri: localhost:6379
+logging:
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+  file:
+    path: logs
+    name: ${logging.file.path}/application.log
+  level:
+    ROOT: info
+    org.apache.spark: warn
+    org.apache.hadoop: warn
+    org.sparkproject: warn
+debug: false
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
+
+#------------------------- Spark configurations -------------------------
+spark:
+  master: local
+  executor:
+    instances: 2
+    memory: 2g
+    cores: 1
+  driver:
+    memory: 1g
+    cores: 1
+#    extraJavaOptions: >
+#      -Dspring.profiles.active=local
+  submit.deployMode: client
+
+#------------------------- Spark Submit Job configurations -------------------------
+spark-submit:
+#  spark-home: ${SPARK_HOME}
+  capture-jobs-logs: true
+  persist-jobs: true
+  jobs:
+    daily-sales-report-job:
+      jar-file: ${M2_REPO}/com/ksoot/spark/spark-batch-daily-sales-report-job/0.0.1-SNAPSHOT/spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar
+      #      Unsetting following properties as not required in local profile
+      spark-config:
+        spark.kubernetes.namespace:
+        spark.kubernetes.container.image:
+        spark.kubernetes.authenticate.driver.serviceAccountName:
+        spark.kubernetes.driverEnv.SPARK_USER:
+    spark-example:
+      main-class-name: org.apache.spark.examples.SparkPi
+      jar-file: ${SPARK_HOME}/examples/jars/spark-examples_2.12-3.5.3.jar
+      #      Unsetting following properties as not required in local profile
+      spark-config:
+        spark.kubernetes.namespace:
+        spark.kubernetes.container.image:
+        spark.kubernetes.authenticate.driver.serviceAccountName:
+        spark.kubernetes.driverEnv.SPARK_USER:

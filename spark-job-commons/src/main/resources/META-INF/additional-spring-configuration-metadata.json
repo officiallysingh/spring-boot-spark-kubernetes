@@ -1,0 +1,208 @@
+{
+  "properties": [
+    {
+      "name": "ksoot.connector.file-options.format",
+      "type": "java.lang.String",
+      "defaultValue": "csv",
+      "description": "Input file format. 'csv' or 'parquet'."
+    },
+    {
+      "name": "ksoot.connector.file-options.header",
+      "type": "java.lang.Boolean",
+      "defaultValue": true,
+      "description": "Whether to consider first row as as header row in an input file. Column names would be the columns in Spark dataset."
+    },
+    {
+      "name": "ksoot.connector.file-options.merge",
+      "type": "java.lang.String",
+      "defaultValue": "false",
+      "description": "Whether to merge output in single file."
+    },
+    {
+      "name": "ksoot.connector.file-options.path",
+      "type": "java.lang.String",
+      "defaultValue": "false",
+      "description": "Output path where output will be saved."
+    },
+    {
+      "name": "ksoot.connector.jdbc-options.url",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Database url."
+    },
+    {
+      "name": "ksoot.connector.jdbc-options.driver",
+      "type": "java.lang.String",
+      "defaultValue": "org.postgresql.Driver",
+      "description": "Database driver name."
+    },
+    {
+      "name": "ksoot.connector.jdbc-options.database",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Ingestion Database name."
+    },
+    {
+      "name": "ksoot.connector.jdbc-options.username",
+      "type": "java.lang.String",
+      "defaultValue": "postgres",
+      "description": "Database username."
+    },
+    {
+      "name": "ksoot.connector.jdbc-options.password",
+      "type": "java.lang.String",
+      "defaultValue": "admin",
+      "description": "Database password."
+    },
+    {
+      "name": "ksoot.connector.jdbc-options.fetchsize",
+      "type": "java.lang.Integer",
+      "defaultValue": "1000",
+      "description": "The JDBC fetch size, which determines how many rows to fetch per round trip. Applicable only while reading. This can help performance on JDBC drivers which default to low fetch size (e.g. Oracle with 10 rows)."
+    },
+    {
+      "name": "ksoot.connector.jdbc-options.batchsize",
+      "type": "java.lang.Integer",
+      "defaultValue": "1000",
+      "description": "In spark sql this option decide how many rows to insert per round trip. Applicable only while writing."
+    },
+    {
+      "name": "ksoot.connector.jdbc-options.isolation-level",
+      "type": "java.lang.String",
+      "defaultValue": "READ_UNCOMMITTED",
+      "description": "The transaction isolation level, which applies to current connection. Applicable only while writing. It can be one of NONE, READ_COMMITTED, READ_UNCOMMITTED, REPEATABLE_READ, or SERIALIZABLE, corresponding to standard transaction isolation levels defined by JDBC's Connection object, with default of READ_UNCOMMITTED. Please refer the documentation in java.sql.Connection."
+    },
+    {
+      "name": "ksoot.connector.mongo-options.url",
+      "type": "java.lang.String",
+      "defaultValue": "mongodb://localhost:27017",
+      "description": "MongoDB connection url."
+    },
+    {
+      "name": "ksoot.connector.mongo-options.database",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "MongoDB database name."
+    },
+    {
+      "name": "ksoot.connector.arango-options.endpoints",
+      "type": "java.util.List<java.lang.String>",
+      "defaultValue": "localhost:8529",
+      "description": "ArangoDB connection urls."
+    },
+    {
+      "name": "ksoot.connector.arango-options.database",
+      "type": "java.lang.String",
+      "defaultValue": "_system",
+      "description": "ArangoDB database name."
+    },
+    {
+      "name": "ksoot.connector.arango-options.username",
+      "type": "java.lang.String",
+      "defaultValue": "root",
+      "description": "ArangoDB username."
+    },
+    {
+      "name": "ksoot.connector.arango-options.password",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "ArangoDB password."
+    },
+    {
+      "name": "ksoot.connector.arango-options.sslEnabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": "",
+      "description": "Whether to enable SSL."
+    },
+    {
+      "name": "ksoot.connector.arango-options.sslCertValue",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Ssl cert value."
+    },
+    {
+      "name": "ksoot.connector.arango-options.cursor-ttl",
+      "type": "java.lang.String",
+      "defaultValue": "PT30S",
+      "description": "Cursor ttl."
+    }
+  ],
+  "hints": [
+    {
+      "name": "ksoot.connector.file-options.format",
+      "values": [
+        {
+          "value": "csv",
+          "description": "Output in csv format."
+        },
+        {
+          "value": "parquet",
+          "description": "Output in parquet format."
+        }
+      ]
+    },
+    {
+      "name": "ksoot.connector.save-mode",
+      "values": [
+        {
+          "value": "Append",
+          "description": "Append mode means that when saving a DataFrame to a data source, if data/ table already exists, contents of the DataFrame are expected to be appended to existing data"
+        },
+        {
+          "value": "Overwrite",
+          "description": "Overwrite mode means that when saving a DataFrame to a data source, if data/ table already exists, existing data is expected to be overwritten by the contents of the DataFrame."
+        },
+        {
+          "value": "ErrorIfExists",
+          "description": "ErrorIfExists mode means that when saving a DataFrame to a data source, if data already exists, an exception is expected to be thrown."
+        },
+        {
+          "value": "Ignore",
+          "description": "Ignore mode means that when saving a DataFrame to a data source, if data already exists, the save operation is expected to not save the contents of the DataFrame and to not change the existing data."
+        }
+      ]
+    },
+    {
+      "name": "ksoot.connector.output-mode",
+      "values": [
+        {
+          "value": "Append",
+          "description": "This is the default mode, where only the new rows added to the Result Table since the last trigger will be outputted to the sink. This is supported for only those queries where rows added to the Result Table is never going to change. Hence, this mode guarantees that each row will be output only once (assuming fault-tolerant sink). For example, queries with only select, where, map, flatMap, filter, join, etc. will support Append mode."
+        },
+        {
+          "value": "Complete",
+          "description": "The whole Result Table will be outputted to the sink after every trigger. This is supported for aggregation queries."
+        },
+        {
+          "value": "Update",
+          "description": "Only the rows in the Result Table that were updated since the last trigger will be outputted to the sink."
+        }
+      ]
+    },
+    {
+      "name": "ksoot.connector.jdbc-options.isolation-level",
+      "values": [
+        {
+          "value": "READ_UNCOMMITTED",
+          "description": "Dirty reads, non-repeatable reads, and phantom reads can occur."
+        },
+        {
+          "value": "READ_COMMITTED",
+          "description": "Dirty reads are prevented; non-repeatable reads and phantom reads can occur."
+        },
+        {
+          "value": "READ_UNCOMMITTED",
+          "description": "Dirty reads, non-repeatable reads, and phantom reads can occur. "
+        },
+        {
+          "value": "REPEATABLE_READ",
+          "description": "Dirty reads and non-repeatable reads are prevented; phantom reads can occur."
+        },
+        {
+          "value": "SERIALIZABLE",
+          "description": "Dirty reads, non-repeatable reads and phantom reads are prevented."
+        }
+      ]
+    }
+  ]
+}

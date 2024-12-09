@@ -1,0 +1,38 @@
+logging:
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+  file:
+    path: logs
+    name: ${logging.file.path}/application.log
+  level:
+    ROOT: INFO
+    '[org.mongodb.driver]': warn
+    '[org.apache.spark]': warn
+    '[org.apache.hadoop]': warn
+    '[org.sparkproject]': warn
+    '[com.mongodb.spark.sql.connector.read.partitioner.Partitioner]': warn
+debug: false
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
+
+#------------------------- Job configurations -------------------------
+ksoot:
+  job:
+    correlation-id: ${spring.cloud.task.external-execution-id:daily-sales-report-job-execution-1}
+    persist: false
+#------------------------- Spark configurations -------------------------
+spark:
+  master: local
+  executor:
+    instances: 2
+    memory: 1g
+    cores: 1
+  driver:
+    memory: 2g
+    cores: 2
+  ui:
+    enabled: false

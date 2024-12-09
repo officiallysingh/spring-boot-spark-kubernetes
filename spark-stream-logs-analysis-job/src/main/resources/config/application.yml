@@ -1,0 +1,106 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+#
+# Full reference for Standard Spring Boot properties is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+# set -Dspring.profiles.active=<dev|sit|int> as JVM argument to run in desired profile
+# If no profile is specified explicitly, application will fall back to default profile, which is "local"
+
+spring:
+  application:
+    name: logs-analysis-job
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration
+  docker:
+    compose:
+      enabled: false
+  cloud:
+    task:
+      initialize-enabled: ${ksoot.job.persist:false}
+  main:
+    log-startup-info: true
+  #------------------------- Database configuration -------------------------
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/spark_jobs_db}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:admin}
+    hikari:
+      pool-name: pg-connection-pool
+      maximum-pool-size: 128
+      minimum-idle: 16
+  jpa:
+    #    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: validate
+    database: POSTGRESQL
+    open-in-view: false
+    show-sql: false
+    properties:
+      '[hibernate.show_sql]': false
+      '[hibernate.format_sql]': true
+      '[hibernate.use_sql_comments]': true
+      '[hibernate.jdbc.time_zone]': UTC
+      '[integration.envers.enabled]': true
+      '[hibernate.enable_lazy_load_no_trans]': true
+
+logging:
+  level:
+    ROOT: info
+    '[org.mongodb.driver]': warn
+    '[org.apache.spark]': warn
+    '[org.apache.hadoop]': warn
+    '[org.sparkproject]': warn
+    '[com.mongodb.spark.sql.connector.read.partitioner.Partitioner]': warn
+debug: false
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
+
+#------------------------- Job configurations -------------------------
+ksoot:
+  job:
+#    month: ${STATEMENT_MONTH:}
+    correlation-id: ${spring.cloud.task.external-execution-id:daily-sales-report-job-execution-1}
+    persist: ${PERSIST_JOB:false}
+  connector:
+    mongo-options:
+      url: ${MONGO_URL:mongodb://localhost:27017}
+      database: ${MONGO_DATABASE:sales_db}
+    arango-options:
+      endpoints: ${ARANGO_URL:localhost:8529}
+      database: ${ARANGO_DATABASE:products_db}
+      username: ${ARANGO_USER:root}
+      password: ${ARANGO_PASSWORD:admin}
+      ssl-enabled: false
+      ssl-cert-value: ""
+      cursor-ttl: PT5M # 5 minutes, see the ISO 8601 standard for java.time.Duration String patterns
+    jdbc-options:
+      url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/sales_db}
+      driver: ${POSTGRES_DRIVER:org.postgresql.Driver}
+      database: ${POSTGRES_FEATURE_DB:sales_db}
+      username: ${POSTGRES_USER:postgres}
+      password: ${POSTGRES_PASSWORD:admin}
+    file-options:
+      format: parquet
+      header: true
+      path: "spark-space/output"
+      merge: true
+
+#------------------------- Spark configurations -------------------------
+spark:
+  app.name: ${spring.application.name}
+  master: k8s://https://kubernetes.default.svc
+  driver:
+    memory: 2g
+    cores: 2
+  executor:
+    instances: 2
+    memory: 2g
+    cores: 2
+

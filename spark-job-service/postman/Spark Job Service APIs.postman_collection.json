@@ -1,0 +1,413 @@
+{
+	"info": {
+		"_postman_id": "9b89e475-395c-42dc-a00c-f855cbb483db",
+		"name": "Spark Job Service APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1639624",
+		"_collection_link": "https://orange-shuttle-529992.postman.co/workspace/MLHub~d3ec7a6e-802d-457b-84e7-7f3137f55a57/collection/1639624-9b89e475-395c-42dc-a00c-f855cbb483db?action=share&source=collection_link&creator=1639624"
+	},
+	"item": [
+		{
+			"name": "Spark Submit Job",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "*/*"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jobName\": \"daily-sales-report-job\",\n  \"correlationId\": \"71643ba2-1177-4e10-a43b-a21177de1022\",\n  \"sparkConfigs\": {\n    \"spark.executor.instances\": 4,\n    \"spark.driver.cores\": 3\n  },\n  \"month\": \"2024-11\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/v1/spark-jobs/submit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"spark-jobs",
+						"submit"
+					]
+				},
+				"description": "Generated from cURL: curl -X 'POST' \\\n  'http://localhost:8090/v1/spark-jobs/submit' \\\n  -H 'accept: */*' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"jobName\": \"daily-sales-report-job\",\n  \"correlationId\": \"71643ba2-1177-4e10-a43b-a21177de1022\",\n  \"sparkConfigs\": {\n    \"spark.executor.instances\": 4,\n    \"spark.driver.cores\": 3\n  },\n  \"month\": \"2024-11\"\n}'"
+			},
+			"response": []
+		},
+		{
+			"name": "List Job Executions",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "*/*"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/spark-jobs/executions?page=0&size=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"spark-jobs",
+						"executions"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions?page=0&size=10' \\\n  -H 'accept: */*'"
+			},
+			"response": []
+		},
+		{
+			"name": "List Job Executions by Job Name",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/daily-sales-report-job?page=0&size=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"spark-jobs",
+						"executions",
+						"daily-sales-report-job"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/daily-sales-report-job?page=0&size=10' \\\n  -H 'accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "List Job Executions by Correlation Id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/by-correlation-id/71643ba2-1177-4e10-a43b-a21177de1022?page=0&size=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"spark-jobs",
+						"executions",
+						"by-correlation-id",
+						"71643ba2-1177-4e10-a43b-a21177de1022"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/by-correlation-id/71643ba2-1177-4e10-a43b-a21177de1022?page=0&size=10' \\\n  -H 'accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "List Running Job executions by Job name",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/daily-sales-report-job/running?page=0&size=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"spark-jobs",
+						"executions",
+						"daily-sales-report-job",
+						"running"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/daily-sales-report-job/running?page=0&size=10' \\\n  -H 'accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Latest Job execution by Job name",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/daily-sales-report-job/latest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"spark-jobs",
+						"executions",
+						"daily-sales-report-job",
+						"latest"
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/daily-sales-report-job/latest' \\\n  -H 'accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Latest Job executions by Job names",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/latest?jobNames=daily-sales-report-job&jobNames=logs-analysis-job",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"spark-jobs",
+						"executions",
+						"latest"
+					],
+					"query": [
+						{
+							"key": "jobNames",
+							"value": "daily-sales-report-job"
+						},
+						{
+							"key": "jobNames",
+							"value": "logs-analysis-job"
+						}
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/latest?jobNames=daily-sales-report-job&jobNames=logs-analysis-job' \\\n  -H 'accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Job Names",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/job-names",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"spark-jobs",
+						"executions",
+						"job-names"
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/job-names' \\\n  -H 'accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Jobs Executions count",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/count",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"spark-jobs",
+						"executions",
+						"count"
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/count' \\\n  -H 'accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Running Jobs executions count",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/count-running",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"spark-jobs",
+						"executions",
+						"count-running"
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/count-running' \\\n  -H 'accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Job Executions count by Job Name",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/count/daily-sales-report-job",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"spark-jobs",
+						"executions",
+						"count",
+						"daily-sales-report-job"
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/count/daily-sales-report-job' \\\n  -H 'accept: application/json'"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Job Executions count by Correlation Id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/count-by-correlation-id/71643ba2-1177-4e10-a43b-a21177de1022",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"v1",
+						"spark-jobs",
+						"executions",
+						"count-by-correlation-id",
+						"71643ba2-1177-4e10-a43b-a21177de1022"
+					]
+				},
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/count-by-correlation-id/71643ba2-1177-4e10-a43b-a21177de1022' \\\n  -H 'accept: application/json'"
+			},
+			"response": []
+		}
+	]
+}

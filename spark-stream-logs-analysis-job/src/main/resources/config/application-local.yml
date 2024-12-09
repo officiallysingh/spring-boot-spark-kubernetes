@@ -1,0 +1,31 @@
+logging:
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+  file:
+    path: logs
+    name: ${logging.file.path}/application.log
+  level:
+    ROOT: info
+    '[org.mongodb.driver]': warn
+    '[org.apache.spark]': warn
+    '[org.apache.hadoop]': warn
+    '[org.sparkproject]': warn
+    '[com.mongodb.spark.sql.connector.read.partitioner.Partitioner]': warn
+debug: false
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
+
+#------------------------- Spark configurations -------------------------
+spark:
+  master: local
+  executor:
+    instances: 2
+    memory: 2g
+    cores: 1
+  driver:
+    memory: 1g
+    cores: 1

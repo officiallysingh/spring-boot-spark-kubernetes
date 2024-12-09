@@ -1,0 +1,190 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kafka-namespace
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zookeeper-data
+  namespace: kafka-namespace
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kafka-data
+  namespace: kafka-namespace
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper
+  namespace: kafka-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zookeeper
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      containers:
+      - name: zookeeper
+        image: docker.io/bitnami/zookeeper:latest
+        ports:
+        - containerPort: 2181
+        volumeMounts:
+        - name: zookeeper-storage
+          mountPath: /bitnami
+        env:
+        - name: ALLOW_ANONYMOUS_LOGIN
+          value: "true"
+      volumes:
+      - name: zookeeper-storage
+        persistentVolumeClaim:
+          claimName: zookeeper-data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper
+  namespace: kafka-namespace
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 2181
+    targetPort: 2181
+    name: zookeeper-port
+  selector:
+    app: zookeeper
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+  namespace: kafka-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+      - name: kafka
+        image: docker.io/bitnami/kafka:latest
+        ports:
+        - containerPort: 9092
+        - containerPort: 29092
+        volumeMounts:
+        - name: kafka-storage
+          mountPath: /bitnami
+        env:
+        - name: KAFKA_BROKER_ID
+          value: "1"
+        - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+          value: "zookeeper:2181"
+        - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+          value: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+        - name: KAFKA_INTER_BROKER_LISTENER_NAME
+          value: "INTERNAL"
+        - name: KAFKA_LISTENERS
+          value: "INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092"
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: "EXTERNAL://kafka.kafka-namespace.svc.cluster.local:9092,INTERNAL://kafka:29092"
+        - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
+          value: "true"
+        - name: ALLOW_PLAINTEXT_LISTENER
+          value: "true"
+      volumes:
+      - name: kafka-storage
+        persistentVolumeClaim:
+          claimName: kafka-data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: kafka-namespace
+spec:
+  type: LoadBalancer
+  ports:
+  - name: external
+    port: 9092
+    targetPort: 9092
+  - name: internal
+    port: 29092
+    targetPort: 29092
+  selector:
+    app: kafka
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-ui
+  namespace: kafka-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-ui
+  template:
+    metadata:
+      labels:
+        app: kafka-ui
+    spec:
+      containers:
+      - name: kafka-ui
+        image: provectuslabs/kafka-ui:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: KAFKA_CLUSTERS_0_NAME
+          value: "local"
+        - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+          value: "kafka:29092"
+        - name: KAFKA_CLUSTERS_0_ZOOKEEPER
+          value: "zookeeper:2181"
+        - name: KAFKA_BROKERCONNECT
+          value: "kafka:29092"
+        - name: DYNAMIC_CONFIG_ENABLED
+          value: "true"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-ui
+  namespace: kafka-namespace
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: kafka-ui-port
+  selector:
+    app: kafka-ui

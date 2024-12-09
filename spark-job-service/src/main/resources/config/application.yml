@@ -1,0 +1,145 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+#
+# Full reference for Standard Spring Boot properties is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+# set -Dspring.profiles.active=<dev|sit|int> as JVM argument to run in desired profile
+# If no profile is specified explicitly, application will fall back to default profile, which is "local"
+
+spring:
+  application:
+    name: spark-job-service
+#  autoconfigure:
+#    exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+  devtools:
+    add-properties: false
+    restart:
+      enabled: false
+      exclude: logs/*,application.log,*.log,*.log.*
+  main:
+    log-startup-info: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+    problemdetails:
+      enabled: false
+  messages:
+    basename: messages,i18n/problems
+    use-code-as-default-message: true
+  cloud:
+    task:
+      autoconfiguration:
+        enabled: ${spark-submit.persist-jobs:false}
+  #------------------------- Database configuration -------------------------
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/spark_jobs_db}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:admin}
+    hikari:
+      pool-name: pg-connection-pool
+      maximum-pool-size: 128
+      minimum-idle: 16
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database: POSTGRESQL
+    open-in-view: false
+    show-sql: false
+    properties:
+      '[hibernate.show_sql]': false
+      '[hibernate.format_sql]': true
+      '[hibernate.use_sql_comments]': true
+      '[hibernate.jdbc.time_zone]': UTC
+      '[integration.envers.enabled]': true
+      '[hibernate.enable_lazy_load_no_trans]': true
+# ------------------------ Problem configurations  ------------------------
+problem:
+  enabled: true
+  debug-enabled: false
+  stacktrace-enabled: false
+  cause-chains-enabled: false
+#------------------------- Swagger configuration -------------------------
+springdoc:
+  show-actuator: true
+  group-configs:
+    -
+      group: actuator
+      display-name: Actuator
+      paths-to-match: /actuator/**
+    -
+      group: sparkjob
+      display-name: Spark Jobs
+      paths-to-match: /**/spark-jobs/**
+  swagger-ui:
+    syntaxHighlight:
+      activated: true
+
+#------------------------- Actuators configuration -------------------------
+# If not specified '/actuator' is taken as default. If specified must start with '/'
+#management.endpoints.web.base-path=/
+# Set it as "*", if you want to expose all actuator endpoints
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  observations:
+    key-values:
+      application: ${spring.application.name}
+
+server:
+  port: 8090
+  forward-headers-strategy: framework
+#  servlet:
+#      context-path:
+logging:
+  level:
+    ROOT: info
+    '[org.mongodb.driver]': warn
+debug: false
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
+
+#------------------------- Spark configurations -------------------------
+spark:
+  master: k8s://https://kubernetes.default.svc
+  executor:
+    instances: 2
+    memory: 2g
+    cores: 2
+  driver:
+    memory: 2g
+    cores: 2
+#    extraJavaOptions: >
+#      -DMONGODB_URL=${MONGODB_URL:mongodb://localhost:27017}
+#      -DMONGO_FEATURE_DB=${MONGO_FEATURE_DB:feature-repo}
+  kubernetes:
+    namespace: spark
+    authenticate.driver.serviceAccountName: spark
+    driverEnv:
+      SPARK_USER: spark
+    #Always, Never, and IfNotPresent
+#    container.image.pullPolicy: IfNotPresent
+  submit.deployMode: cluster
+
+#------------------------- Spark Submit Job configurations -------------------------
+spark-submit:
+  capture-jobs-logs: false
+  persist-jobs: false
+  jobs:
+    daily-sales-report-job:
+      main-class-name: com.ksoot.spark.sales.DailySalesReportJob
+      jar-file: local:///opt/spark/job-apps/spark-batch-daily-sales-report-job.jar
+      spark-config:
+        spark.kubernetes.container.image: ${DAILY_SALES_REPORT_JOB_IMAGE:daily-sales-report-job:0.0.1}

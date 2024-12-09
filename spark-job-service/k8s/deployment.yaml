@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-job-service-app
+  labels:
+    name: spark-job-service-app
+spec:
+  replicas: 1
+  progressDeadlineSeconds: 1200
+  revisionHistoryLimit: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      name: spark-job-service-app
+  template:
+    metadata:
+      labels:
+        name: spark-job-service-app
+    spec:
+      containers:
+        - name: spark-job-service-app
+          image: spark-job-service:0.0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8090
+          env:
+#            - name: SPRING_PROFILES_ACTIVE
+#              value: minikube
+#            Job Properties
+            - name: MONGODB_URL
+              value: mongodb://10.167.165.67:27017
+            - name: MONGO_FEATURE_DB
+              value: feature-repo
+            - name: SPARK_OUTPUT_PATH
+              value: gs://fetch-bucket/spark-output
+#              value: spark-output
+            - name: STATEMENT_JOB_IMAGE
+              value: spark-statement-job:0.0.1
+#              Spark properties
+            - name: SPARK_MASTER
+              value: k8s://https://kubernetes.default.svc
+            - name: SPARK_KUBERNETES_NAMESPACE
+              value: spark
+            - name: SPARK_KUBERNETES_AUTHENTICATE_DRIVER_SERVICE_ACCOUNT_NAME
+              value: spark
+            - name: SPARK_KUBERNETES_DRIVER_ENV_SPARK_USER
+              value: spark
+            - name: SPARK_SUBMIT_DEPLOY_MODE
+              value: cluster
+            - name: SPARK_DRIVER_MEMORY
+              value: 1g
+            - name: SPARK_DRIVER_CORES
+              value: "2"
+            - name: SPARK_EXECUTOR_INSTANCES
+              value: "6"
+            - name: SPARK_EXECUTOR_MEMORY
+              value: 2g
+            - name: SPARK_EXECUTOR_CORES
+              value: "1"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-spring-service
+  namespace: spark
+spec:
+  type: ClusterIP
+  selector:
+    app: spark-job-service-app
+  ports:
+    - name: http
+      port: 8090
