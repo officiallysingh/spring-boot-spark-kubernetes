@@ -33,35 +33,24 @@
         </dependency>
 
         <!-- Spark Dependencies -->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.spark</groupId>-->
-<!--            <artifactId>spark-core_${scala.compact.version}</artifactId>-->
-<!--            <optional>true</optional>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.spark</groupId>-->
-<!--            <artifactId>spark-sql_${scala.compact.version}</artifactId>-->
-<!--            <optional>true</optional>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.spark</groupId>-->
-<!--            <artifactId>spark-mllib_${scala.compact.version}</artifactId>-->
-<!--            <optional>true</optional>-->
-<!--        </dependency>-->
-        <dependency>
-            <groupId>org.mongodb.spark</groupId>
-            <artifactId>mongo-spark-connector_${scala.compact.version}</artifactId>
-            <optional>true</optional>
-        </dependency>
-
         <dependency>
             <groupId>io.github.officiallysingh</groupId>
             <artifactId>spring-boot-starter-spark</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.mongodb.spark</groupId>
+            <artifactId>mongo-spark-connector_${scala.compact.version}</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>com.arangodb</groupId>
             <artifactId>arangodb-spark-datasource-${spark.compact.version}_${scala.compact.version}</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql-kafka-${spark-sql-kafka.version}_${scala.compact.version}</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>

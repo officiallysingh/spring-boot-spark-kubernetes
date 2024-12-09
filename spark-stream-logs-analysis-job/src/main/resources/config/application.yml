@@ -26,14 +26,14 @@ spring:
   #------------------------- Database configuration -------------------------
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/spark_jobs_db}
-    username: ${POSTGRES_USERNAME:postgres}
+    username: ${POSTGRES_USER:postgres}
     password: ${POSTGRES_PASSWORD:admin}
     hikari:
       pool-name: pg-connection-pool
-      maximum-pool-size: 128
-      minimum-idle: 16
+      maximum-pool-size: 32
+      minimum-idle: 8
   jpa:
-    #    defer-datasource-initialization: true
+#    defer-datasource-initialization: true
     hibernate:
       ddl-auto: validate
     database: POSTGRESQL
@@ -46,6 +46,7 @@ spring:
       '[hibernate.jdbc.time_zone]': UTC
       '[integration.envers.enabled]': true
       '[hibernate.enable_lazy_load_no_trans]': true
+  #------------------------- MongoDB configuration -------------------------
 
 logging:
   level:
@@ -81,16 +82,21 @@ ksoot:
       ssl-cert-value: ""
       cursor-ttl: PT5M # 5 minutes, see the ISO 8601 standard for java.time.Duration String patterns
     jdbc-options:
-      url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/sales_db}
-      driver: ${POSTGRES_DRIVER:org.postgresql.Driver}
-      database: ${POSTGRES_FEATURE_DB:sales_db}
+      url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432}
+      database: ${POSTGRES_DB:logs_db}
       username: ${POSTGRES_USER:postgres}
       password: ${POSTGRES_PASSWORD:admin}
+      batchsize: ${JDBC_BATCH_SIZE:1000}
+      isolation-level: ${JDBC_ISOLATION_LEVEL:READ_UNCOMMITTED}
     file-options:
-      format: parquet
+      format: csv
       header: true
       path: "spark-space/output"
       merge: true
+    kafka-options:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      topic: ${KAFKA_CHANGE_EVENT_TOPIC:change_event}
+      fail-on-data-loss: ${KAFKA_FAIL_ON_DATA_LOSS:false}
 
 #------------------------- Spark configurations -------------------------
 spark:
@@ -103,4 +109,26 @@ spark:
     instances: 2
     memory: 2g
     cores: 2
+  ui:
+    enabled: true
+  sql:
+    streaming:
+      checkpointLocation: ${CHECKPOINT_LOCATION:spark-space/checkpoints}
+      forceDeleteTempCheckpointLocation: true
+    adaptive:
+      enabled: true
+  checkpoint:
+    compress: true
+  hadoop:
+    fs:
+      s3a:
+        access.key: ${AWS_ACCESS_KEY:<put your aws access key>}
+        secret.key: ${AWS_SECRET_KEY:<put your aws secret key>}
+        endpoint: ${AWS_S3_ENDPOINT:<put your aws s3 endpoint>}
+        impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+        path.style.access: true  # For path-style access, useful in some S3-compatible services
+        connection.ssl.enabled: true  # Enable SSL
+        fast.upload: true  # Enable faster uploads
+    google.cloud.auth.service.account.json.keyfile: ${GCS_KEY_FILE:<put your sa-key.json>}
+
 

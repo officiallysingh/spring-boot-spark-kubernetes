@@ -125,6 +125,36 @@
       "type": "java.lang.String",
       "defaultValue": "PT30S",
       "description": "Cursor ttl."
+    },
+    {
+      "name": "ksoot.connector.kafka-options.bootstrap-servers",
+      "type": "java.lang.String",
+      "defaultValue": "localhost:9092",
+      "description": "Kafka Bootstrap servers."
+    },
+    {
+      "name": "ksoot.connector.kafka-options.topic",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Kafka topic where to write output."
+    },
+    {
+      "name": "ksoot.connector.kafka-options.key-serializer",
+      "type": "java.lang.String",
+      "defaultValue": "org.apache.kafka.common.serialization.StringSerializer",
+      "description": "Kafka Key serializer type."
+    },
+    {
+      "name": "ksoot.connector.kafka-options.value-serializer",
+      "type": "java.lang.String",
+      "defaultValue": "org.apache.kafka.common.serialization.ByteArraySerializer",
+      "description": "Kafka val serializer type."
+    },
+    {
+      "name": "ksoot.connector.kafka-options.fail-on-data-loss",
+      "type": "java.lang.Boolean",
+      "defaultValue": "true",
+      "description": "Whether to fail the query when it's possible that data is lost (e.g., topics are deleted, or offsets are out of range). This may be a false alarm. You can disable it when it doesn't work as you expected."
     }
   ],
   "hints": [
@@ -201,6 +231,19 @@
         {
           "value": "SERIALIZABLE",
           "description": "Dirty reads, non-repeatable reads and phantom reads are prevented."
+        }
+      ]
+    },
+    {
+      "name": "ksoot.connector.kafka-options.fail-on-data-loss",
+      "values": [
+        {
+          "value": "true",
+          "description": "The streaming query will fail if data is lost. This can happen if the topic is deleted or recreated, or if data is aged out by Kafka."
+        },
+        {
+          "value": "false",
+          "description": "The query will continue running, even if data is lost. However, this doesn't solve the underlying issue of potential data loss."
         }
       ]
     }

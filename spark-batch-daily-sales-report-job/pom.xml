@@ -144,10 +144,6 @@
             <groupId>com.arangodb</groupId>
             <artifactId>arangodb-spark-datasource-${spark.compact.version}_${scala.compact.version}</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql-kafka-${spark-sql-kafka.version}_${scala.compact.version}</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.ksoot.spark</groupId>

@@ -2,7 +2,7 @@ spring:
   docker:
     compose:
       enabled: true
-      file: spark-batch-daily-sales-report-job/compose.yml
+      file: spark-stream-logs-analysis-job/compose.yml
 
 logging:
   logback:
@@ -25,7 +25,7 @@ debug: false
 #------------------------- Job configurations -------------------------
 ksoot:
   job:
-    correlation-id: ${spring.cloud.task.external-execution-id:daily-sales-report-job-execution-1}
+    correlation-id: ${spring.cloud.task.external-execution-id:spark-stream-logs-analysis-job-1}
     persist: true
 
 #------------------------- Spark configurations -------------------------

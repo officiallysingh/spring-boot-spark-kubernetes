@@ -29,10 +29,6 @@
                     <groupId>org.springframework</groupId>
                     <artifactId>spring-web</artifactId>
                 </exclusion>
-<!--                <exclusion>-->
-<!--                    <groupId>org.springframework.boot</groupId>-->
-<!--                    <artifactId>spring-boot-starter-jdbc</artifactId>-->
-<!--                </exclusion>-->
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-logging</artifactId>
@@ -52,66 +48,21 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-docker-compose</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
 
         <!-- Spark Dependencies -->
         <dependency>
             <groupId>io.github.officiallysingh</groupId>
             <artifactId>spring-boot-starter-spark</artifactId>
-<!--            <scope>provided</scope>-->
-        </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.apache.spark</groupId>-->
-<!--            <artifactId>spark-core_${scala.compact.version}</artifactId>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.spark</groupId>-->
-<!--            <artifactId>spark-sql_${scala.compact.version}</artifactId>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.spark</groupId>-->
-<!--            <artifactId>spark-mllib_${scala.compact.version}</artifactId>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.glassfish.jersey.core</groupId>-->
-<!--            <artifactId>jersey-client</artifactId>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.glassfish.jersey.core</groupId>-->
-<!--            <artifactId>jersey-common</artifactId>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.glassfish.jersey.core</groupId>-->
-<!--            <artifactId>jersey-server</artifactId>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.glassfish.jersey.containers</groupId>-->
-<!--            <artifactId>jersey-container-servlet</artifactId>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.glassfish.jersey.containers</groupId>-->
-<!--            <artifactId>jersey-container-servlet-core</artifactId>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.glassfish.jersey.inject</groupId>-->
-<!--            <artifactId>jersey-hk2</artifactId>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-
-        <dependency>
-            <groupId>org.mongodb.spark</groupId>
-            <artifactId>mongo-spark-connector_${scala.compact.version}</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mongodb.spark</groupId>
-            <artifactId>mongo-spark-connector_${scala.compact.version}</artifactId>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql-kafka-${spark-sql-kafka.version}_${scala.compact.version}</artifactId>
         </dependency>
         <dependency>
             <groupId>com.ksoot.spark</groupId>
