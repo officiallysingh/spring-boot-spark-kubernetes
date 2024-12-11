@@ -1,7 +1,6 @@
 package com.ksoot.spark.common.connector;
 
 import com.ksoot.spark.common.config.properties.ConnectorProperties;
-import com.ksoot.spark.common.util.SparkOptions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.Dataset;
@@ -9,6 +8,8 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.streaming.DataStreamWriter;
 import org.apache.spark.sql.types.StructType;
+
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -74,6 +75,33 @@ public class JdbcConnector {
                       table,
                       this.properties.getJdbcOptions().connectionProperties());
             })
-        .option(SparkOptions.Common.CHECKPOINT_LOCATION, this.properties.getCheckpointLocation());
+    //        .option(SparkOptions.Common.CHECKPOINT_LOCATION,
+    // this.properties.getCheckpointLocation())
+    ;
+  }
+
+
+  public DataStreamWriter<Row> writeStream(final Dataset<Row> dataset, final String table, final Map<String, String> options) {
+    log.info(
+            "Streaming data to database: {} table: {}",
+            this.properties.getJdbcOptions().getDatabase(),
+            table);
+    // Write each micro-batch to PostgreSQL
+    return dataset
+            .writeStream()
+            .outputMode(this.properties.outputMode())
+            .options(options)
+            .options(this.properties.getJdbcOptions().writeOptions())
+            .foreachBatch(
+                    (batchDataset, batchId) -> {
+                      batchDataset
+                              .write()
+                              .mode(this.properties.getSaveMode())
+                              .jdbc(
+                                      this.properties.getJdbcOptions().getUrl(),
+                                      table,
+                                      this.properties.getJdbcOptions().connectionProperties());
+                    })
+            ;
   }
 }

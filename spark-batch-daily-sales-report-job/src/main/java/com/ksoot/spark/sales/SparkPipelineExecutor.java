@@ -32,11 +32,16 @@ public class SparkPipelineExecutor {
   private final ArangoConnector arangoConnector;
 
   public void execute() {
+    log.info("Generating Daily sales report for month: {}", this.jobProperties.getMonth());
+
     Dataset<Row> salesDataset = this.mongoConnector.read("sales");
     SparkUtils.logDataset("Sales Dataset", salesDataset);
+
+    final String statementMonth = this.jobProperties.getMonth().toString();
     // Convert `timestamp` to date and calculate daily sales amount
     Dataset<Row> aggregatedSales =
         salesDataset
+            .filter(col("timestamp").startsWith(statementMonth))
             .withColumn("date", col("timestamp").substr(0, 10)) // Extract date part
             .withColumn(
                 "sale_amount",
@@ -58,7 +63,7 @@ public class SparkPipelineExecutor {
                 productsDataset,
                 aggregatedSales.col("product_id").equalTo(productsDataset.col("product_id")))
             .select(
-                productsDataset.col("product_name"),
+                productsDataset.col("product_name").as("product"),
                 aggregatedSales.col("date"),
                 aggregatedSales.col("daily_sale_amount").alias("sale"))
             .orderBy(col("product_name"), col("date"));
@@ -66,6 +71,8 @@ public class SparkPipelineExecutor {
     // Show the final result
     SparkUtils.logDataset("Daily Sales report", dailySalesReport, 1000);
 
-    this.fileConnector.write(dailySalesReport);
+    final String salesReportCollection = "sales_report_" + statementMonth.replace('-', '_');
+    //    this.fileConnector.write(dailySalesReport);
+    this.mongoConnector.write(dailySalesReport, salesReportCollection);
   }
 }

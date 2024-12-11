@@ -22,9 +22,16 @@ public class MongoOptions {
   /** Features Database name. */
   @NotEmpty private String database;
 
-  public Map<String, String> options(final String collection) {
+  public Map<String, String> readOptions(final String collection) {
     return Map.of(
         SparkOptions.Mongo.READ_CONNECTION_URI, this.url,
+        SparkOptions.Mongo.DATABASE, this.database,
+        SparkOptions.Mongo.COLLECTION, collection);
+  }
+
+  public Map<String, String> writeOptions(final String collection) {
+    return Map.of(
+        SparkOptions.Mongo.WRITE_CONNECTION_URI, this.url,
         SparkOptions.Mongo.DATABASE, this.database,
         SparkOptions.Mongo.COLLECTION, collection);
   }

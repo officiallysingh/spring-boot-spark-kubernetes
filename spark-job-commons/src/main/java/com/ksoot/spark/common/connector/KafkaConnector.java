@@ -22,10 +22,9 @@ public class KafkaConnector {
             .readStream()
             .format(SparkOptions.Kafka.FORMAT)
             .option(SparkOptions.Kafka.SUBSCRIBE, topic)
+            .option(SparkOptions.Kafka.STARTING_OFFSETS, "latest")
             .options(this.properties.getKafkaOptions().readOptions())
-            .load()
-        //  .selectExpr("CAST(value AS STRING) as json_string")
-        ;
+            .load();
     return dataset;
   }
 
@@ -36,14 +35,13 @@ public class KafkaConnector {
             .schema(schema)
             .format(SparkOptions.Kafka.FORMAT)
             .option(SparkOptions.Kafka.SUBSCRIBE, topic)
+            .option(SparkOptions.Kafka.STARTING_OFFSETS, "latest")
             .options(this.properties.getKafkaOptions().readOptions())
-            .load()
-        //  .selectExpr("CAST(value AS STRING) as json_string")
-        ;
+            .load();
     return dataset;
   }
 
-  public void write(final Dataset<Row> dataset) {
+  public void write(final Dataset<Row> dataset, final String topic) {
     log.info(
         "Streaming data to Kafka: {} topic: {}",
         this.properties.getKafkaOptions().getBootstrapServers(),
@@ -60,11 +58,12 @@ public class KafkaConnector {
         // )
         .write()
         .format(SparkOptions.Kafka.FORMAT)
+        .option(SparkOptions.Kafka.TOPIC, topic)
         .options(this.properties.getKafkaOptions().writeOptions())
         .save();
   }
 
-  public DataStreamWriter<Row> writeStream(final Dataset<Row> dataset) {
+  public DataStreamWriter<Row> writeStream(final Dataset<Row> dataset, final String topic) {
     return dataset
         // // The lambda used in following map method must be Serializable
         // .map(
@@ -77,6 +76,7 @@ public class KafkaConnector {
         // )
         .writeStream()
         .format(SparkOptions.Kafka.FORMAT)
+        .option(SparkOptions.Kafka.TOPIC, topic)
         .options(this.properties.getKafkaOptions().writeOptions());
   }
 }

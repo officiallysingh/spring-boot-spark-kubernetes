@@ -22,8 +22,8 @@ debug: false
 #------------------------- Job configurations -------------------------
 ksoot:
   job:
-    correlation-id: ${spring.cloud.task.external-execution-id:daily-sales-report-job-execution-1}
-    persist: false
+    correlation-id: daily-sales-report-job-execution-1
+    persist: true
 #------------------------- Spark configurations -------------------------
 spark:
   master: local

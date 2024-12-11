@@ -1,6 +1,5 @@
 package com.ksoot.spark.common.config.properties;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class ConnectorProperties {
 
-  @NotEmpty private String checkpointLocation = "spark-space/checkpoints";
+  //  @NotEmpty private String checkpointLocation = "spark-space/checkpoints";
 
   /**
    * Save mode for the output file. Applicable only to Batch writers. Options are Append, Overwrite,

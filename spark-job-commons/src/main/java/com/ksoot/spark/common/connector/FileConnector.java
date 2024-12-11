@@ -91,6 +91,8 @@ public class FileConnector {
         .format(this.properties.getFileOptions().getFormat())
         .options(this.properties.getFileOptions().writeOptions())
         .options(options)
-        .option(SparkOptions.Common.CHECKPOINT_LOCATION, this.properties.getCheckpointLocation());
+    //        .option(SparkOptions.Common.CHECKPOINT_LOCATION,
+    // this.properties.getCheckpointLocation())
+    ;
   }
 }

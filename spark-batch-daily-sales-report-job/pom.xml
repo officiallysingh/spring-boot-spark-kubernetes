@@ -25,6 +25,12 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-docker-compose</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-task</artifactId>
             <exclusions>
@@ -32,10 +38,6 @@
                     <groupId>org.springframework</groupId>
                     <artifactId>spring-web</artifactId>
                 </exclusion>
-<!--                <exclusion>-->
-<!--                    <groupId>org.springframework.boot</groupId>-->
-<!--                    <artifactId>spring-boot-starter-jdbc</artifactId>-->
-<!--                </exclusion>-->
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-logging</artifactId>
@@ -58,79 +60,13 @@
             <groupId>com.arangodb</groupId>
             <artifactId>arangodb-spring-boot-starter</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-data-jpa</artifactId>-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.antlr</groupId>-->
-<!--                    <artifactId>antlr4-runtime</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--        </dependency>-->
-<!--        &lt;!&ndash; To fix java.io.InvalidClassException: org.antlr.v4.runtime.atn.ATN; Could not deserialize ATN with version 3 (expected 4).&lt;!&ndash;&ndash;&gt;&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.antlr</groupId>-->
-<!--            <artifactId>antlr4-runtime</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-docker-compose</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
 
         <!-- Spark Dependencies -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.spark</groupId>-->
-        <!--            <artifactId>spark-core_${scala.compact.version}</artifactId>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.glassfish.jersey.core</groupId>-->
-        <!--            <artifactId>jersey-client</artifactId>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.glassfish.jersey.core</groupId>-->
-        <!--            <artifactId>jersey-common</artifactId>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.glassfish.jersey.core</groupId>-->
-        <!--            <artifactId>jersey-server</artifactId>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.glassfish.jersey.containers</groupId>-->
-        <!--            <artifactId>jersey-container-servlet</artifactId>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.glassfish.jersey.containers</groupId>-->
-        <!--            <artifactId>jersey-container-servlet-core</artifactId>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.glassfish.jersey.inject</groupId>-->
-        <!--            <artifactId>jersey-hk2</artifactId>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.spark</groupId>-->
-        <!--            <artifactId>spark-sql_${scala.compact.version}</artifactId>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.spark</groupId>-->
-        <!--            <artifactId>spark-mllib_${scala.compact.version}</artifactId>-->
-        <!--            <scope>provided</scope>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>io.github.officiallysingh</groupId>
             <artifactId>spring-boot-starter-spark</artifactId>

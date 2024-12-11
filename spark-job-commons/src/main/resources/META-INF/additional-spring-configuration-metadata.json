@@ -155,6 +155,12 @@
       "type": "java.lang.Boolean",
       "defaultValue": "true",
       "description": "Whether to fail the query when it's possible that data is lost (e.g., topics are deleted, or offsets are out of range). This may be a false alarm. You can disable it when it doesn't work as you expected."
+    },
+    {
+      "name": "ksoot.connector.kafka-options.starting-offsets",
+      "type": "java.lang.String",
+      "defaultValue": "latest",
+      "description": "The start point when a query is started, either \"earliest\" which is from the earliest offsets, \"latest\" which is just from the latest offsets, or a json string specifying a starting offset for each TopicPartition. In the json, -2 as an offset can be used to refer to earliest, -1 to latest. Note: For batch queries, latest (either implicitly or by using -1 in json) is not allowed. For streaming queries, this only applies when a new query is started, and that resuming will always pick up from where the query left off. Newly discovered partitions during a query will start at earliest."
     }
   ],
   "hints": [

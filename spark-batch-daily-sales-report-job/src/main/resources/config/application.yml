@@ -21,6 +21,7 @@ spring:
   cloud:
     task:
       initialize-enabled: ${ksoot.job.persist:false}
+      external-execution-id: ${ksoot.job.correlation-id:}
   main:
     log-startup-info: true
   #------------------------- Database configuration -------------------------
@@ -82,9 +83,11 @@ debug: false
 ksoot:
   job:
     month: ${STATEMENT_MONTH:}
-    correlation-id: ${spring.cloud.task.external-execution-id:daily-sales-report-job-execution-1}
+    correlation-id: ${CORRELATION_ID:daily-sales-report-job-execution-1}
     persist: ${PERSIST_JOB:false}
   connector:
+    save-mode: Append
+    output-mode: Update
     mongo-options:
       url: ${MONGO_URL:mongodb://localhost:27017}
       database: ${MONGO_DATABASE:sales_db}

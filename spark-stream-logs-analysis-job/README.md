@@ -1,6 +1,6 @@
 # Customer Churn Job implemented as Spring Cloud Task
 
-Run [**`CustomerChurnJob`**](src/main/java/com/ksoot/spark/churn/CustomerChurnJob.java) as Spring boot application.
+Run [**`CustomerChurnJob`**](src/main/java/com/ksoot/spark/logs/CustomerChurnJob.java) as Spring boot application.
 
 > [!IMPORTANT]  
 > Run in active profile `local`.  

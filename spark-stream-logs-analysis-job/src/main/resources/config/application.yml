@@ -21,6 +21,7 @@ spring:
   cloud:
     task:
       initialize-enabled: ${ksoot.job.persist:false}
+      external-execution-id: ${ksoot.job.correlation-id:}
   main:
     log-startup-info: true
   #------------------------- Database configuration -------------------------
@@ -56,6 +57,7 @@ logging:
     '[org.apache.hadoop]': warn
     '[org.sparkproject]': warn
     '[com.mongodb.spark.sql.connector.read.partitioner.Partitioner]': warn
+    '[org.apache.kafka.clients.admin.KafkaAdminClient]': error
 debug: false
 
 # ===================================================================
@@ -66,24 +68,14 @@ debug: false
 #------------------------- Job configurations -------------------------
 ksoot:
   job:
-#    month: ${STATEMENT_MONTH:}
-    correlation-id: ${spring.cloud.task.external-execution-id:daily-sales-report-job-execution-1}
+    correlation-id: ${CORRELATION_ID:daily-sales-report-job-execution-1}
     persist: ${PERSIST_JOB:false}
   connector:
-    mongo-options:
-      url: ${MONGO_URL:mongodb://localhost:27017}
-      database: ${MONGO_DATABASE:sales_db}
-    arango-options:
-      endpoints: ${ARANGO_URL:localhost:8529}
-      database: ${ARANGO_DATABASE:products_db}
-      username: ${ARANGO_USER:root}
-      password: ${ARANGO_PASSWORD:admin}
-      ssl-enabled: false
-      ssl-cert-value: ""
-      cursor-ttl: PT5M # 5 minutes, see the ISO 8601 standard for java.time.Duration String patterns
+    save-mode: Append
+    output-mode: Update
     jdbc-options:
       url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432}
-      database: ${POSTGRES_DB:logs_db}
+      database: ${POSTGRES_DB:spark_jobs_db}
       username: ${POSTGRES_USER:postgres}
       password: ${POSTGRES_PASSWORD:admin}
       batchsize: ${JDBC_BATCH_SIZE:1000}
@@ -95,7 +87,7 @@ ksoot:
       merge: true
     kafka-options:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-      topic: ${KAFKA_CHANGE_EVENT_TOPIC:change_event}
+      topic: ${KAFKA_CHANGE_EVENT_TOPIC:error_logs}
       fail-on-data-loss: ${KAFKA_FAIL_ON_DATA_LOSS:false}
 
 #------------------------- Spark configurations -------------------------

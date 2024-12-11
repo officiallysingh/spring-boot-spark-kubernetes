@@ -32,12 +32,12 @@ public class KafkaOptions {
 
   @NotEmpty private String failOnDataLoss = "true";
 
+  @NotEmpty private String startingOffsets = "latest";
+
   public Map<String, String> writeOptions() {
     return Map.of(
         BOOTSTRAP_SERVERS,
         this.bootstrapServers,
-        TOPIC,
-        this.topic,
         KEY_SERIALIZER,
         this.keySerializer,
         VALUE_SERIALIZER,

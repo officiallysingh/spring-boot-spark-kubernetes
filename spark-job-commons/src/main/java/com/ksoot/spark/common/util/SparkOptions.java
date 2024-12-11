@@ -46,12 +46,14 @@ public class SparkOptions {
   }
 
   public static final class Mongo {
-    public static final String READ_CONFIG_PREFIX = "spark.mongodb.read.";
     public static final String FORMAT = "mongodb";
     public static final String DATABASE = "database";
     public static final String COLLECTION = "collection";
+    private static final String READ_CONFIG_PREFIX = "spark.mongodb.read.";
     public static final String AGGREGATION_PIPELINE = READ_CONFIG_PREFIX + "aggregation.pipeline";
     public static final String READ_CONNECTION_URI = READ_CONFIG_PREFIX + "connection.uri";
+    private static final String WRITE_CONFIG_PREFIX = "spark.mongodb.write.";
+    public static final String WRITE_CONNECTION_URI = WRITE_CONFIG_PREFIX + "connection.uri";
   }
 
   public static final class Arango {
@@ -83,6 +85,7 @@ public class SparkOptions {
     public static final String FETCH_SIZE = "fetchSize";
     public static final String BATCH_SIZE = "batchSize";
     public static final String ISOLATION_LEVEL = "isolationLevel";
+    public static final String CREATE_TABLE_OPTIONS = "createTableOptions";
   }
 
   public static final class Join {

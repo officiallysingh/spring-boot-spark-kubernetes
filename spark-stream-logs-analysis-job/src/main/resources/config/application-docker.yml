@@ -3,7 +3,11 @@ spring:
     compose:
       enabled: true
       file: spark-stream-logs-analysis-job/compose.yml
-
+  #------------------------- Database configuration -------------------------
+  datasource:
+    url: jdbc:postgresql://localhost:5433/spark_jobs_db}
+    username: postgres}
+    password: admin
 logging:
   logback:
     rollingpolicy:
@@ -25,7 +29,7 @@ debug: false
 #------------------------- Job configurations -------------------------
 ksoot:
   job:
-    correlation-id: ${spring.cloud.task.external-execution-id:spark-stream-logs-analysis-job-1}
+    correlation-id: logs-analysis-job-1
     persist: true
 
 #------------------------- Spark configurations -------------------------

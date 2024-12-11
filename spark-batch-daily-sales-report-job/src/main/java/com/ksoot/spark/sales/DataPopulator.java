@@ -1,7 +1,5 @@
 package com.ksoot.spark.sales;
 
-import static com.ksoot.spark.common.util.DateTimeUtils.ZONE_ID_IST;
-
 import com.arangodb.springframework.core.ArangoOperations;
 import com.mongodb.client.MongoCollection;
 import java.time.*;
@@ -18,6 +16,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -84,51 +83,68 @@ public class DataPopulator {
   }
 
   private void createSalesData() {
-    log.info("Creating Sales data");
     final MongoCollection<Document> salesCollection =
         this.mongoOperations.getCollection(SALES_COLLECTION);
+    final LocalDate yesterday = LocalDate.now().minusDays(1);
     if (salesCollection.countDocuments() > 0) {
-      log.info("Sales data already exists");
-      return;
-    }
+      final LocalDate maxDate = this.getMaxSaleDate();
+      if (yesterday.isAfter(maxDate)) {
+        log.info(
+            "Sales data already exists till date: {}. Creating sales data till date: {}",
+            maxDate,
+            yesterday);
+        this.createSalesDataInDateRange(salesCollection, maxDate, yesterday);
+      } else {
+        log.info("Sales data already upto date");
+      }
+    } else {
+      log.info("Sales data not found. Creating Sales data for last 6 months");
+      final LocalDate fromDate = yesterday.minusMonths(6);
 
-    final YearMonth currentMonth = YearMonth.now(ZONE_ID_IST);
-    final List<YearMonth> months =
-        List.of(
-            currentMonth.minusMonths(3), currentMonth.minusMonths(2), currentMonth.minusMonths(1));
+      this.createSalesDataInDateRange(salesCollection, fromDate, yesterday);
+    }
+  }
+
+  public LocalDate getMaxSaleDate() {
+    Query query = new Query();
+    query.with(Sort.by(Sort.Direction.DESC, "timestamp"));
+    query.limit(1);
+    Document document = this.mongoOperations.findOne(query, Document.class, SALES_COLLECTION);
+    Date maxTimestamp = document.get("timestamp", Date.class);
+    return maxTimestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+  }
+
+  private void createSalesDataInDateRange(
+      final MongoCollection<Document> salesCollection,
+      final LocalDate fromDate,
+      LocalDate tillDate) {
     int recordCount = 0;
     final List<Document> sales = new ArrayList<>(BATCH_SIZE);
-    for (int i = 1; i <= SALES_COUNT; i++) {
-      for (final YearMonth month : months) {
-        for (LocalDate date = month.atDay(1);
-            !date.isAfter(month.atEndOfMonth());
-            date = date.plusDays(1)) {
+    for (LocalDate date = fromDate; !date.isAfter(tillDate); date = date.plusDays(1)) {
 
-          int salesPerDay = faker.number().numberBetween(1, 11);
-          for (int j = 0; j < salesPerDay; j++) {
+      int salesPerDay = faker.number().numberBetween(1, 11);
+      for (int j = 0; j < salesPerDay; j++) {
 
-            final String transactionId = faker.internet().uuid();
-            final long time = faker.time().between(LocalTime.MIN, LocalTime.MAX);
-            final LocalDateTime timestamp = LocalDateTime.of(date, LocalTime.ofNanoOfDay(time));
-            final String productId = new Faker().options().option(products);
-            final int quantity = faker.number().numberBetween(1, 6);
-            final double price = faker.number().randomDouble(2, 10, 1000);
+        final String transactionId = faker.internet().uuid();
+        final long time = faker.time().between(LocalTime.MIN, LocalTime.MAX);
+        final LocalDateTime timestamp = LocalDateTime.of(date, LocalTime.ofNanoOfDay(time));
+        final String productId = new Faker().options().option(products);
+        final int quantity = faker.number().numberBetween(1, 6);
+        final double price = faker.number().randomDouble(2, 10, 1000);
 
-            final Document sale = new Document("_id", new ObjectId());
-            sale.append("transaction_id", transactionId)
-                .append("timestamp", timestamp)
-                .append("product_id", productId)
-                .append("quantity", quantity)
-                .append("price", price);
-            sales.add(sale);
+        final Document sale = new Document("_id", new ObjectId());
+        sale.append("transaction_id", transactionId)
+            .append("timestamp", timestamp)
+            .append("product_id", productId)
+            .append("quantity", quantity)
+            .append("price", price);
+        sales.add(sale);
 
-            recordCount++;
-            if (recordCount % BATCH_SIZE == 0) {
-              salesCollection.insertMany(sales);
-              sales.clear();
-              log.info("Created {} Sales transactions, processed for date: {}", recordCount, date);
-            }
-          }
+        recordCount++;
+        if (recordCount % BATCH_SIZE == 0) {
+          salesCollection.insertMany(sales);
+          sales.clear();
+          log.info("Created {} Sales transactions, processed for date: {}", recordCount, date);
         }
       }
     }

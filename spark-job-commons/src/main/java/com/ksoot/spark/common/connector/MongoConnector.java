@@ -28,7 +28,7 @@ public class MongoConnector {
     return this.sparkSession
         .read()
         .format(SparkOptions.Mongo.FORMAT)
-        .options(this.properties.getMongoOptions().options(collection))
+        .options(this.properties.getMongoOptions().readOptions(collection))
         .option(SparkOptions.Common.INFER_SCHEMA, true)
         .load();
   }
@@ -43,7 +43,7 @@ public class MongoConnector {
         .read()
         .format(SparkOptions.Mongo.FORMAT)
         .schema(schema)
-        .options(this.properties.getMongoOptions().options(collection))
+        .options(this.properties.getMongoOptions().readOptions(collection))
         .load();
   }
 
@@ -58,7 +58,7 @@ public class MongoConnector {
     return this.sparkSession
         .read()
         .format(SparkOptions.Mongo.FORMAT)
-        .options(this.properties.getMongoOptions().options(collection))
+        .options(this.properties.getMongoOptions().readOptions(collection))
         .option(SparkOptions.Common.INFER_SCHEMA, true)
         .option(SparkOptions.Mongo.AGGREGATION_PIPELINE, aggregationPipeline)
         .load();
@@ -77,7 +77,7 @@ public class MongoConnector {
         .read()
         .format(SparkOptions.Mongo.FORMAT)
         .schema(schema)
-        .options(this.properties.getMongoOptions().options(collection))
+        .options(this.properties.getMongoOptions().readOptions(collection))
         .option(SparkOptions.Mongo.AGGREGATION_PIPELINE, aggregationPipeline)
         .load();
   }
@@ -92,7 +92,7 @@ public class MongoConnector {
         .write()
         .format(SparkOptions.Mongo.FORMAT)
         .mode(this.properties.getSaveMode())
-        .options(this.properties.getMongoOptions().options(collection))
+        .options(this.properties.getMongoOptions().writeOptions(collection))
         .save();
   }
 
@@ -106,7 +106,9 @@ public class MongoConnector {
         .writeStream()
         .format(SparkOptions.Mongo.FORMAT)
         .outputMode(this.properties.outputMode())
-        .options(this.properties.getMongoOptions().options(collection))
-        .option(SparkOptions.Common.CHECKPOINT_LOCATION, this.properties.getCheckpointLocation());
+        .options(this.properties.getMongoOptions().writeOptions(collection))
+    //        .option(SparkOptions.Common.CHECKPOINT_LOCATION,
+    // this.properties.getCheckpointLocation())
+    ;
   }
 }

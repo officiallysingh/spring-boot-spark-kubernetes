@@ -22,6 +22,12 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-docker-compose</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-task</artifactId>
             <exclusions>
@@ -49,10 +55,8 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-docker-compose</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
         </dependency>
 
         <!-- Spark Dependencies -->
@@ -62,7 +66,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql-kafka-${spark-sql-kafka.version}_${scala.compact.version}</artifactId>
+            <artifactId>spark-sql-kafka-${spark-connector-kafka.version}_${scala.compact.version}</artifactId>
         </dependency>
         <dependency>
             <groupId>com.ksoot.spark</groupId>
