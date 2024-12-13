@@ -2,7 +2,7 @@ spring:
   docker:
     compose:
       enabled: true
-      file: spark-batch-daily-sales-report-job/compose.yml
+      file: compose.yml
 
 logging:
   logback:

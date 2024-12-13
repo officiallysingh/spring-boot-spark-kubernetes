@@ -75,7 +75,7 @@ ksoot:
     output-mode: Update
     jdbc-options:
       url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432}
-      database: ${POSTGRES_DB:spark_jobs_db}
+      database: ${POSTGRES_DB:error_logs}
       username: ${POSTGRES_USER:postgres}
       password: ${POSTGRES_PASSWORD:admin}
       batchsize: ${JDBC_BATCH_SIZE:1000}

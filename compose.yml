@@ -1,8 +1,7 @@
-version: '3.8'
-
 services:
   mongo:
     image: mongo:latest
+    container_name: mongodb
     command: [ "--replSet", "rs0", "--bind_ip_all", "--port", "27017" ]
     ports:
       - "27017:27017"
@@ -20,16 +19,33 @@ services:
     networks:
       - mynetwork
 
+  arango:
+    image: arangodb/arangodb:latest
+    container_name: arangodb
+    environment:
+      ARANGO_ROOT_PASSWORD: admin
+      ARANGO_DB_NAME: products_db
+    ports:
+      - "8529:8529"
+    volumes:
+      - arango_data:/var/lib/arangodb3
+    networks:
+      - mynetwork
+
   postgres:
     image: postgres:latest
+    hostname: postgresql
+    container_name: postgresdb
     environment:
-      POSTGRES_DB: spark_jobs_db
+      POSTGRES_MULTIPLE_DATABASES: spark_jobs_db, logs_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./infra/init-postgres.sh:/docker-entrypoint-initdb.d/init-postgres.sh
     networks:
       - mynetwork
 
@@ -43,6 +59,8 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_SERVERS: zoo1:2888:3888
+    networks:
+      - mynetwork
 
   kafka1:
     image: confluentinc/cp-kafka:7.3.2
@@ -66,11 +84,18 @@ services:
       KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-127.0.0.1}
       KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
+#      KAFKA_CREATE_TOPICS: "error_logs:3:1,job-stop-requests:3:1"
+    volumes:
+      - ./infra/create-topics.sh:/usr/bin/create-topics.sh
+    command: ["bash", "-c", "/usr/bin/create-topics.sh & /etc/confluent/docker/run"]
     depends_on:
       - zoo1
+    networks:
+      - mynetwork
 
   conduktor-console:
     image: conduktor/conduktor-console:1.26.0
+    container_name: conduktor-console
     ports:
       - "8080:8080"
     volumes:
@@ -86,10 +111,13 @@ services:
       CDK_CLUSTERS_0_KAFKACONNECTS_0_NAME: "full stack kafka connect"
     depends_on:
       - postgres
+    networks:
+      - mynetwork
 
 volumes:
   mongo_data:
   mongo_config:
+  arango_data:
   postgres_data:
   conduktor_data:
 

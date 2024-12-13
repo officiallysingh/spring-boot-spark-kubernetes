@@ -21,6 +21,6 @@ public class JobProperties {
   @NotNull @PastOrPresent private YearMonth month = YearMonth.now();
 
   /** Unique correlation id for each Job execution. */
-  @Size(min = 2, max = 50, message = "Correlation id should be between 2 and 50 characters")
+  @Size(min = 1, max = 50, message = "Correlation id should be between 2 and 50 characters")
   private String correlationId;
 }
