@@ -29,7 +29,7 @@ debug: false
 #------------------------- Job configurations -------------------------
 ksoot:
   job:
-    correlation-id: ${spring.application.name}-1
+#    correlation-id: 1
     persist: true
 
 #------------------------- Spark configurations -------------------------

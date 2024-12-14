@@ -20,8 +20,8 @@ spring:
       enabled: false
   cloud:
     task:
-      initialize-enabled: ${ksoot.job.persist:false}
-      external-execution-id: ${ksoot.job.correlation-id:}
+      initialize-enabled: ${ksoot.job.persist}
+      external-execution-id: ${ksoot.job.correlation-id}
   main:
     log-startup-info: true
 
@@ -33,10 +33,11 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-      group-id: spark-jobs-group
+#      group-id: spark-jobs-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
+
 
   #------------------------- Database configuration -------------------------
   datasource:
@@ -85,6 +86,8 @@ logging:
     '[org.apache.hadoop]': warn
     '[org.sparkproject]': warn
     '[com.mongodb.spark.sql.connector.read.partitioner.Partitioner]': warn
+    '[org.apache.kafka.clients.admin.KafkaAdminClient]': error
+    '[org.apache.kafka.clients]': warn
 debug: false
 
 # ===================================================================
@@ -96,7 +99,7 @@ debug: false
 ksoot:
   job:
     month: ${STATEMENT_MONTH:}
-    correlation-id: ${CORRELATION_ID:daily-sales-report-job-execution-1}
+    correlation-id: ${CORRELATION_ID:${spring.application.name}-1}
     persist: ${PERSIST_JOB:false}
   connector:
     save-mode: Append

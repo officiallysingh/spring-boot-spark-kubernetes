@@ -84,16 +84,6 @@ services:
       KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-127.0.0.1}
       KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
       KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: "true"
-#      KAFKA_CREATE_TOPICS: "error_logs:3:1,job-stop-requests:3:1"
-    volumes:
-      - ./infra/create-topics.sh:/usr/bin/create-topics.sh
-#    command: ["bash", "-c", "/etc/confluent/docker/run & sleep 20 && /usr/bin/create-topics.sh"]
-#    entrypoint:
-#      - bash
-#      - -c
-#      - |
-#        /etc/confluent/docker/run &
-#        sleep 5 && /usr/bin/create-topics.sh
     depends_on:
       - zoo1
       - postgres

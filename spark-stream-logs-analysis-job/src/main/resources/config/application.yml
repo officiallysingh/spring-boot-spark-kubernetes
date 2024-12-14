@@ -20,8 +20,8 @@ spring:
       enabled: false
   cloud:
     task:
-      initialize-enabled: ${ksoot.job.persist:true}
-      external-execution-id: ${ksoot.job.correlation-id:}
+      initialize-enabled: ${ksoot.job.persist}
+      external-execution-id: ${ksoot.job.correlation-id}
   main:
     log-startup-info: true
 
@@ -33,7 +33,7 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-      group-id: spark-jobs-group
+#      group-id: spark-jobs-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: latest
@@ -83,8 +83,8 @@ debug: false
 #------------------------- Job configurations -------------------------
 ksoot:
   job:
-    correlation-id: ${CORRELATION_ID:${spring.application.name}}
-    persist: ${PERSIST_JOB:true}
+    correlation-id: ${CORRELATION_ID:${spring.application.name}-1}
+    persist: ${PERSIST_JOB:false}
   connector:
     save-mode: Append
     output-mode: Update

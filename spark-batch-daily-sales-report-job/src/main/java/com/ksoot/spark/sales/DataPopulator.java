@@ -37,6 +37,8 @@ public class DataPopulator {
   // Number of records to be created in a batch
   private static final int BATCH_SIZE = 1000;
 
+  private static final int NO_OF_MONTHS_TO_GENERATE_DATA_FOR = 12;
+
   private static final String SALES_COLLECTION = "sales";
   private final MongoOperations mongoOperations;
 
@@ -98,8 +100,10 @@ public class DataPopulator {
         log.info("Sales data already upto date");
       }
     } else {
-      log.info("Sales data not found. Creating Sales data for last 6 months");
-      final LocalDate fromDate = yesterday.minusMonths(6);
+      log.info(
+          "Sales data not found. Creating Sales data for last {} months",
+          NO_OF_MONTHS_TO_GENERATE_DATA_FOR);
+      final LocalDate fromDate = yesterday.minusMonths(NO_OF_MONTHS_TO_GENERATE_DATA_FOR);
 
       this.createSalesDataInDateRange(salesCollection, fromDate, yesterday);
     }

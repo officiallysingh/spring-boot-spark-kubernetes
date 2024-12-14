@@ -11,9 +11,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.annotation.EnableKafka;
 
 @Slf4j
 @EnableTask
+@EnableKafka
 @SpringBootApplication
 @EnableConfigurationProperties(JobProperties.class)
 public class DailySalesReportJob {
@@ -26,7 +28,7 @@ public class DailySalesReportJob {
 
   @PostConstruct
   public void init() {
-    log.info("Initializing SparkStatementJob ...");
+    log.info("Initializing DailySalesReportJob ...");
     this.dataPopulator.populateData();
   }
 

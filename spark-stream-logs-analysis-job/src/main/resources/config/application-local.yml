@@ -22,8 +22,8 @@ debug: false
 #------------------------- Job configurations -------------------------
 ksoot:
   job:
-    correlation-id: 1
-    persist: false
+#    correlation-id: 1
+    persist: true
 #------------------------- Spark configurations -------------------------
 spark:
   master: local

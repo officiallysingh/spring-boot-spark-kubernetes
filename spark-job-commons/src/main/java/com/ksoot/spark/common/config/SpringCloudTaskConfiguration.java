@@ -30,9 +30,11 @@ public class SpringCloudTaskConfiguration {
   }
 
   @Bean
-  JobExecutionListener jobExecutionListener(
-      final MessageSource messageSource, final SparkSession sparkSession, final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry) {
-    return new JobExecutionListener(messageSource, sparkSession, kafkaListenerEndpointRegistry);
+  SparkExecutionManager sparkExecutionManager(
+      final SparkSession sparkSession,
+      final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry,
+      final MessageSource messageSource) {
+    return new SparkExecutionManager(sparkSession, kafkaListenerEndpointRegistry, messageSource);
   }
 
   @Bean
