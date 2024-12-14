@@ -7,17 +7,25 @@ import java.time.Duration;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.spark.sql.SparkSession;
 import org.springframework.cloud.task.listener.annotation.AfterTask;
 import org.springframework.cloud.task.listener.annotation.BeforeTask;
 import org.springframework.cloud.task.listener.annotation.FailedTask;
 import org.springframework.cloud.task.repository.TaskExecution;
+import org.springframework.context.Lifecycle;
 import org.springframework.context.MessageSource;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 
 @Log4j2
 @RequiredArgsConstructor
 public class JobExecutionListener {
 
   private final MessageSource messageSource;
+
+  private final SparkSession sparkSession;
+
+  private final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
 
   @BeforeTask
   public void onJobStart(final TaskExecution taskExecution) {
@@ -47,6 +55,8 @@ public class JobExecutionListener {
           taskExecution.getExitMessage(),
           duration);
     }
+
+    this.kafkaListenerEndpointRegistry.getAllListenerContainers().forEach(Lifecycle::stop);
   }
 
   @FailedTask
@@ -80,6 +90,7 @@ public class JobExecutionListener {
     final String message = this.getMessage("message." + code, defaultMessage, args);
 
     log.error("Spark Exception[ Code: {}, Title: {}, Message: {} ]", code, title, message);
+    this.kafkaListenerEndpointRegistry.getAllListenerContainers().forEach(Lifecycle::stop);
   }
 
   private String getMessage(final String messageCode, final String defaultMessage) {

@@ -1,22 +1,22 @@
 #!/bin/bash
+
 set -e
 
-# Wait for Kafka to start
-sleep 10
+BROKER="localhost:19092"
+KAFKA_TOPICS_CMD="/opt/kafka/bin/kafka-topics.sh" # Update this path as per your Kafka image
+TOPICS=("error_logs" "audit_logs" "activity_events")
 
-# Create the topic - error_logs
-kafka-topics --create \
-    --bootstrap-server localhost:19092 \
-    --replication-factor 1 \
-    --partitions 3 \
-    --topic error_logs
-
-# Create the topic - job-stop-requests
-kafka-topics --create \
-    --bootstrap-server localhost:19092 \
-    --replication-factor 1 \
-    --partitions 3 \
-    --topic job-stop-requests
-
-# Allow Kafka to continue running
-exec "$@"
+for TOPIC in "${TOPICS[@]}"; do
+  echo "Checking if topic $TOPIC exists..."
+  if $KAFKA_TOPICS_CMD --list --bootstrap-server "$BROKER" | grep -q "^${TOPIC}$"; then
+    echo "Topic $TOPIC already exists, skipping creation."
+  else
+    echo "Creating topic: $TOPIC"
+    $KAFKA_TOPICS_CMD --create \
+      --bootstrap-server "$BROKER" \
+      --replication-factor 1 \
+      --partitions 3 \
+      --topic "$TOPIC"
+    echo "Topic $TOPIC created successfully."
+  fi
+done

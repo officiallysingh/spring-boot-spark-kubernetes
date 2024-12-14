@@ -6,7 +6,7 @@ spring:
   #------------------------- Database configuration -------------------------
   datasource:
     url: jdbc:postgresql://localhost:5433/spark_jobs_db
-    username: postgres}
+    username: postgres
     password: admin
 logging:
   logback:
@@ -29,7 +29,7 @@ debug: false
 #------------------------- Job configurations -------------------------
 ksoot:
   job:
-    correlation-id: 1
+    correlation-id: ${spring.application.name}-1
     persist: true
 
 #------------------------- Spark configurations -------------------------

@@ -14,6 +14,8 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.types.DataTypes;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,6 +32,12 @@ public class SparkPipelineExecutor {
   private final MongoConnector mongoConnector;
 
   private final ArangoConnector arangoConnector;
+
+  @KafkaListener(topics = "job-stop-requests")
+  void onJobRequest(final String jobId) {
+    log.info("Job stop request received for Job Id: {}", jobId);
+    this.sparkSession.stop();
+  }
 
   public void execute() {
     log.info("Generating Daily sales report for month: {}", this.jobProperties.getMonth());

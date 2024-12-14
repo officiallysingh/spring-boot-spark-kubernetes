@@ -37,7 +37,7 @@ services:
     hostname: postgresql
     container_name: postgresdb
     environment:
-      POSTGRES_MULTIPLE_DATABASES: spark_jobs_db, logs_db
+      POSTGRES_DATABASES: spark_jobs_db, error_logs_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
       POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
@@ -87,30 +87,33 @@ services:
 #      KAFKA_CREATE_TOPICS: "error_logs:3:1,job-stop-requests:3:1"
     volumes:
       - ./infra/create-topics.sh:/usr/bin/create-topics.sh
-    command: ["bash", "-c", "/usr/bin/create-topics.sh & /etc/confluent/docker/run"]
+#    command: ["bash", "-c", "/etc/confluent/docker/run & sleep 20 && /usr/bin/create-topics.sh"]
+#    entrypoint:
+#      - bash
+#      - -c
+#      - |
+#        /etc/confluent/docker/run &
+#        sleep 5 && /usr/bin/create-topics.sh
     depends_on:
       - zoo1
+      - postgres
     networks:
       - mynetwork
 
-  conduktor-console:
-    image: conduktor/conduktor-console:1.26.0
-    container_name: conduktor-console
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
     ports:
-      - "8080:8080"
-    volumes:
-      - conduktor_data:/var/conduktor
+      - 8100:8080
     environment:
-      CDK_DATABASE_URL: "postgresql://postgres:admin@postgresql:5432/spark_jobs_db"
-      CDK_CLUSTERS_0_ID: "default"
-      CDK_CLUSTERS_0_NAME: "My Local Kafka Cluster"
-      CDK_CLUSTERS_0_COLOR: "#0013E7"
-      CDK_CLUSTERS_0_BOOTSTRAPSERVERS: "PLAINTEXT://kafka1:19092"
-      CDK_CLUSTERS_0_SCHEMAREGISTRY_URL: "http://kafka-schema-registry:8081"
-      CDK_CLUSTERS_0_KAFKACONNECTS_0_URL: "http://kafka-connect:8083"
-      CDK_CLUSTERS_0_KAFKACONNECTS_0_NAME: "full stack kafka connect"
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_ZOOKEEPER: "zoo1:2181"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka1:29092"
+      KAFKA_BROKERCONNECT: "kafka1:29092"
+      KAFKA_CLUSTERS_0_METRICS_PORT: 9997
+      DYNAMIC_CONFIG_ENABLED: 'true'
     depends_on:
-      - postgres
+      - kafka1
     networks:
       - mynetwork
 

@@ -20,10 +20,24 @@ spring:
       enabled: false
   cloud:
     task:
-      initialize-enabled: ${ksoot.job.persist:false}
+      initialize-enabled: ${ksoot.job.persist:true}
       external-execution-id: ${ksoot.job.correlation-id:}
   main:
     log-startup-info: true
+
+  #------------------------- Kafka configuration -------------------------
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      group-id: spark-jobs-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: latest
+
   #------------------------- Database configuration -------------------------
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/spark_jobs_db}
@@ -58,6 +72,7 @@ logging:
     '[org.sparkproject]': warn
     '[com.mongodb.spark.sql.connector.read.partitioner.Partitioner]': warn
     '[org.apache.kafka.clients.admin.KafkaAdminClient]': error
+    '[org.apache.kafka.clients]': warn
 debug: false
 
 # ===================================================================
@@ -68,14 +83,14 @@ debug: false
 #------------------------- Job configurations -------------------------
 ksoot:
   job:
-    correlation-id: ${CORRELATION_ID:daily-sales-report-job-execution-1}
-    persist: ${PERSIST_JOB:false}
+    correlation-id: ${CORRELATION_ID:${spring.application.name}}
+    persist: ${PERSIST_JOB:true}
   connector:
     save-mode: Append
     output-mode: Update
     jdbc-options:
       url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432}
-      database: ${POSTGRES_DB:error_logs}
+      database: ${POSTGRES_DB:error_logs_db}
       username: ${POSTGRES_USER:postgres}
       password: ${POSTGRES_PASSWORD:admin}
       batchsize: ${JDBC_BATCH_SIZE:1000}
@@ -87,7 +102,7 @@ ksoot:
       merge: true
     kafka-options:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-      topic: ${KAFKA_CHANGE_EVENT_TOPIC:error_logs}
+      topic: ${KAFKA_CHANGE_EVENT_TOPIC:error-logs}
       fail-on-data-loss: ${KAFKA_FAIL_ON_DATA_LOSS:false}
 
 #------------------------- Spark configurations -------------------------
@@ -103,10 +118,13 @@ spark:
     cores: 2
   ui:
     enabled: true
+  streaming:
+    stopGracefullyOnShutdown: true
   sql:
     streaming:
       checkpointLocation: ${CHECKPOINT_LOCATION:spark-space/checkpoints}
       forceDeleteTempCheckpointLocation: true
+
     adaptive:
       enabled: true
   checkpoint:

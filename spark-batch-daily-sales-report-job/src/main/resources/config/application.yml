@@ -24,6 +24,20 @@ spring:
       external-execution-id: ${ksoot.job.correlation-id:}
   main:
     log-startup-info: true
+
+  #------------------------- Kafka configuration -------------------------
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      group-id: spark-jobs-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+
   #------------------------- Database configuration -------------------------
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/spark_jobs_db}
@@ -63,7 +77,6 @@ arangodb:
       user: ${ARANGODB_USER:root}
       password: ${ARANGODB_PASSWORD:admin}
       database: ${ARANGODB_DATABASE:products_db}
-
 logging:
   level:
     ROOT: info
@@ -104,7 +117,9 @@ ksoot:
       header: true
       path: "spark-space/output"
       merge: true
-
+    kafka-options:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      fail-on-data-loss: ${KAFKA_FAIL_ON_DATA_LOSS:false}
 #------------------------- Spark configurations -------------------------
 spark:
   app.name: ${spring.application.name}

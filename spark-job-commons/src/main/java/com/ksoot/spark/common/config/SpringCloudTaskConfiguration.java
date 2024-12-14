@@ -1,5 +1,6 @@
 package com.ksoot.spark.common.config;
 
+import org.apache.spark.sql.SparkSession;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -11,6 +12,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.Ordered;
+import org.springframework.core.task.SyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 
 @AutoConfiguration
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
@@ -26,7 +30,13 @@ public class SpringCloudTaskConfiguration {
   }
 
   @Bean
-  JobExecutionListener jobExecutionListener(final MessageSource messageSource) {
-    return new JobExecutionListener(messageSource);
+  JobExecutionListener jobExecutionListener(
+      final MessageSource messageSource, final SparkSession sparkSession, final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry) {
+    return new JobExecutionListener(messageSource, sparkSession, kafkaListenerEndpointRegistry);
+  }
+
+  @Bean
+  public TaskExecutor taskExecutor() {
+    return new SyncTaskExecutor();
   }
 }
