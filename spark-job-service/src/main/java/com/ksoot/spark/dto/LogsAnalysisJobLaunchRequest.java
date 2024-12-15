@@ -4,31 +4,30 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.validation.Valid;
-import java.util.Collections;
 import java.util.Map;
 import lombok.*;
 
 @Getter
 @ToString(callSuper = true)
 @Valid
-@JsonTypeName("spark-example")
+@JsonTypeName("logs-analysis-job")
 // Should be Immutable
-public class SparkExampleJobSubmitRequest extends JobSubmitRequest {
+public class LogsAnalysisJobLaunchRequest extends JobLaunchRequest {
 
-  private SparkExampleJobSubmitRequest(
+  private LogsAnalysisJobLaunchRequest(
       final String jobName, final Map<String, Object> sparkConfigs) {
     super(jobName, sparkConfigs);
   }
 
   @JsonCreator
-  public static SparkExampleJobSubmitRequest of(
+  public static LogsAnalysisJobLaunchRequest of(
       @JsonProperty("jobName") final String jobName,
       @JsonProperty("sparkConfigs") final Map<String, Object> sparkConfigs) {
-    return new SparkExampleJobSubmitRequest(jobName, sparkConfigs);
+    return new LogsAnalysisJobLaunchRequest(jobName, sparkConfigs);
   }
 
   @Override
-  public Map<String, String> jobVMOptions() {
-    return Collections.emptyMap();
+  public Map<String, String> jobArgs() {
+    return Map.of();
   }
 }

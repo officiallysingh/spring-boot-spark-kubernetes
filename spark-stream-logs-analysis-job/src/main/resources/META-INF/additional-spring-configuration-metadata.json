@@ -11,6 +11,12 @@
       "type": "java.lang.Boolean",
       "defaultValue": "false",
       "description": "Whether to persist Jobs status in Database."
+    },
+    {
+      "name": "ksoot.job.job-stop-topic",
+      "type": "java.lang.String",
+      "defaultValue": "false",
+      "description": "Kafka topic name to listen to receive Job stop requests."
     }
   ]
 }

@@ -2,7 +2,7 @@ spring:
   docker:
     compose:
       enabled: true
-      file: compose.yml
+      file: docker-compose.yml
 
 logging:
   logback:
@@ -25,6 +25,7 @@ debug: false
 #------------------------- Job configurations -------------------------
 ksoot:
   job:
+#    month: 2024-11
 #    correlation-id: 1
     persist: true
 

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +16,11 @@ import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
 import org.springframework.data.web.HateoasPageableHandlerMethodArgumentResolver;
+import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.lang.Nullable;
 
 @Configuration
-@EnableConfigurationProperties(SparkSubmitProperties.class)
+@EnableConfigurationProperties(SparkLauncherProperties.class)
 @RequiredArgsConstructor
 class SparkJobServiceConfiguration {
 
@@ -55,5 +58,10 @@ class SparkJobServiceConfiguration {
   PaginatedResourceAssembler paginatedResourceAssembler(
       @Nullable final HateoasPageableHandlerMethodArgumentResolver resolver) {
     return new PaginatedResourceAssembler(resolver);
+  }
+
+  @Bean
+  public NewTopic jobStopTopic(@Value("${spark-launcher.job-stop-topic}") final String jobStopTopic) {
+    return TopicBuilder.name(jobStopTopic).partitions(3).replicas(1).build();
   }
 }

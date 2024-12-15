@@ -16,8 +16,8 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 @ToString
 @Validated
-@ConfigurationProperties(prefix = "spark-submit")
-public class SparkSubmitProperties {
+@ConfigurationProperties(prefix = "spark-launcher")
+public class SparkLauncherProperties {
 
   /** Spark installation path. */
   @NotEmpty private String sparkHome = System.getenv("SPARK_HOME");
@@ -27,6 +27,9 @@ public class SparkSubmitProperties {
 
   /** Whether to persist Jobs status in Database. Default: false */
   private boolean persistJobs = false;
+
+  /** Environment variables common to all Jobs. */
+  private Map<@NotEmpty String, @NotNull Object> env = new LinkedHashMap<>();
 
   private Map<@NotEmpty String, @NotNull SparkJobProperties> jobs = new LinkedHashMap<>();
 }

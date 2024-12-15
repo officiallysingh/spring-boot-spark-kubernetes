@@ -4,6 +4,7 @@ import com.ksoot.spark.util.datetime.DurationRepresentation;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.task.repository.TaskExecution;
@@ -25,9 +26,14 @@ public class JobExecution {
 
   public static JobExecution of(final TaskExecution taskExecution) {
     final DurationRepresentation duration =
-        DurationRepresentation.of(
-            Duration.between(taskExecution.getStartTime(), taskExecution.getEndTime()));
-    final String status = taskExecution.getExitCode() == 0 ? "SUCCESSFUL" : "FAILED";
+        Objects.nonNull(taskExecution.getEndTime())
+            ? DurationRepresentation.of(
+                Duration.between(taskExecution.getStartTime(), taskExecution.getEndTime()))
+            : null;
+    final String status =
+        Objects.isNull(taskExecution.getEndTime())
+            ? "RUNNING"
+            : taskExecution.getExitCode() == 0 ? "SUCCESSFUL" : "FAILED";
     return new JobExecution(
         taskExecution.getTaskName(),
         taskExecution.getExecutionId(),
@@ -35,7 +41,7 @@ public class JobExecution {
         status,
         taskExecution.getStartTime(),
         taskExecution.getEndTime(),
-        duration.toString(),
+        Objects.nonNull(duration) ? duration.toString() : null,
         taskExecution.getExitMessage(),
         taskExecution.getErrorMessage(),
         taskExecution.getArguments());

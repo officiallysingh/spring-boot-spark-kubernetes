@@ -33,7 +33,7 @@ spring:
   cloud:
     task:
       autoconfiguration:
-        enabled: ${spark-submit.persist-jobs:false}
+        enabled: ${spark-launcher.persist-jobs}
   #------------------------- Database configuration -------------------------
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/spark_jobs_db}
@@ -134,12 +134,19 @@ spark:
   submit.deployMode: cluster
 
 #------------------------- Spark Submit Job configurations -------------------------
-spark-submit:
-  capture-jobs-logs: false
-  persist-jobs: false
+spark-launcher:
+  capture-jobs-logs: ${CAPTURE_JOBS_LOGS:false}
+  persist-jobs: ${PERSIST_JOBS:false}
+  job-stop-topic: ${JOB_STOP_TOPIC:job-stop-requests}
   jobs:
     daily-sales-report-job:
       main-class-name: com.ksoot.spark.sales.DailySalesReportJob
       jar-file: local:///opt/spark/job-apps/spark-batch-daily-sales-report-job.jar
       spark-config:
-        spark.kubernetes.container.image: ${DAILY_SALES_REPORT_JOB_IMAGE:daily-sales-report-job:0.0.1}
+        spark.kubernetes.container.image: ${DAILY_SALES_REPORT_JOB_IMAGE:spark-batch-daily-sales-report-job:0.0.1}
+    logs-analysis-job:
+      main-class-name: com.ksoot.spark.logs.LogAnalysisJob
+      jar-file: local:///opt/spark/job-apps/spark-stream-logs-analysis-job.jar
+      #      Unsetting following properties as not required in local profile
+      spark-config:
+        spark.kubernetes.container.image: ${LOGS_ANALYSIS_JOB_IMAGE:spark-stream-logs-analysis-job:0.0.1}

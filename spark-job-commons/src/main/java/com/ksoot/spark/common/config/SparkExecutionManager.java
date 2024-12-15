@@ -97,6 +97,7 @@ public class SparkExecutionManager {
         taskExecution.getExternalExecutionId(),
         taskExecution.getStartTime(),
         taskExecution.getArguments());
+    taskExecution.setExitMessage("Job Running");
   }
 
   @AfterTask

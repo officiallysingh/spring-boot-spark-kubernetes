@@ -1,6 +1,9 @@
 package com.ksoot.spark.conf;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Properties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +21,9 @@ public class SparkJobProperties {
   @NotEmpty private String mainClassName;
 
   @NotEmpty private String jarFile;
+
+  /** Environment variables of this Job. */
+  private Map<@NotEmpty String, @NotNull Object> env = new LinkedHashMap<>();
 
   /**
    * Spark config properties for this job.

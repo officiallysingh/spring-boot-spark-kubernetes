@@ -85,6 +85,7 @@ ksoot:
   job:
     correlation-id: ${CORRELATION_ID:${spring.application.name}-1}
     persist: ${PERSIST_JOB:false}
+    job-stop-topic: ${JOB_STOP_TOPIC:job-stop-requests}
   connector:
     save-mode: Append
     output-mode: Update

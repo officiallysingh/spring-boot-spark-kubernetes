@@ -1,25 +1,31 @@
 {
   "properties": [
     {
-      "name": "spark-submit.spark-home",
+      "name": "spark-launcher.spark-home",
       "type": "java.lang.String",
       "defaultValue": "client",
       "description": "The deploy mode of Spark driver program."
     },
     {
-      "name": "spark-submit.capture-jobs-logs",
+      "name": "spark-launcher.capture-jobs-logs",
       "type": "java.lang.Boolean",
       "defaultValue": "false",
       "description": "Whether to collect the logs of submitted Spark Job this service."
     },
     {
-      "name": "spark-submit.persist-jobs",
+      "name": "spark-launcher.persist-jobs",
       "type": "java.lang.Boolean",
       "defaultValue": "false",
       "description": "Whether to persist Jobs status in Database."
     },
     {
-      "name": "spark-submit.jobs",
+      "name": "spark-launcher.job-stop-topic",
+      "type": "java.lang.String",
+      "defaultValue": "false",
+      "description": "Kafka topic name to listen to receive Job stop requests."
+    },
+    {
+      "name": "spark-launcher.jobs",
       "type": "java.util.Map<java.lang.String, com.ksoot.spark.conf.SparkJobProperties>",
       "defaultValue": "client",
       "description": "Individual Spark Job properties. The properties inherited from global spark properties. So that the job can override and unset the global spark properties."

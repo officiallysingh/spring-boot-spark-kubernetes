@@ -30,18 +30,26 @@ spark:
   driver:
     memory: 1g
     cores: 1
-#    extraJavaOptions: >
-#      -Dspring.profiles.active=local
+    extraJavaOptions: >
+      -Dspring.profiles.active=local
   submit.deployMode: client
 
 #------------------------- Spark Submit Job configurations -------------------------
-spark-submit:
+spark-launcher:
 #  spark-home: ${SPARK_HOME}
   capture-jobs-logs: true
   persist-jobs: true
   jobs:
     daily-sales-report-job:
       jar-file: ${M2_REPO}/com/ksoot/spark/spark-batch-daily-sales-report-job/0.0.1-SNAPSHOT/spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar
+      #      Unsetting following properties as not required in local profile
+      spark-config:
+        spark.kubernetes.namespace:
+        spark.kubernetes.container.image:
+        spark.kubernetes.authenticate.driver.serviceAccountName:
+        spark.kubernetes.driverEnv.SPARK_USER:
+    logs-analysis-job:
+      jar-file: ${M2_REPO}/com/ksoot/spark/spark-stream-logs-analysis-job/0.0.1-SNAPSHOT/spark-stream-logs-analysis-job-0.0.1-SNAPSHOT.jar
       #      Unsetting following properties as not required in local profile
       spark-config:
         spark.kubernetes.namespace:

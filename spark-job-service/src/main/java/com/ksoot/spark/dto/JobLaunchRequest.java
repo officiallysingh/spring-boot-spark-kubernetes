@@ -22,17 +22,17 @@ import org.apache.commons.lang3.StringUtils;
     property = "jobName",
     visible = true)
 @JsonSubTypes({
-  @JsonSubTypes.Type(value = SparkExampleJobSubmitRequest.class, name = "spark-example"),
+  @JsonSubTypes.Type(value = SparkExampleJobLaunchRequest.class, name = "spark-example"),
   @JsonSubTypes.Type(
-      value = DailySalesReportJobSubmitRequest.class,
+      value = DailySalesReportJobLaunchRequest.class,
       name = "daily-sales-report-job"),
-  @JsonSubTypes.Type(value = LogsAnalysisJobSubmitRequest.class, name = "logs-analysis-job")
+  @JsonSubTypes.Type(value = LogsAnalysisJobLaunchRequest.class, name = "logs-analysis-job")
 })
-public abstract class JobSubmitRequest {
+public abstract class JobLaunchRequest {
 
   @Schema(
       description = "Spark Job name, must be present in application.yml spark-submit.jobs",
-      example = "spark-example")
+      example = "daily-sales-report-job")
   @NotEmpty
   protected final String jobName;
 
@@ -64,19 +64,19 @@ public abstract class JobSubmitRequest {
   @NotNull
   protected final Map<String, Object> sparkConfigs;
 
-  protected JobSubmitRequest(final String jobName) {
+  protected JobLaunchRequest(final String jobName) {
     this(jobName, null, null);
   }
 
-  protected JobSubmitRequest(final String jobName, final Map<String, Object> sparkConfigs) {
+  protected JobLaunchRequest(final String jobName, final Map<String, Object> sparkConfigs) {
     this(jobName, null, sparkConfigs);
   }
 
-  protected JobSubmitRequest(final String jobName, final String correlationId) {
+  protected JobLaunchRequest(final String jobName, final String correlationId) {
     this(jobName, correlationId, null);
   }
 
-  protected JobSubmitRequest(
+  protected JobLaunchRequest(
       final String jobName, final String correlationId, final Map<String, Object> sparkConfigs) {
     this.jobName = jobName;
     this.correlationId =
@@ -84,5 +84,5 @@ public abstract class JobSubmitRequest {
     this.sparkConfigs = MapUtils.isNotEmpty(sparkConfigs) ? sparkConfigs : Collections.emptyMap();
   }
 
-  public abstract Map<String, String> jobVMOptions();
+  public abstract Map<String, String> jobArgs();
 }

@@ -22,6 +22,7 @@ debug: false
 #------------------------- Job configurations -------------------------
 ksoot:
   job:
+#    month: 2024-11
 #    correlation-id: 1
     persist: true
 #------------------------- Spark configurations -------------------------

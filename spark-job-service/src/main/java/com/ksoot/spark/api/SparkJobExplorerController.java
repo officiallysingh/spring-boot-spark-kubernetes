@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/spark-jobs/executions")
-@ConditionalOnProperty(prefix = "spark-submit", name = "persist-jobs", havingValue = "true")
+@ConditionalOnProperty(prefix = "spark-launcher", name = "persist-jobs", havingValue = "true")
 class SparkJobExplorerController {
 
   private final Function<List<TaskExecution>, List<JobExecution>> JOB_EXECUTION_PAGE_TRANSFORMER =
