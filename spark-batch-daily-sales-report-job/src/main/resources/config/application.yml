@@ -38,8 +38,7 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
 
-
-  #------------------------- Database configuration -------------------------
+  #------------------------- Postgres configuration -------------------------
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/spark_jobs_db}
     username: ${POSTGRES_USER:postgres}
@@ -78,6 +77,8 @@ arangodb:
       user: ${ARANGODB_USER:root}
       password: ${ARANGODB_PASSWORD:admin}
       database: ${ARANGODB_DATABASE:products_db}
+
+#------------------------- Logging configuration -------------------------
 logging:
   level:
     ROOT: info
@@ -119,7 +120,7 @@ ksoot:
     file-options:
       format: csv
       header: true
-      path: "spark-space/output"
+      path: ${SPARK_OUTPUT_PATH:spark-space/output}
       merge: true
     kafka-options:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}

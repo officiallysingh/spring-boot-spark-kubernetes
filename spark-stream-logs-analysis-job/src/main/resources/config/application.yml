@@ -38,7 +38,7 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: latest
 
-  #------------------------- Database configuration -------------------------
+  #------------------------- Postgres configuration -------------------------
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/spark_jobs_db}
     username: ${POSTGRES_USER:postgres}
@@ -61,8 +61,8 @@ spring:
       '[hibernate.jdbc.time_zone]': UTC
       '[integration.envers.enabled]': true
       '[hibernate.enable_lazy_load_no_trans]': true
-  #------------------------- MongoDB configuration -------------------------
 
+#------------------------- Logging configuration -------------------------
 logging:
   level:
     ROOT: info
@@ -125,7 +125,6 @@ spark:
     streaming:
       checkpointLocation: ${CHECKPOINT_LOCATION:spark-space/checkpoints}
       forceDeleteTempCheckpointLocation: true
-
     adaptive:
       enabled: true
   checkpoint:

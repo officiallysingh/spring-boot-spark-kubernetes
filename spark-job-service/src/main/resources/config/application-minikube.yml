@@ -20,7 +20,7 @@ debug: false
 #------------------------- Spark configurations -------------------------
 spark:
   # Need to change this whenever minikube is restarted. Find using `kubectl cluster-info`
-  master: k8s://https://127.0.0.1:54265
+  master: k8s://https://127.0.0.1:56276
 #  master: k8s://https://kubernetes.default.svc
   executor:
     instances: 2
@@ -29,16 +29,16 @@ spark:
   driver:
     memory: 1g
     cores: 1
-    extraJavaOptions: >
-      -DMONGODB_URL=mongodb://192.168.1.6:27017
-      -DSPARK_OUTPUT_PATH=spark-output
+#    extraJavaOptions: >
+#      -DMONGODB_URL=mongodb://192.168.1.6:27017
+#      -DSPARK_OUTPUT_PATH=spark-output
   kubernetes:
-    namespace: default
+    namespace: ksoot
     authenticate.driver.serviceAccountName: spark
     driverEnv:
       SPARK_USER: spark
     #Always, Never, and IfNotPresent
-  #    container.image.pullPolicy: IfNotPresent
+    container.image.pullPolicy: IfNotPresent
   submit.deployMode: cluster
 
 #------------------------- Spark Submit Job configurations -------------------------

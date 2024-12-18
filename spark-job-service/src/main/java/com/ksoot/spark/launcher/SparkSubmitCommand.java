@@ -10,8 +10,12 @@ import org.apache.commons.lang3.builder.Builder;
 
 public class SparkSubmitCommand {
 
-  public static SparkConfBuilder mainClass(String mainClass) {
-    return new SparkSubmitCommandBuilder(mainClass);
+  public static MainClassBuilder jobName(final String jobName) {
+    return new SparkSubmitCommandBuilder(jobName);
+  }
+
+  public interface MainClassBuilder {
+    SparkConfBuilder mainClass(String mainClass);
   }
 
   public interface SparkConfBuilder {
@@ -35,9 +39,15 @@ public class SparkSubmitCommand {
   }
 
   public static class SparkSubmitCommandBuilder
-      implements JobArgsBuilder, SparkConfBuilder, JarFileBuilder, VerboseBuilder {
+      implements MainClassBuilder,
+          JobArgsBuilder,
+          SparkConfBuilder,
+          JarFileBuilder,
+          VerboseBuilder {
 
-    private final String mainClass;
+    private final String jobName;
+
+    private String mainClass;
 
     private Properties sparkConfigurations;
 
@@ -49,8 +59,14 @@ public class SparkSubmitCommand {
 
     private String jarFile;
 
-    SparkSubmitCommandBuilder(final String mainClass) {
+    SparkSubmitCommandBuilder(final String jobName) {
+      this.jobName = jobName;
+    }
+
+    @Override
+    public SparkConfBuilder mainClass(String mainClass) {
       this.mainClass = mainClass;
+      return this;
     }
 
     @Override
@@ -125,7 +141,8 @@ public class SparkSubmitCommand {
               .trim();
 
       String sparkSubmitCommand =
-          "./bin/spark-submit"
+          "./bin/spark-submit --name "
+              + this.jobName
               + SPACE
               + (this.verbose ? "--verbose" : "")
               + " --class "

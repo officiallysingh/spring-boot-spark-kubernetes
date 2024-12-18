@@ -64,7 +64,7 @@ chmod +x spark-job-submit.sh
 
 mvn clean install
 
-docker image build . -t spark-job-service:0.0.1  -f Dockerfile --no-cache
+docker image build . -t spark-job-service:0.0.1 -f Dockerfile --no-cache
 minikube image load spark-job-service:0.0.1
 
 kubectl apply -f k8s/fabric8-rbac.yaml

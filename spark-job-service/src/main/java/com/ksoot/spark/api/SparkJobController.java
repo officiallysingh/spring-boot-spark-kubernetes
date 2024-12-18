@@ -55,20 +55,20 @@ class SparkJobController {
 
   @Operation(operationId = "stop-spark-job", summary = "Stop Spark Job")
   @ApiResponses(
-          value = {
-                  @ApiResponse(
-                          responseCode = "202",
-                          description =
-                                  "Spark Job stop request accepted successfully for asynchronous execution"),
-                  @ApiResponse(responseCode = "400", description = "Bad request"),
-                  @ApiResponse(responseCode = "500", description = "Internal Server Error")
-          })
+      value = {
+        @ApiResponse(
+            responseCode = "202",
+            description =
+                "Spark Job stop request accepted successfully for asynchronous execution"),
+        @ApiResponse(responseCode = "400", description = "Bad request"),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error")
+      })
   @PostMapping("/stop/{correlationId}")
   ResponseEntity<String> stopSparkJob(
-          @Parameter(
-                  description = "Job Correlation Id",
-                  required = true,
-                  example = "71643ba2-1177-4e10-a43b-a21177de1022")
+      @Parameter(
+              description = "Job Correlation Id",
+              required = true,
+              example = "71643ba2-1177-4e10-a43b-a21177de1022")
           @PathVariable(name = "correlationId")
           final String correlationId) {
     log.info("Stop Spark Job request received for Job with Correlation Id: {}", correlationId);
@@ -76,8 +76,9 @@ class SparkJobController {
     this.kafkaTemplate.send(this.jobStopTopic, correlationId);
 
     return ResponseEntity.accepted()
-            .body(
-                    "Spark Job stop request for Correlation Id: " + correlationId + "  accepted for asynchronous execution."
-                            );
+        .body(
+            "Spark Job stop request for Correlation Id: "
+                + correlationId
+                + "  accepted for asynchronous execution.");
   }
 }

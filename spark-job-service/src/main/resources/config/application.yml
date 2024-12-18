@@ -114,13 +114,15 @@ debug: false
 #------------------------- Spark configurations -------------------------
 spark:
   master: k8s://https://kubernetes.default.svc
+  driver:
+    memory: 2g
+    cores: 2
   executor:
     instances: 2
     memory: 2g
     cores: 2
-  driver:
-    memory: 2g
-    cores: 2
+  default:
+    parallelism: 32
 #    extraJavaOptions: >
 #      -DMONGODB_URL=${MONGODB_URL:mongodb://localhost:27017}
 #      -DMONGO_FEATURE_DB=${MONGO_FEATURE_DB:feature-repo}
@@ -138,15 +140,23 @@ spark-launcher:
   capture-jobs-logs: ${CAPTURE_JOBS_LOGS:false}
   persist-jobs: ${PERSIST_JOBS:false}
   job-stop-topic: ${JOB_STOP_TOPIC:job-stop-requests}
+  #  Common environment variables to all jobs
+  env:
+    SPARK_OUTPUT_PATH: spark-output
   jobs:
     daily-sales-report-job:
       main-class-name: com.ksoot.spark.sales.DailySalesReportJob
       jar-file: local:///opt/spark/job-apps/spark-batch-daily-sales-report-job.jar
+      # This job specific environment variables
+#      env:
+#        SPARK_OUTPUT_PATH: spark-output
       spark-config:
         spark.kubernetes.container.image: ${DAILY_SALES_REPORT_JOB_IMAGE:spark-batch-daily-sales-report-job:0.0.1}
     logs-analysis-job:
       main-class-name: com.ksoot.spark.logs.LogAnalysisJob
       jar-file: local:///opt/spark/job-apps/spark-stream-logs-analysis-job.jar
-      #      Unsetting following properties as not required in local profile
+      # This job specific environment variables
+#      env:
+#        SPARK_OUTPUT_PATH: spark-output
       spark-config:
         spark.kubernetes.container.image: ${LOGS_ANALYSIS_JOB_IMAGE:spark-stream-logs-analysis-job:0.0.1}

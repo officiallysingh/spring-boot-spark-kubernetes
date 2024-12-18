@@ -65,7 +65,8 @@ public class SparkSubmitJobLauncher implements SparkJobLauncher {
     jobArgs.put(PERSIST_JOB, String.valueOf(this.sparkLauncherProperties.isPersistJobs()));
 
     String sparkSubmitCommand =
-        SparkSubmitCommand.mainClass(sparkJobProperties.getMainClassName())
+        SparkSubmitCommand.jobName(jobLaunchRequest.getJobName())
+            .mainClass(sparkJobProperties.getMainClassName())
             .sparkConfigurations(sparkConfigurations)
             .jobArgs(jobArgs)
             .environmentVariables(envVars)

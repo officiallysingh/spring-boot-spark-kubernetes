@@ -1,40 +1,217 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: kafka-namespace
-
+  name: ksoot
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo
+  namespace: ksoot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongo-data
+              mountPath: /data/db
+            - name: mongo-config
+              mountPath: /data/configdb
+      volumes:
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: mongo-pvc
+        - name: mongo-config
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: zookeeper-data
-  namespace: kafka-namespace
+  name: mongo-pvc
+  namespace: ksoot
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
-
+      storage: 300Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  namespace: ksoot
+spec:
+  type: ClusterIP
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    app: mongo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arango
+  namespace: ksoot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arango
+  template:
+    metadata:
+      labels:
+        app: arango
+    spec:
+      containers:
+        - name: arango
+          image: arangodb/arangodb:latest
+          ports:
+            - containerPort: 8529
+          env:
+            - name: ARANGO_ROOT_PASSWORD
+              value: admin
+            - name: ARANGO_DB_NAME
+              value: products_db
+          volumeMounts:
+            - name: arango-data
+              mountPath: /var/lib/arangodb3
+      volumes:
+        - name: arango-data
+          persistentVolumeClaim:
+            claimName: arango-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: kafka-data
-  namespace: kafka-namespace
+  name: arango-pvc
+  namespace: ksoot
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
-
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: arango
+  namespace: ksoot
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8529
+      targetPort: 8529
+  selector:
+    app: arango
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: ksoot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: admin
+            - name: POSTGRES_HOST_AUTH_METHOD
+              value: scram-sha-256
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+            - name: init-script
+              mountPath: /docker-entrypoint-initdb.d/init-postgres.sh
+              subPath: init-postgres.sh
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+        - name: init-script
+          configMap:
+            name: postgres-init
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: ksoot
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 300Mi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: ksoot
+data:
+  init-postgres.sh: |
+    #!/bin/bash
+    echo "Inside init-postgres.sh"
+    set -e
+    
+    if [ -n "$POSTGRES_DATABASES" ]; then
+    echo "Multiple database creation requested: $POSTGRES_DATABASES"
+    for db in $(echo $POSTGRES_DATABASES | tr ',' ' '); do
+    echo "  Creating database '$db' owned by user 'postgres'"
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
+    CREATE DATABASE $db;
+    GRANT ALL PRIVILEGES ON DATABASE $db TO $POSTGRES_USER;
+    EOSQL
+    done
+    echo "Postgres Databases created"
+    fi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: ksoot
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: postgres
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: zookeeper
-  namespace: kafka-namespace
+  namespace: ksoot
 spec:
   replicas: 1
   selector:
@@ -46,27 +223,38 @@ spec:
         app: zookeeper
     spec:
       containers:
-      - name: zookeeper
-        image: docker.io/bitnami/zookeeper:latest
-        ports:
-        - containerPort: 2181
-        volumeMounts:
-        - name: zookeeper-storage
-          mountPath: /bitnami
-        env:
-        - name: ALLOW_ANONYMOUS_LOGIN
-          value: "true"
+        - name: zookeeper
+          image: docker.io/bitnami/zookeeper:latest
+          ports:
+            - containerPort: 2181
+          env:
+            - name: ALLOW_ANONYMOUS_LOGIN
+              value: "true"
+          volumeMounts:
+            - name: zookeeper-data
+              mountPath: /var/lib/zookeeper/data
       volumes:
-      - name: zookeeper-storage
-        persistentVolumeClaim:
-          claimName: zookeeper-data
-
+        - name: zookeeper-data
+          persistentVolumeClaim:
+            claimName: zookeeper-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zookeeper-pvc
+  namespace: ksoot
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 300Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: zookeeper
-  namespace: kafka-namespace
+  namespace: ksoot
 spec:
   type: LoadBalancer
   ports:
@@ -75,13 +263,12 @@ spec:
     name: zookeeper-port
   selector:
     app: zookeeper
-
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kafka
-  namespace: kafka-namespace
+  namespace: ksoot
 spec:
   replicas: 1
   selector:
@@ -93,42 +280,52 @@ spec:
         app: kafka
     spec:
       containers:
-      - name: kafka
-        image: docker.io/bitnami/kafka:latest
-        ports:
-        - containerPort: 9092
-        - containerPort: 29092
-        volumeMounts:
-        - name: kafka-storage
-          mountPath: /bitnami
-        env:
-        - name: KAFKA_BROKER_ID
-          value: "1"
-        - name: KAFKA_CFG_ZOOKEEPER_CONNECT
-          value: "zookeeper:2181"
-        - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
-          value: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
-        - name: KAFKA_INTER_BROKER_LISTENER_NAME
-          value: "INTERNAL"
-        - name: KAFKA_LISTENERS
-          value: "INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092"
-        - name: KAFKA_ADVERTISED_LISTENERS
-          value: "EXTERNAL://kafka.kafka-namespace.svc.cluster.local:9092,INTERNAL://kafka:29092"
-        - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
-          value: "true"
-        - name: ALLOW_PLAINTEXT_LISTENER
-          value: "true"
+        - name: kafka
+          image: docker.io/bitnami/kafka:latest
+          ports:
+            - containerPort: 9092
+            - containerPort: 29092
+          env:
+            - name: KAFKA_BROKER_ID
+              value: "1"
+            - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+              value: "zookeeper:2181"
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: "INTERNAL"
+            - name: KAFKA_LISTENERS
+              value: "INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092"
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: "EXTERNAL://kafka.kafka-namespace.svc.cluster.local:9092,INTERNAL://kafka:29092"
+            - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
+              value: "true"
+            - name: ALLOW_PLAINTEXT_LISTENER
+          volumeMounts:
+            - name: kafka-data
+              mountPath: /var/lib/kafka/data
       volumes:
-      - name: kafka-storage
-        persistentVolumeClaim:
-          claimName: kafka-data
-
+        - name: kafka-data
+          persistentVolumeClaim:
+            claimName: kafka-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kafka-pvc
+  namespace: ksoot
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 300Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: kafka
-  namespace: kafka-namespace
+  namespace: ksoot
 spec:
   type: LoadBalancer
   ports:
@@ -140,13 +337,12 @@ spec:
     targetPort: 29092
   selector:
     app: kafka
-
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kafka-ui
-  namespace: kafka-namespace
+  namespace: ksoot
 spec:
   replicas: 1
   selector:
@@ -158,28 +354,27 @@ spec:
         app: kafka-ui
     spec:
       containers:
-      - name: kafka-ui
-        image: provectuslabs/kafka-ui:latest
-        ports:
-        - containerPort: 8080
-        env:
-        - name: KAFKA_CLUSTERS_0_NAME
-          value: "local"
-        - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
-          value: "kafka:29092"
-        - name: KAFKA_CLUSTERS_0_ZOOKEEPER
-          value: "zookeeper:2181"
-        - name: KAFKA_BROKERCONNECT
-          value: "kafka:29092"
-        - name: DYNAMIC_CONFIG_ENABLED
-          value: "true"
-
+        - name: kafka-ui
+          image: provectuslabs/kafka-ui:latest
+          ports:
+            - containerPort: 8080
+          env:
+          - name: KAFKA_CLUSTERS_0_NAME
+            value: "local"
+          - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+            value: "kafka:29092"
+          - name: KAFKA_CLUSTERS_0_ZOOKEEPER
+            value: "zookeeper:2181"
+          - name: KAFKA_BROKERCONNECT
+            value: "kafka:29092"
+          - name: DYNAMIC_CONFIG_ENABLED
+            value: "true"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: kafka-ui
-  namespace: kafka-namespace
+  namespace: ksoot
 spec:
   type: LoadBalancer
   ports:
@@ -188,3 +383,22 @@ spec:
     name: kafka-ui-port
   selector:
     app: kafka-ui
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: spark
+  namespace: ksoot
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: spark-role
+subjects:
+  - kind: ServiceAccount
+    name: spark
+    namespace: ksoot
+roleRef:
+  kind: ClusterRole
+  name: edit
+  apiGroup: rbac.authorization.k8s.io
