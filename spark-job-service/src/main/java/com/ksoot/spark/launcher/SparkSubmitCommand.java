@@ -141,10 +141,10 @@ public class SparkSubmitCommand {
               .trim();
 
       String sparkSubmitCommand =
-          "./bin/spark-submit --name "
+          "./bin/spark-submit"
+              + (this.verbose ? " --verbose" : "")
+              + " --name "
               + this.jobName
-              + SPACE
-              + (this.verbose ? "--verbose" : "")
               + " --class "
               + this.mainClass
               + SPACE

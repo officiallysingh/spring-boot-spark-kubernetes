@@ -103,7 +103,7 @@ ksoot:
       merge: true
     kafka-options:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-      topic: ${KAFKA_CHANGE_EVENT_TOPIC:error-logs}
+      topic: ${KAFKA_ERROR_LOGS_TOPIC:error-logs}
       fail-on-data-loss: ${KAFKA_FAIL_ON_DATA_LOSS:false}
 
 #------------------------- Spark configurations -------------------------

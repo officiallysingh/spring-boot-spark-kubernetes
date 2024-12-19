@@ -20,7 +20,7 @@ debug: false
 #------------------------- Spark configurations -------------------------
 spark:
   # Need to change this whenever minikube is restarted. Find using `kubectl cluster-info`
-  master: k8s://https://127.0.0.1:56276
+  master: k8s://https://127.0.0.1:54225
 #  master: k8s://https://kubernetes.default.svc
   executor:
     instances: 2
@@ -45,9 +45,18 @@ spark:
 spark-launcher:
   capture-jobs-logs: false
   persist-jobs: true
+  env:
+    POSTGRES_URL: "jdbc:postgresql://postgres:5432/spark_jobs_db"
+#    POSTGRES_URL: "jdbc:postgresql://postgres.ksoot.svc.cluster.local:5432"
+#    KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+    KAFKA_BOOTSTRAP_SERVERS: "kafka.ksoot.svc.cluster.local:9092"
+
   jobs:
     daily-sales-report-job:
       jar-file: local:///opt/spark/job-apps/spark-batch-daily-sales-report-job.jar
+      env:
+        MONGODB_URL: "mongodb://mongo:27017"
+        ARANGODB_URL: "arango:8529"
       spark-config:
         spark.kubernetes.container.image: spark-batch-daily-sales-report-job:0.0.1
     logs-analysis-job:

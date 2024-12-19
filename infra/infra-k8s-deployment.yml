@@ -33,7 +33,7 @@ spec:
           persistentVolumeClaim:
             claimName: mongo-pvc
         - name: mongo-config
-          emptyDir: {}
+          emptyDir: { }
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -145,6 +145,8 @@ spec:
               value: admin
             - name: POSTGRES_HOST_AUTH_METHOD
               value: scram-sha-256
+            - name: POSTGRES_DATABASES
+              value: spark_jobs_db, error_logs_db
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
@@ -258,9 +260,9 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 2181
-    targetPort: 2181
-    name: zookeeper-port
+    - port: 2181
+      targetPort: 2181
+      name: zookeeper-port
   selector:
     app: zookeeper
 ---
@@ -297,10 +299,12 @@ spec:
             - name: KAFKA_LISTENERS
               value: "INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092"
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: "EXTERNAL://kafka.kafka-namespace.svc.cluster.local:9092,INTERNAL://kafka:29092"
+              value: "EXTERNAL://kafka.ksoot.svc.cluster.local:9092,INTERNAL://kafka:29092"
+            #              value: "EXTERNAL://kafka:9092,INTERNAL://kafka:29092"
             - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
               value: "true"
             - name: ALLOW_PLAINTEXT_LISTENER
+              value: "true"
           volumeMounts:
             - name: kafka-data
               mountPath: /var/lib/kafka/data
@@ -329,12 +333,12 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - name: external
-    port: 9092
-    targetPort: 9092
-  - name: internal
-    port: 29092
-    targetPort: 29092
+    - name: external
+      port: 9092
+      targetPort: 9092
+    - name: internal
+      port: 29092
+      targetPort: 29092
   selector:
     app: kafka
 ---
@@ -359,16 +363,16 @@ spec:
           ports:
             - containerPort: 8080
           env:
-          - name: KAFKA_CLUSTERS_0_NAME
-            value: "local"
-          - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
-            value: "kafka:29092"
-          - name: KAFKA_CLUSTERS_0_ZOOKEEPER
-            value: "zookeeper:2181"
-          - name: KAFKA_BROKERCONNECT
-            value: "kafka:29092"
-          - name: DYNAMIC_CONFIG_ENABLED
-            value: "true"
+            - name: KAFKA_CLUSTERS_0_NAME
+              value: "local"
+            - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+              value: "kafka:29092"
+            - name: KAFKA_CLUSTERS_0_ZOOKEEPER
+              value: "zookeeper:2181"
+            - name: KAFKA_BROKERCONNECT
+              value: "kafka:29092"
+            - name: DYNAMIC_CONFIG_ENABLED
+              value: "true"
 ---
 apiVersion: v1
 kind: Service
@@ -378,9 +382,9 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 8080
-    targetPort: 8080
-    name: kafka-ui-port
+    - port: 8080
+      targetPort: 8080
+      name: kafka-ui-port
   selector:
     app: kafka-ui
 ---

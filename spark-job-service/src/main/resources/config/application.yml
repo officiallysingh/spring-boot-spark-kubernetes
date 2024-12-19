@@ -34,6 +34,20 @@ spring:
     task:
       autoconfiguration:
         enabled: ${spark-launcher.persist-jobs}
+
+  #------------------------- Kafka configuration -------------------------
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      #      group-id: spark-jobs-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+
   #------------------------- Database configuration -------------------------
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/spark_jobs_db}
@@ -141,8 +155,8 @@ spark-launcher:
   persist-jobs: ${PERSIST_JOBS:false}
   job-stop-topic: ${JOB_STOP_TOPIC:job-stop-requests}
   #  Common environment variables to all jobs
-  env:
-    SPARK_OUTPUT_PATH: spark-output
+#  env:
+#    SPARK_OUTPUT_PATH: spark-output
   jobs:
     daily-sales-report-job:
       main-class-name: com.ksoot.spark.sales.DailySalesReportJob
