@@ -1,3 +1,15 @@
+spring:
+  kafka:
+    producer:
+      # Change the ip to `minikube ip`
+      bootstrap-servers: 192.168.49.2:9092
+    consumer:
+      # Change the ip to `minikube ip`
+      bootstrap-servers: 192.168.49.2:9092
+  datasource:
+    # Change the ip to `minikube ip`
+    url: jdbc:postgresql://192.168.49.2:5432/spark_jobs_db
+
 logging:
   logback:
     rollingpolicy:
@@ -20,7 +32,7 @@ debug: false
 #------------------------- Spark configurations -------------------------
 spark:
   # Need to change this whenever minikube is restarted. Find using `kubectl cluster-info`
-  master: k8s://https://127.0.0.1:54225
+  master: k8s://https://127.0.0.1:52778
 #  master: k8s://https://kubernetes.default.svc
   executor:
     instances: 2
@@ -47,10 +59,7 @@ spark-launcher:
   persist-jobs: true
   env:
     POSTGRES_URL: "jdbc:postgresql://postgres:5432/spark_jobs_db"
-#    POSTGRES_URL: "jdbc:postgresql://postgres.ksoot.svc.cluster.local:5432"
-#    KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
-    KAFKA_BOOTSTRAP_SERVERS: "kafka.ksoot.svc.cluster.local:9092"
-
+    KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
   jobs:
     daily-sales-report-job:
       jar-file: local:///opt/spark/job-apps/spark-batch-daily-sales-report-job.jar

@@ -3,8 +3,8 @@ FROM eclipse-temurin:${java_image_tag}
 
 ARG spark_uid=185
 
-ENV SPARK_HOME /opt/spark
-ENV SPARK_JOB_APPS_DIR /opt/spark/job-apps
+ENV SPARK_HOME=/opt/spark
+ENV SPARK_JOB_APPS_DIR=/opt/spark/job-apps
 
 RUN groupadd --system --gid=${spark_uid} spark && \
     useradd --system --uid=${spark_uid} --gid=spark spark

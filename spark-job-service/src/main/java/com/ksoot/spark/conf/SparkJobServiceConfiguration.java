@@ -63,6 +63,6 @@ class SparkJobServiceConfiguration {
   @Bean
   public NewTopic jobStopTopic(
       @Value("${spark-launcher.job-stop-topic}") final String jobStopTopic) {
-    return TopicBuilder.name(jobStopTopic).partitions(3).replicas(1).build();
+    return TopicBuilder.name(jobStopTopic).build();
   }
 }

@@ -88,7 +88,7 @@ logging:
     '[org.sparkproject]': warn
     '[com.mongodb.spark.sql.connector.read.partitioner.Partitioner]': warn
     '[org.apache.kafka.clients.admin.KafkaAdminClient]': error
-    '[org.apache.kafka.clients]': warn
+    '[org.apache.kafka.clients]': error
 debug: false
 
 # ===================================================================
@@ -107,13 +107,13 @@ ksoot:
     save-mode: Append
     output-mode: Update
     mongo-options:
-      url: ${MONGO_URL:mongodb://localhost:27017}
-      database: ${MONGO_DATABASE:sales_db}
+      url: ${MONGODB_URL:mongodb://localhost:27017}
+      database: ${MONGODB_DATABASE:sales_db}
     arango-options:
-      endpoints: ${ARANGO_URL:localhost:8529}
-      database: ${ARANGO_DATABASE:products_db}
-      username: ${ARANGO_USER:root}
-      password: ${ARANGO_PASSWORD:admin}
+      endpoints: ${ARANGODB_URL:localhost:8529}
+      database: ${ARANGODB_DATABASE:products_db}
+      username: ${ARANGODB_USER:root}
+      password: ${ARANGODB_PASSWORD:admin}
       ssl-enabled: false
       ssl-cert-value: ""
       cursor-ttl: PT5M # 5 minutes, see the ISO 8601 standard for java.time.Duration String patterns

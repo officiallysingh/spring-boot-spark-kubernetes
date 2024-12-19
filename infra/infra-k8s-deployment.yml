@@ -299,8 +299,7 @@ spec:
             - name: KAFKA_LISTENERS
               value: "INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092"
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: "EXTERNAL://kafka.ksoot.svc.cluster.local:9092,INTERNAL://kafka:29092"
-            #              value: "EXTERNAL://kafka:9092,INTERNAL://kafka:29092"
+              value: "EXTERNAL://kafka:9092,INTERNAL://kafka:29092"
             - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
               value: "true"
             - name: ALLOW_PLAINTEXT_LISTENER

@@ -72,7 +72,7 @@ logging:
     '[org.sparkproject]': warn
     '[com.mongodb.spark.sql.connector.read.partitioner.Partitioner]': warn
     '[org.apache.kafka.clients.admin.KafkaAdminClient]': error
-    '[org.apache.kafka.clients]': warn
+    '[org.apache.kafka.clients]': error
 debug: false
 
 # ===================================================================
