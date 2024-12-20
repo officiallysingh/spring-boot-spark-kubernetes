@@ -10,7 +10,7 @@
 
     <artifactId>spark-job-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>job-trigger-service</name>
+    <name>spark-job-service</name>
     <description>Spark Job Trigger service to spark-submit jobs</description>
 
     <dependencies>

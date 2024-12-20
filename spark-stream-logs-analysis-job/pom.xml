@@ -11,7 +11,7 @@
     <!--        <groupId>com.ksoot.spark</groupId>-->
     <artifactId>spark-stream-logs-analysis-job</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>logs-analysis-job</name>
+    <name>spark-stream-logs-analysis-job</name>
     <description>Spark Logs analysis Streaming Job</description>
 
     <dependencies>

@@ -9,6 +9,7 @@ import com.ksoot.spark.dto.JobLaunchRequest;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -76,7 +77,17 @@ public class SparkSubmitJobLauncher implements SparkJobLauncher {
     log.info("spark-submit command: {}", sparkSubmitCommand);
 
     try {
-      this.sparkSubmit(sparkSubmitCommand);
+      CompletableFuture<Process> process = this.sparkSubmit(sparkSubmitCommand);
+
+      process.thenAccept(
+          p ->
+              log.info(
+                  "spark-submit completed with exitValue: {}, Command status: {} for job name: {} and correlation id: {}. "
+                      + "Command status does not represent actual Job status, look into application logs or Driver POD logs for details",
+                  p.exitValue(),
+                  (p.exitValue() == 0 ? "SUCCESS" : "FAILURE"),
+                  jobLaunchRequest.getJobName(),
+                  jobLaunchRequest.getCorrelationId()));
     } catch (final IOException | InterruptedException e) {
       throw Problems.newInstance("spark.submit.error")
           .defaultDetail(
@@ -88,7 +99,7 @@ public class SparkSubmitJobLauncher implements SparkJobLauncher {
     log.info("============================================================");
   }
 
-  private void sparkSubmit(final String sparkSubmitCommand)
+  private CompletableFuture<Process> sparkSubmit(final String sparkSubmitCommand)
       throws IOException, InterruptedException {
 
     final File directory = new File(this.sparkLauncherProperties.getSparkHome());
@@ -102,7 +113,6 @@ public class SparkSubmitJobLauncher implements SparkJobLauncher {
     environment.put("JOB_SUBMIT_COMMAND", sparkSubmitCommand);
 
     final Process process;
-    final int exitCode;
     // Start the process
     if (this.sparkLauncherProperties.isCaptureJobsLogs()) {
       process = processBuilder.inheritIO().start();
@@ -114,14 +124,7 @@ public class SparkSubmitJobLauncher implements SparkJobLauncher {
       process = processBuilder.start();
     }
 
-    // Wait for the process to complete
-    exitCode = process.waitFor();
-
-    // Get the inputs.waitFor();
-    log.info(
-        "spark-submit completed with code: {}, status: {}",
-        exitCode,
-        (exitCode == 0 ? "SUCCESS" : "FAILURE"));
+    return process.onExit();
   }
 
   private String getSparkSubmitScriptPath() {

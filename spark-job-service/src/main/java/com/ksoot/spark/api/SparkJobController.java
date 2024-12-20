@@ -41,7 +41,10 @@ class SparkJobController {
       })
   @PostMapping("/start")
   ResponseEntity<String> startSparkJob(@RequestBody @Valid JobLaunchRequest jobLaunchRequest) {
-    log.info("Start Spark Job: {} request received", jobLaunchRequest.getJobName());
+    log.info(
+        "Start Spark Job: {} request received with correlation id: {}",
+        jobLaunchRequest.getJobName(),
+        jobLaunchRequest.getCorrelationId());
 
     this.sparkJobLauncher.startJob(jobLaunchRequest);
 
@@ -50,7 +53,8 @@ class SparkJobController {
             "Spark Job: '"
                 + jobLaunchRequest.getJobName()
                 + "' submit request accepted for asynchronous execution. Correlation Id: "
-                + jobLaunchRequest.getCorrelationId());
+                + jobLaunchRequest.getCorrelationId()
+                + ". For real status of Job look into application logs or Driver POD logs if deploying on Kubernetes");
   }
 
   @Operation(operationId = "stop-spark-job", summary = "Stop Spark Job")

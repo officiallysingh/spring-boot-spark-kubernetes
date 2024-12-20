@@ -2,13 +2,13 @@ spring:
   kafka:
     producer:
       # Change the ip to `minikube ip`
-      bootstrap-servers: 192.168.49.2:9092
+      bootstrap-servers: localhost:9092
     consumer:
       # Change the ip to `minikube ip`
-      bootstrap-servers: 192.168.49.2:9092
+      bootstrap-servers: localhost:9092
   datasource:
     # Change the ip to `minikube ip`
-    url: jdbc:postgresql://192.168.49.2:5432/spark_jobs_db
+    url: jdbc:postgresql://localhost:5432/spark_jobs_db
 
 logging:
   logback:
@@ -55,7 +55,7 @@ spark:
 
 #------------------------- Spark Submit Job configurations -------------------------
 spark-launcher:
-  capture-jobs-logs: false
+  capture-jobs-logs: true
   persist-jobs: true
   env:
     POSTGRES_URL: "jdbc:postgresql://postgres:5432/spark_jobs_db"
@@ -70,5 +70,7 @@ spark-launcher:
         spark.kubernetes.container.image: spark-batch-daily-sales-report-job:0.0.1
     logs-analysis-job:
       jar-file: local:///opt/spark/job-apps/spark-stream-logs-analysis-job.jar
+      env:
+        JDBC_URL: "jdbc:postgresql://postgres:5432"
       spark-config:
         spark.kubernetes.container.image: spark-stream-logs-analysis-job:0.0.1

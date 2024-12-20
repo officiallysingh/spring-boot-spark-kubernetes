@@ -53,10 +53,11 @@ metadata:
   name: mongo
   namespace: ksoot
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
     - port: 27017
       targetPort: 27017
+      nodePort: 30002
   selector:
     app: mongo
 ---
@@ -202,10 +203,11 @@ metadata:
   name: postgres
   namespace: ksoot
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
     - port: 5432
       targetPort: 5432
+      nodePort: 30001
   selector:
     app: postgres
 ---
@@ -281,6 +283,10 @@ spec:
       labels:
         app: kafka
     spec:
+      initContainers:
+        - name: wait-for-zookeeper
+          image: busybox
+          command: ['sh', '-c', 'until nc -z zookeeper 2181; do echo "Waiting for Zookeeper..."; sleep 2; done']
       containers:
         - name: kafka
           image: docker.io/bitnami/kafka:latest
@@ -356,6 +362,10 @@ spec:
       labels:
         app: kafka-ui
     spec:
+      initContainers:
+        - name: wait-for-kafka
+          image: busybox
+          command: ['sh', '-c', 'until nc -z kafka 29092; do echo "Waiting for Kafka..."; sleep 2; done']
       containers:
         - name: kafka-ui
           image: provectuslabs/kafka-ui:latest

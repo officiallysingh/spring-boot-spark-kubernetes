@@ -11,7 +11,7 @@
     <!--    <groupId>com.ksoot.spark</groupId>-->
     <artifactId>spark-batch-daily-sales-report-job</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>daily-sales-report-job</name>
+    <name>spark-batch-daily-sales-report-job</name>
     <description>Spark Daily sales Batch Job</description>
 
     <!--    <properties>-->

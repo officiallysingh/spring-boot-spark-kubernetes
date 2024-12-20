@@ -47,6 +47,8 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
+    admin:
+      auto-create: true
 
   #------------------------- Database configuration -------------------------
   datasource:
@@ -117,7 +119,8 @@ server:
 logging:
   level:
     ROOT: info
-    '[org.mongodb.driver]': warn
+    '[org.apache.kafka.clients.admin.KafkaAdminClient]': error
+    '[org.apache.kafka.clients]': error
 debug: false
 
 # ===================================================================
@@ -151,6 +154,7 @@ spark:
 
 #------------------------- Spark Submit Job configurations -------------------------
 spark-launcher:
+  #  spark-home: ${SPARK_HOME}
   capture-jobs-logs: ${CAPTURE_JOBS_LOGS:false}
   persist-jobs: ${PERSIST_JOBS:false}
   job-stop-topic: ${JOB_STOP_TOPIC:job-stop-requests}
