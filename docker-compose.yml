@@ -35,7 +35,7 @@ services:
   postgres:
     image: postgres:latest
     hostname: postgres
-    container_name: postgresdb
+    container_name: postgres
     environment:
       POSTGRES_DATABASES: spark_jobs_db, error_logs_db
       POSTGRES_USER: postgres
