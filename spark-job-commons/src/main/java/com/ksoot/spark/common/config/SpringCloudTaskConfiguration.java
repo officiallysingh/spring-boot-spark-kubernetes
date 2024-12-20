@@ -1,8 +1,6 @@
 package com.ksoot.spark.common.config;
 
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.spark.sql.SparkSession;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -17,7 +15,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
-import org.springframework.kafka.config.TopicBuilder;
 
 @AutoConfiguration
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
@@ -32,10 +29,11 @@ public class SpringCloudTaskConfiguration {
     return new DefaultTaskConfigurer(TaskProperties.DEFAULT_TABLE_PREFIX);
   }
 
-  @Bean
-  public NewTopic jobStopTopic(@Value("${ksoot.job.job-stop-topic}") final String jobStopTopic) {
-    return TopicBuilder.name(jobStopTopic).build();
-  }
+  //  @Bean
+  //  public NewTopic jobStopTopic(@Value("${ksoot.job.job-stop-topic}") final String jobStopTopic)
+  // {
+  //    return TopicBuilder.name(jobStopTopic).build();
+  //  }
 
   @Bean
   SparkExecutionManager sparkExecutionManager(

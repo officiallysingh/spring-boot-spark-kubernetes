@@ -1,9 +1,9 @@
-FROM officiallysingh/spark:3.5.3
+FROM ksoot/spark:3.5.3
 
 USER root
 
-ADD target/spark-job-trigger-service-*.jar /app.jar
-ADD spark-job-submit.sh $SPARK_HOME/bin/spark-job-submit.sh
+ADD target/spark-job-service-*.jar /app.jar
+ADD cmd/spark-job-submit.sh $SPARK_HOME/bin/spark-job-submit.sh
 RUN chmod +x $SPARK_HOME/bin/spark-job-submit.sh
 
 USER spark

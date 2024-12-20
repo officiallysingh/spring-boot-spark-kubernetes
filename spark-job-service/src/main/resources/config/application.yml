@@ -175,7 +175,7 @@ spark-launcher:
       spark-config:
         spark.kubernetes.container.image: ${DAILY_SALES_REPORT_JOB_IMAGE:spark-batch-daily-sales-report-job:0.0.1}
     logs-analysis-job:
-      main-class-name: com.ksoot.spark.logs.LogAnalysisJob
+      main-class-name: com.ksoot.spark.loganalysis.LogAnalysisJob
       jar-file: local:///opt/spark/job-apps/spark-stream-logs-analysis-job.jar
       # This job specific environment variables
 #      env:

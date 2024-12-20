@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-job-service
+  labels:
+    name: spark-job-service
+spec:
+  replicas: 1
+  progressDeadlineSeconds: 1200
+  revisionHistoryLimit: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+  selector:
+    matchLabels:
+      name: spark-job-service
+  template:
+    metadata:
+      labels:
+        name: spark-job-service
+    spec:
+      containers:
+        - name: spark-job-service
+          image: spark-job-service:0.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8090
+#              The configs not defined as in application.yml can be passed in args as follows
+          args:
+            - "--spark.executor.instances=2"
+            - "--spark.default.parallelism=16"
+            - "--spark-launcher.env.POSTGRES_URL=jdbc:postgresql://postgres:5432/spark_jobs_db"
+            - "--spark-launcher.env.KAFKA_BOOTSTRAP_SERVERS=kafka:9092"
+            - "--spark-launcher.jobs.daily-sales-report-job.env.MONGODB_URL=mongodb://mongo:27017"
+            - "--spark-launcher.jobs.daily-sales-report-job.env.ARANGODB_URL=arango:8529"
+            - "--spark-launcher.jobs.logs-analysis-job.env.JDBC_URL=jdbc:postgresql://postgres:5432"
+          env:
+#            - name: SPRING_PROFILES_ACTIVE
+#              value: minikube
+#            Job Properties
+#            - name: SPARK_OUTPUT_PATH
+#              value: gs://fetch-bucket/spark-output
+#              value: spark-output
+#            - name: DAILY_SALES_REPORT_JOB_IMAGE
+#              value: spark-batch-daily-sales-report-job:0.0.1
+#            - name: LOGS_ANALYSIS_JOB_IMAGE
+#              value: spark-stream-logs-analysis-job:0.0.1
+#              Spark properties
+            - name: SPARK_MASTER
+              value: k8s://https://kubernetes.default.svc
+            - name: SPARK_KUBERNETES_NAMESPACE
+              value: ksoot
+            - name: SPARK_KUBERNETES_AUTHENTICATE_DRIVER_SERVICE_ACCOUNT_NAME
+              value: spark
+            - name: SPARK_KUBERNETES_DRIVER_ENV_SPARK_USER
+              value: spark
+            - name: SPARK_SUBMIT_DEPLOY_MODE
+              value: cluster
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+            - name: POSTGRES_URL
+              value: jdbc:postgresql://postgres:5432/spark_jobs_db
+            - name: JDBC_URL
+              value: jdbc:postgresql://postgres:5432
+            - name: PERSIST_JOBS
+              value: "true"
+            - name: CAPTURE_JOBS_LOGS
+              value: "true"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-job-service
+  namespace: ksoot
+spec:
+  type: ClusterIP
+  selector:
+    app: spark-job-service
+  ports:
+    - name: http
+      port: 8090

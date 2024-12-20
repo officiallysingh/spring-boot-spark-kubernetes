@@ -70,6 +70,7 @@ logging:
     '[org.apache.spark]': warn
     '[org.apache.hadoop]': warn
     '[org.sparkproject]': warn
+    '[org.apache.spark.ui]': info
     '[com.mongodb.spark.sql.connector.read.partitioner.Partitioner]': warn
     '[org.apache.kafka.clients.admin.KafkaAdminClient]': error
     '[org.apache.kafka.clients]': error
