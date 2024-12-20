@@ -50,7 +50,6 @@ class SparkJobExplorerController {
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
       })
   @GetMapping
-  //  @GetMapping("/executions")
   PaginatedResource<JobExecution> listJobExecutions(
       @ParameterObject @PageableDefault final Pageable pageRequest) {
     Page<TaskExecution> jobExecutionsPage = this.taskExplorer.findAll(pageRequest);

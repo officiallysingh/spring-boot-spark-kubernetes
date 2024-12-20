@@ -1,6 +1,3 @@
-spring:
-  redis:
-    uri: localhost:6379
 logging:
   logback:
     rollingpolicy:
@@ -10,9 +7,6 @@ logging:
     name: ${logging.file.path}/application.log
   level:
     ROOT: info
-    org.apache.spark: warn
-    org.apache.hadoop: warn
-    org.sparkproject: warn
 debug: false
 
 # ===================================================================

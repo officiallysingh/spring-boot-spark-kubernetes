@@ -13,6 +13,9 @@
 spring:
   application:
     name: spark-job-service
+  docker:
+    compose:
+      enabled: false
 #  autoconfigure:
 #    exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
   devtools:
@@ -70,7 +73,7 @@ spring:
       '[hibernate.format_sql]': true
       '[hibernate.use_sql_comments]': true
       '[hibernate.jdbc.time_zone]': UTC
-      '[integration.envers.enabled]': true
+      '[integration.envers.enabled]': false
       '[hibernate.enable_lazy_load_no_trans]': true
 # ------------------------ Problem configurations  ------------------------
 problem:
@@ -119,6 +122,7 @@ server:
 logging:
   level:
     ROOT: info
+    '[org.springframework.cloud.task]': debug
     '[org.apache.kafka.clients.admin.KafkaAdminClient]': error
     '[org.apache.kafka.clients]': error
 debug: false

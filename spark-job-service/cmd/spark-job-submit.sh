@@ -11,7 +11,7 @@ eval $SPARK_SUBMIT_CMD
 
 # Check the exit status of the Spark submit command
 if [ $? -eq 0 ]; then
-  echo "Spark submit command executed successfully."
+  echo "Spark submit command successful."
 else
   echo "Spark submit command failed."
   exit 1

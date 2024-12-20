@@ -12,7 +12,7 @@ call %SPARK_SUBMIT_CMD%
 
 REM Check the exit status of the Spark submit command
 if %errorlevel% equ 0 (
-    echo Spark submit command executed successfully.
+    echo Spark submit command successful.
 ) else (
     echo Spark submit command failed.
     exit /b 1
