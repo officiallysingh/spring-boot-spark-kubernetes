@@ -5,24 +5,6 @@
       "type": "java.time.YearMonth",
       "defaultValue": "",
       "description": "Statement Month. Current month is taken as default if not supplied. Ex: 2024-11."
-    },
-    {
-      "name": "ksoot.job.correlationId",
-      "type": "java.lang.String",
-      "defaultValue": "",
-      "description": "Unique correlation id for each Job execution."
-    },
-    {
-      "name": "ksoot.job.persist",
-      "type": "java.lang.Boolean",
-      "defaultValue": "false",
-      "description": "Whether to persist Jobs status in Database."
-    },
-    {
-      "name": "ksoot.job.job-stop-topic",
-      "type": "java.lang.String",
-      "defaultValue": "false",
-      "description": "Kafka topic name to listen to receive Job stop requests."
     }
   ]
 }

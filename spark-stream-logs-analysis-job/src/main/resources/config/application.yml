@@ -83,6 +83,7 @@ debug: false
 
 #------------------------- Job configurations -------------------------
 ksoot:
+  hadoop-dll: C:/winutils/hadoop-3.0.0/bin/hadoop.dll
   job:
     correlation-id: ${CORRELATION_ID:${spring.application.name}-1}
     persist: ${PERSIST_JOB:false}

@@ -1,6 +1,30 @@
 {
   "properties": [
     {
+      "name": "ksoot.hadoop-dll",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Hadoop dll file path. Required only while running the job on <b>Windows machine</b>."
+    },
+    {
+      "name": "ksoot.job.correlationId",
+      "type": "java.lang.String",
+      "defaultValue": "",
+      "description": "Unique correlation id for each Job execution."
+    },
+    {
+      "name": "ksoot.job.persist",
+      "type": "java.lang.Boolean",
+      "defaultValue": "false",
+      "description": "Whether to persist Jobs status in Database."
+    },
+    {
+      "name": "ksoot.job.job-stop-topic",
+      "type": "java.lang.String",
+      "defaultValue": "false",
+      "description": "Kafka topic name to listen to receive Job stop requests."
+    },
+    {
       "name": "ksoot.connector.file-options.format",
       "type": "java.lang.String",
       "defaultValue": "csv",

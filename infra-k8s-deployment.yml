@@ -145,6 +145,7 @@ spec:
               value: admin
             - name: POSTGRES_HOST_AUTH_METHOD
               value: scram-sha-256
+            #  Create databases on deployment
             - name: POSTGRES_DATABASES
               value: spark_jobs_db, error_logs_db
           volumeMounts:
@@ -179,6 +180,7 @@ metadata:
   name: postgres-init
   namespace: ksoot
 data:
+#  Create databases on deployment
   init-postgres.sh: |
     #!/bin/bash
     echo "Inside init-postgres.sh"
@@ -399,6 +401,7 @@ spec:
           command: ['sh', '-c', 'until nc -z kafka 29092; do echo "Waiting for Kafka..."; sleep 2; done']
         - name: kafka-topic-creator
           image: bitnami/kafka:latest
+#          Create 'job-stop-requests' and 'error-logs' topics on deployment
           command:
             - sh
             - -c
@@ -438,6 +441,8 @@ spec:
       name: kafka-ui-port
   selector:
     app: kafka-ui
+
+#    The Following is required to allow Spark to be able to Create Driver and Executor pods
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

@@ -1,14 +1,13 @@
 package com.ksoot.spark.sales;
 
-import com.ksoot.spark.sales.conf.JobProperties;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -17,8 +16,10 @@ import org.springframework.kafka.annotation.EnableKafka;
 @EnableTask
 @EnableKafka
 @SpringBootApplication
-@EnableConfigurationProperties(JobProperties.class)
 public class DailySalesReportJob {
+
+  @Value("${ksoot.hadoop-dll:null}")
+  private String hadoopDll;
 
   public static void main(String[] args) {
     SpringApplication.run(DailySalesReportJob.class, args);
@@ -29,6 +30,12 @@ public class DailySalesReportJob {
   @PostConstruct
   public void init() {
     log.info("Initializing DailySalesReportJob ...");
+
+    String osName = System.getProperty("os.name").toLowerCase();
+    if (osName.contains("win")) {
+      System.load(this.hadoopDll);
+    }
+
     this.dataPopulator.populateData();
   }
 

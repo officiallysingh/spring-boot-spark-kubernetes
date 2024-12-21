@@ -1,13 +1,12 @@
 package com.ksoot.spark.loganalysis;
 
-import com.ksoot.spark.loganalysis.conf.JobProperties;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -18,8 +17,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableKafka
 @EnableScheduling
 @SpringBootApplication
-@EnableConfigurationProperties(JobProperties.class)
 public class LogAnalysisJob {
+
+  @Value("${ksoot.hadoop-dll:null}")
+  private String hadoopDll;
 
   public static void main(String[] args) {
     SpringApplication.run(LogAnalysisJob.class, args);
@@ -28,6 +29,10 @@ public class LogAnalysisJob {
   @PostConstruct
   public void init() {
     log.info("Initializing LogAnalysisJob ...");
+    String osName = System.getProperty("os.name").toLowerCase();
+    if (osName.contains("win")) {
+      System.load(this.hadoopDll);
+    }
   }
 
   @Bean
