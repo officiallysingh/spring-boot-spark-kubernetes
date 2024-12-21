@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.streaming.OutputMode;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 @Getter
@@ -14,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 @ToString
 @Validated
+@ConfigurationProperties(prefix = "ksoot.connector")
 public class ConnectorProperties {
 
   //  @NotEmpty private String checkpointLocation = "spark-space/checkpoints";

@@ -11,10 +11,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Slf4j
 @EnableTask
 @EnableKafka
+@EnableScheduling
 @SpringBootApplication
 @EnableConfigurationProperties(JobProperties.class)
 public class LogAnalysisJob {

@@ -29,12 +29,6 @@ public class SpringCloudTaskConfiguration {
     return new DefaultTaskConfigurer(TaskProperties.DEFAULT_TABLE_PREFIX);
   }
 
-  //  @Bean
-  //  public NewTopic jobStopTopic(@Value("${ksoot.job.job-stop-topic}") final String jobStopTopic)
-  // {
-  //    return TopicBuilder.name(jobStopTopic).build();
-  //  }
-
   @Bean
   SparkExecutionManager sparkExecutionManager(
       final SparkSession sparkSession,
@@ -45,6 +39,7 @@ public class SpringCloudTaskConfiguration {
 
   @Bean
   public TaskExecutor taskExecutor() {
+    // Async Task executor must not be used, Spark need to work in synchronously
     return new SyncTaskExecutor();
   }
 }

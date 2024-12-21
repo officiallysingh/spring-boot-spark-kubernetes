@@ -56,10 +56,4 @@ class SparkJobServiceConfiguration {
       @Nullable final HateoasPageableHandlerMethodArgumentResolver resolver) {
     return new PaginatedResourceAssembler(resolver);
   }
-
-  //  @Bean
-  //  public NewTopic jobStopTopic(
-  //      @Value("${spark-launcher.job-stop-topic}") final String jobStopTopic) {
-  //    return TopicBuilder.name(jobStopTopic).build();
-  //  }
 }

@@ -36,7 +36,7 @@ public class SparkPipelineExecutor {
 
   private final JobProperties jobProperties;
 
-  protected final ConnectorProperties connectorProperties;
+  private final ConnectorProperties connectorProperties;
 
   private final KafkaConnector kafkaConnector;
 
