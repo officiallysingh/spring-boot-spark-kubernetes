@@ -1,0 +1,1093 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8090",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Spark Job Submit",
+      "description": "APIs"
+    },
+    {
+      "name": "Spark Job Executions",
+      "description": "APIs"
+    }
+  ],
+  "paths": {
+    "/v1/spark-jobs/stop/{correlationId}": {
+      "post": {
+        "tags": [
+          "Spark Job Submit"
+        ],
+        "summary": "Stop Spark Job",
+        "operationId": "stop-spark-job",
+        "parameters": [
+          {
+            "name": "correlationId",
+            "in": "path",
+            "description": "Job Correlation Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "71643ba2-1177-4e10-a43b-a21177de1022"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Spark Job stop request accepted successfully for asynchronous execution",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spark-jobs/start": {
+      "post": {
+        "tags": [
+          "Spark Job Submit"
+        ],
+        "summary": "Start Spark Job",
+        "operationId": "start-spark-job",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/DailySalesReportJobLaunchRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/LogsAnalysisJobLaunchRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SparkExampleJobLaunchRequest"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Spark Job start request accepted successfully for asynchronous execution",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spark-jobs/executions": {
+      "get": {
+        "tags": [
+          "Spark Job Executions"
+        ],
+        "summary": "Gets a page of Job executions",
+        "operationId": "list-job-executions",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Zero-based page index (0..N)",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "The size of the page to be returned",
+            "required": false,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResourceJobExecution"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Job executions page returned successfully. Returns an empty page if no Job executions found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResourceJobExecution"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResourceJobExecution"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spark-jobs/executions/{jobName}": {
+      "get": {
+        "tags": [
+          "Spark Job Executions"
+        ],
+        "summary": "Gets a page of Job executions by Job name",
+        "operationId": "list-job-executions-by-job-name",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "description": "Job name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "daily-sales-report-job"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Zero-based page index (0..N)",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "The size of the page to be returned",
+            "required": false,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResourceJobExecution"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Job executions page returned successfully. Returns an empty page if no Job executions found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResourceJobExecution"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResourceJobExecution"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spark-jobs/executions/{jobName}/running": {
+      "get": {
+        "tags": [
+          "Spark Job Executions"
+        ],
+        "summary": "Gets a page of Running Job executions by Job name",
+        "operationId": "list-running-job-executions-by-job-name",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "description": "Job name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "daily-sales-report-job"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Zero-based page index (0..N)",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "The size of the page to be returned",
+            "required": false,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResourceJobExecution"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Job executions page returned successfully. Returns an empty page if no Job executions found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResourceJobExecution"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResourceJobExecution"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spark-jobs/executions/{jobName}/latest": {
+      "get": {
+        "tags": [
+          "Spark Job Executions"
+        ],
+        "summary": "Gets a Latest Job execution by Job name",
+        "operationId": "get-latest-job-execution-by-job-name",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "description": "Job name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "daily-sales-report-job"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobExecution"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobExecution"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobExecution"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Job executions returned successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobExecution"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spark-jobs/executions/latest": {
+      "get": {
+        "tags": [
+          "Spark Job Executions"
+        ],
+        "summary": "Gets List of Latest Job executions by Job names",
+        "operationId": "list-latest-job-execution-by-job-names",
+        "parameters": [
+          {
+            "name": "jobNames",
+            "in": "query",
+            "description": "Job Names",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobExecution"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Job executions returned successfully. Returns an empty page if no Job executions found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobExecution"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobExecution"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spark-jobs/executions/job-names": {
+      "get": {
+        "tags": [
+          "Spark Job Executions"
+        ],
+        "summary": "Gets List of Job names",
+        "operationId": "get-job-names",
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Job Names returned successfully. Returns an empty List if no Jobs found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spark-jobs/executions/count": {
+      "get": {
+        "tags": [
+          "Spark Job Executions"
+        ],
+        "summary": "Gets Job executions Count",
+        "operationId": "get-job-executions-count",
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Job executions Count returned successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spark-jobs/executions/count/{jobName}": {
+      "get": {
+        "tags": [
+          "Spark Job Executions"
+        ],
+        "summary": "Gets Job executions Count by Job Name",
+        "operationId": "get-job-executions-count-by-job-name",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "description": "Job name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "daily-sales-report-job"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Job executions Count returned successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spark-jobs/executions/count-running": {
+      "get": {
+        "tags": [
+          "Spark Job Executions"
+        ],
+        "summary": "Gets Running Job executions Count",
+        "operationId": "get-running-job-executions-count",
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Running Job executions Count returned successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spark-jobs/executions/count-by-correlation-id/{correlationId}": {
+      "get": {
+        "tags": [
+          "Spark Job Executions"
+        ],
+        "summary": "Gets Job executions Count by Correlation Id",
+        "operationId": "get-job-executions-count-by-correlation-id",
+        "parameters": [
+          {
+            "name": "correlationId",
+            "in": "path",
+            "description": "Job Correlation Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "71643ba2-1177-4e10-a43b-a21177de1022"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Job executions Count returned successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/spark-jobs/executions/by-correlation-id/{correlationId}": {
+      "get": {
+        "tags": [
+          "Spark Job Executions"
+        ],
+        "summary": "Gets a page of Job executions by Job Correlation Id",
+        "operationId": "list-job-executions-by-correlation-id",
+        "parameters": [
+          {
+            "name": "correlationId",
+            "in": "path",
+            "description": "Job Correlation Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "71643ba2-1177-4e10-a43b-a21177de1022"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Zero-based page index (0..N)",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "The size of the page to be returned",
+            "required": false,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResourceJobExecution"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Job executions page returned successfully. Returns an empty page if no Job executions found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResourceJobExecution"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResourceJobExecution"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DailySalesReportJobLaunchRequest": {
+        "required": [
+          "correlationId",
+          "jobName",
+          "month",
+          "sparkConfigs"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JobLaunchRequest"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "month": {
+                "type": "object",
+                "properties": {
+                  "year": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "month": {
+                    "type": "string",
+                    "enum": [
+                      "JANUARY",
+                      "FEBRUARY",
+                      "MARCH",
+                      "APRIL",
+                      "MAY",
+                      "JUNE",
+                      "JULY",
+                      "AUGUST",
+                      "SEPTEMBER",
+                      "OCTOBER",
+                      "NOVEMBER",
+                      "DECEMBER"
+                    ]
+                  },
+                  "monthValue": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "leapYear": {
+                    "type": "boolean"
+                  }
+                },
+                "description": "Report for the month",
+                "nullable": true,
+                "example": "2024-11"
+              }
+            }
+          }
+        ]
+      },
+      "JobLaunchRequest": {
+        "required": [
+          "correlationId",
+          "jobName",
+          "sparkConfigs"
+        ],
+        "type": "object",
+        "properties": {
+          "jobName": {
+            "type": "string",
+            "description": "Spark Job name, must be present in application.yml spark-submit.jobs",
+            "example": "daily-sales-report-job"
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "Unique correlation id for each Job execution.",
+            "example": "71643ba2-1177-4e10-a43b-a21177de1022"
+          },
+          "sparkConfigs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "description": "Runtime Spark conf properties for this job.",
+              "example": {
+                "spark.executor.instances": 4,
+                "spark.driver.cores": 3
+              }
+            },
+            "description": "Runtime Spark conf properties for this job.",
+            "example": {
+              "spark.executor.instances": 4,
+              "spark.driver.cores": 3
+            }
+          }
+        },
+        "discriminator": {
+          "propertyName": "jobName"
+        }
+      },
+      "LogsAnalysisJobLaunchRequest": {
+        "required": [
+          "correlationId",
+          "jobName",
+          "sparkConfigs"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JobLaunchRequest"
+          }
+        ]
+      },
+      "SparkExampleJobLaunchRequest": {
+        "required": [
+          "correlationId",
+          "jobName",
+          "sparkConfigs"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/JobLaunchRequest"
+          }
+        ]
+      },
+      "JobExecution": {
+        "type": "object",
+        "properties": {
+          "jobName": {
+            "type": "string"
+          },
+          "executionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "duration": {
+            "type": "string"
+          },
+          "exitMessage": {
+            "type": "string"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "arguments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Links": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Link"
+        }
+      },
+      "PaginatedResourceJobExecution": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JobExecution"
+            }
+          },
+          "page": {
+            "$ref": "#/components/schemas/PaginationData"
+          }
+        }
+      },
+      "PaginationData": {
+        "required": [
+          "totalRecords"
+        ],
+        "type": "object",
+        "properties": {
+          "currentPage": {
+            "type": "integer",
+            "description": "Current page number",
+            "format": "int32",
+            "example": 3
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "Page size, number of records per page",
+            "format": "int32",
+            "example": 16
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Total number of pages available, matching given filters",
+            "format": "int32",
+            "example": 35
+          },
+          "totalRecords": {
+            "type": "integer",
+            "description": "Total number of records available, matching given filters",
+            "format": "int64",
+            "example": 145
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          },
+          "header": {
+            "type": "string",
+            "description": "Text description of this page",
+            "example": "Page 0 of 12"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "Does next page exists",
+            "example": true
+          },
+          "hasPrevious": {
+            "type": "boolean",
+            "description": "Does previous page exists",
+            "example": false
+          },
+          "isFirst": {
+            "type": "boolean",
+            "description": "Is this page first",
+            "example": true
+          },
+          "isLast": {
+            "type": "boolean",
+            "description": "Is this page last",
+            "example": false
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "hreflang": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "deprecation": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "templated": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,160 +1,54 @@
-# Customer Churn Job implemented as Spring Cloud Task
+# A Unified Framework for Building and Running Spark Jobs with Spring Boot and Deployment on Local and Minikube or Kubernetes
 
-Run [**`CustomerChurnJob`**](src/main/java/com/ksoot/spark/logs/CustomerChurnJob.java) as Spring boot application.
+An innovative approach to implementing Spark Jobs with Spring Boot ecosystem, enabling developer-friendly environment.  
+It integrates cross-cutting concerns as reusable libraries to minimize boilerplate code.  
+Moreover, the framework supports one-click deployment of Spark jobs with RESTful APIs, making it a breeze to run jobs locally, on Minikube or Kubernetes.
 
-> [!IMPORTANT]  
-> Run in active profile `local`.  
-> Set VM argument `--add-exports java.base/sun.nio.ch=ALL-UNNAMED`
-> Make sure environment variable `SPARK_HOME` is set to local spark installation.  
-> Make sure environment variable `M2_REPO` is set to local maven repository.  
+## Introduction
 
-## Requirements
-This application requires:
+[Apache Spark](https://spark.apache.org/docs/3.5.3/index.html) has become a powerful tool for processing large-scale data,
+and when combined with Spring Boot, it offers a robust framework for building scalable, enterprise-grade data processing applications.
+But for beginners it's tedious to get up and running.
 
+# Framework Architecture
+
+The proposed framework provides a comprehensive solution for managing Spark jobs through a RESTful interface, offering:
+- Job Launching: Trigger Spark jobs and requests to stop running jobs via REST endpoints for deployment on local and kubernetes.
+- Job Monitoring: Track job status, start and end time, duration taken, error messages if there is any.
+- Auto-configurations: of Common components such as `SparkSession`, Job lifecycle listener and Connectors to read and write to various datasources.
+- Demo Jobs: To start with a [Spark Batch Job](spark-batch-daily-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job)
+
+# Installation
+## Prerequisites
 - Java 17
-- Spark 3.5.1
-- `maven`
-- `docker`
+- [Scala 2.12.18](https://sdkman.io/install/)
+- [Spark 3.5.3](https://archive.apache.org/dist/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz)
+- [Minikube](https://minikube.sigs.k8s.io/docs/)
+- IDE (IntelliJ, Eclipse or VS Code)
+- Optional [Configure Formatter in intelliJ](https://github.com/google/google-java-format/blob/master/README.md#intellij-android-studio-and-other-jetbrains-ides), refer to [fmt-maven-plugin](https://github.com/spotify/fmt-maven-plugin) for details.
 
-## References
-* [**`Running Spark on Kubernetes`**](https://spark.apache.org/docs/3.4.1/running-on-kubernetes.html#cluster-mode).
-* [**`Spark configurations`**](https://spark.apache.org/docs/3.4.1/configuration.html#available-properties).
-* [**`Spark Kubernetes configurations`**](https://spark.apache.org/docs/3.4.1/running-on-kubernetes.html#configuration).
-
-## Commands
-
-Go to project root directory in terminal.
-
-### Prepare
+### Java
+Recommended [sdkman](https://sdkman.io/install/) for managing Java, Scala installations.
+Make sure `JAVA_HOME` set to Java 17 installation path and `PATH` variable contains entry for `$JAVA_HOME/bin`
+Check Java version as follows. It should look like following, showing major version 17.
 ```shell
-minikube start
-kubectl create serviceaccount spark
-kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount=default:spark --namespace=default
+% java -version
+openjdk version "17.0.12" 2024-07-16
+OpenJDK Runtime Environment Temurin-17.0.12+7 (build 17.0.12+7)
+OpenJDK 64-Bit Server VM Temurin-17.0.12+7 (build 17.0.12+7, mixed mode)
 ```
 
-Find k8s-apiserver-host and k8s-apiserver-port as follows.
+### Scala
+Check Scala version as follows. It should look like following, showing scala version 2.12.18.
 ```shell
-kubectl cluster-info
-```
-Example output:
-```shell
-Kubernetes control plane is running at https://127.0.0.1:50003
-CoreDNS is running at https://127.0.0.1:50003/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-
-To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+% scala -version
+Scala code runner version 2.12.18 -- Copyright 2002-2023, LAMP/EPFL and Lightbend, Inc.
 ```
 
-> [!IMPORTANT]
-> As per above result `master` is set to `k8s://https://127.0.0.1:50003` in following `spark-submit` examples.  
-> Change `master` in `spark-submit` command as given by `kubectl cluster-info`
-
-### Test Minikube setup by running examples bundled in Spark distribution
-> [!NOTE]
-> `officiallysingh/spark:3.4.1` Custom spark image for Spark version 3.4.1 and Java 17 publicly available on Dockerhub.
-
+### Spark
+Download and extract [spark-3.5.3-bin-hadoop3](https://archive.apache.org/dist/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz) on your machine and Set the following environment variables.
 ```shell
-minikube image load officiallysingh/spark:3.4.1
-
-./bin/spark-submit \
-    --master k8s://https://127.0.0.1:50003 \
-    --deploy-mode cluster \
-    --name spark-pi \
-    --class org.apache.spark.examples.SparkPi \
-    --conf spark.kubernetes.container.image=officiallysingh/spark:3.4.1 \
-    --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
-    --conf spark.kubernetes.driverEnv.SPARK_USER=spark \
-    --conf spark.executor.instances=2 \
-    local:///opt/spark/examples/jars/spark-examples_2.13-3.4.1.jar
-```
-Check pods
-```shell
-kubectl get pods
-```
-While running:
-```shell
-NAME                               READY   STATUS    RESTARTS   AGE
-spark-pi-004fdb9035f60cdd-exec-1   1/1     Running   0          4s
-spark-pi-004fdb9035f60cdd-exec-2   1/1     Running   0          4s
-spark-pi-c3ff5c9035f4cc9f-driver   1/1     Running   0          86s
-```
-On successful completion:
-```shell
-NAME                               READY   STATUS      RESTARTS   AGE
-spark-pi-c3ff5c9035f4cc9f-driver   0/1     Completed   0          2m2s
-```
-
-### Run
-> [!NOTE]
-> `spark-pre-processor-job.jar` is already bundled in docker image `spark-pre-processor-job:0.0.1` at path `/opt/spark/job-apps/`.
-
-```shell
-mvn clean install
-
-docker image build . -t spark-word-count-job:0.0.1  -f Dockerfile --no-cache
-minikube image load spark-word-count-job:0.0.1
-
-./bin/spark-submit \
-    --master k8s://https://127.0.0.1:50003 \
-    --deploy-mode cluster \
-    --name spark-word-count-job \
-    --class com.ksoot.spark.wordcount.SparkWordCountJob \
-    --conf spark.kubernetes.container.image=spark-word-count-job:0.0.1 \
-    --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
-    --conf spark.kubernetes.driverEnv.SPARK_USER=spark \
-    --conf spark.executor.instances=2 \
-    local:///opt/spark/job-apps/spark-word-count-job.jar
-```
-
-### Inspect
-```shell
-kubectl get pods
-kubectl logs <pd name>
-kubectl describe pod <pd name>
-
-docker run -it --entrypoint /bin/sh spark-word-count-job:0.0.1
-find / -name "*.jar"
-```
-
-### Cleanup
-```shell
-kubectl delete pods --all
-kubectl delete pods --all -n default
-kubectl delete pod <pod name>
-
-minikube image rm spark-word-count-job:0.0.1
-
-docker rmi spark-word-count-job:0.0.1
-
-minikube delete
-```
-
-## Providing Job jar via mount volume, without building docker image
-
-* Create a folder `kubevol/spark-apps` in $HOME directory.
-* Copy `spark-word-count-job` jar in this folder.
-* Mount this folder in minikube and do `spark-submit` as follows.
-
-```shell
-echo $HOME
-minikube mount $HOME/kubevol/spark-apps:/tmp/spark-apps
-
-minikube ssh
-ls -ld /tmp/spark-apps
-ls /tmp/spark-apps
-
-./bin/spark-submit \
-    --master k8s://https://127.0.0.1:50003 \
-    --deploy-mode cluster \
-    --name spark-word-count-spring \
-    --class com.ksoot.spark.wordcount.SparkWordCountJob \
-    --conf spark.kubernetes.container.image=spark-word-count-job:0.0.1 \
-    --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
-    --conf spark.kubernetes.driverEnv.SPARK_USER=spark \
-    --conf spark.executor.instances=2 \
-    --conf spark.kubernetes.file.upload.path=/tmp/spark-apps \
-    --conf spark.kubernetes.driver.volumes.hostPath.spark-host-mount.mount.path=/tmp/spark-apps \
-    --conf spark.kubernetes.driver.volumes.hostPath.spark-host-mount.options.path=/tmp/spark-apps \
-    --conf spark.kubernetes.executor.volumes.hostPath.spark-host-mount.mount.path=/tmp/spark-apps \
-    --conf spark.kubernetes.executor.volumes.hostPath.spark-host-mount.options.path=/tmp/spark-apps \
-    local:///tmp/spark-apps/spark-word-count-spring.jar
+export SPARK_HOME="/<your directory>/spark-3.5.3-bin-hadoop3"
+export SPARK_CONF_DIR=$SPARK_HOME/conf
+export PATH="$SPARK_HOME/bin:$PATH"
 ```

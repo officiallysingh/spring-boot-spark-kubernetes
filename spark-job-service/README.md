@@ -1,100 +1,170 @@
-# Spring boot service to trigger spark jobs via spark-submit
+# Spark Job service
+Spring boot service to start and stop spark jobs and Track job status, job duration, and error messages if there is any.  
+It provides simple REST APIs for that, internally using `spark-submit` and kafka messaging to start and stop jobs respectively.
+
+## Prerequisites
+- Java 17
+- [Scala 2.12.18](https://sdkman.io/install/)
+- [Spark 3.5.3](https://archive.apache.org/dist/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz)
 
 Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) as Spring boot application.
 > [!IMPORTANT]  
 > Make sure environment variable `SPARK_HOME` is set to local spark installation.  
 > Make sure environment variable `M2_REPO` is set to local maven repository.
+> To execute Spark jobs locally run application in active profile `local`.  
+> To execute Spark jobs on `minikube` run application in active profile `minikube`. 
 
-## In profile `local`
-Set active profile `local`.
+## IntelliJ Run Configurations
+* Got to main class [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) and Modify run
+  configurations as follows.
+* Go to `Modify options`, click on `Add VM options` and set the value as `-Dspring.profiles.active=local` to run in `local` profile. 
+* Go to `Modify options`, click on `Add VM options` and set the value as `-Dspring.profiles.active=minikube` to run in `minikube` profile.
+* Open swagger in browser at http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs
 
-## In profile `minikube`
-Set active profile `local`.
+## API Reference
+You can directly import the [Postman Collection](api-spec/Spark Job Service APIs.postman_collection.json)
 
-**To connect with Redis, ArangoDB, MongoDB and Kafka running on local machine**, outside docker/minikube,  
-do following changes to make these services accessible from application running as docker container inside minikube.
-* **Redis**: change `bind 0.0.0.0` and `protected-mode no` in redis configuration file `redis.conf`.
-* **ArangoDB**: change `endpoint = tcp://0.0.0.0:8529` in arango configuration file `arangod.conf`.
-* **MongoDB**: change `bindIp: 0.0.0.0` in mongo configuration file `mongod.conf`.
-* **Kafka**: change `listeners=PLAINTEXT://0.0.0.0:9092` in kafka configuration file `server.properties`.
-* Get master ip address and port using command `kubectl cluster-info` and update it in [`application-minikube.properties`](src/main/resources/config/application-minikube.yml) file.  
-For example, if master url is `https://127.0.0.1:62112`, configurations would be as follows.
-```yaml
-spark:
-  master: k8s://https://127.0.0.1:62112
-```
-* Get **your machine ip** address using command `ipconfig getifaddr en0` and update it in [`application-minikube.properties`](src/main/resources/config/application-minikube.yml) file.  
-For example, if your machine ip address is `192.168.1.6`, configurations would be as follows.
-```yaml
-spark:
-  driver:
-    extraJavaOptions: >
-      -DMONGODB_URL=mongodb://192.168.1.6:27017
-      -DMONGO_FEATURE_DB=feature-repo
+### Spark Job Submit APIs
+
+#### Start Spark Job
+
+```http
+POST /v1/spark-jobs/start
 ```
 
-## Requirements
+| Request Body | Type | Description | Default                           |Required | 
+| :----------- | :--- | :---------- | :----------------------------------| :------- |
+| `jobName` | `string` | Spark Job name, must be present in application.yml spark-submit.jobs | -                                 | Yes |
+| `correlationId` | `string` | Unique correlation id for each Job execution | Random UUID, returned in response | Yes |
+| `sparkConfigs` | `object` | Runtime Spark conf properties for this job | Empty | Yes |
 
-This application requires:
+**Supports three types of job launch requests. To support more jobs, Similarly write the corresponding Request class.**
+- [DailySalesReportJobLaunchRequest](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java)
+- [LogsAnalysisJobLaunchRequest](src/main/java/com/ksoot/spark/dto/LogsAnalysisJobLaunchRequest.java)
+- [SparkExampleJobLaunchRequest](src/main/java/com/ksoot/spark/dto/SparkExampleJobLaunchRequest.java)
 
-- Java 17
-- Spark 3.4.1
-- `maven`
-- `docker`
 
-## References
-* [**`Running Spark on Kubernetes`**](https://spark.apache.org/docs/3.4.1/running-on-kubernetes.html#cluster-mode).
-* [**`Spark configurations`**](https://spark.apache.org/docs/3.4.1/configuration.html#available-properties).
-* [**`Spark Kubernetes configurations`**](https://spark.apache.org/docs/3.4.1/running-on-kubernetes.html#configuration).
 
-## Commands
+#### Stop Spark Job
 
-Go to project root directory in terminal.
-
-### Prepare
-```shell
-minikube start
-kubectl create serviceaccount spark
-kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount=default:spark --namespace=default
+```http
+POST /v1/spark-jobs/stop/{correlationId}
 ```
 
-### Run
-```shell
-chmod +x spark-job-submit.sh
+| Parameter | Type | Description | Required |
+| :-------- | :--- | :---------- | :------- |
+| `correlationId` | `string` | Job Correlation Id | Yes |
 
-mvn clean install
+### Spark Job Executions APIs
 
-docker image build . -t spark-job-service:0.0.1 -f Dockerfile --no-cache
-minikube image load spark-job-service:0.0.1
+#### Get All Job Executions
 
-kubectl apply -f k8s/fabric8-rbac.yaml
-kubectl apply -f k8s/deployment.yaml
-
-kubectl port-forward <pod name> 8090:8090
+```http
+GET /v1/spark-jobs/executions
 ```
 
-### Inspect
-```shell
-kubectl get pods
-kubectl logs <pd name>
-kubectl describe pod <pd name>
+| Parameter | Type | Description | Default | Required |
+| :-------- | :--- | :---------- | :------ | :------- |
+| `page` | `integer` | Zero-based page index (0..N) | 0 | No |
+| `size` | `integer` | The size of the page to be returned | 10 | No |
+| `sort` | `array` | Sorting criteria in format: property,(asc\|desc) | - | No |
 
-docker run -it --entrypoint /bin/sh spark-job-service:0.0.1
-find / -name "*.jar"
+#### Get Job Executions By Job Name
+
+```http
+GET /v1/spark-jobs/executions/{jobName}
 ```
 
-### Cleanup
-```shell
-kubectl delete -f k8s/deployment.yaml
-kubectl delete -f k8s/fabric8-rbac.yaml
+| Parameter | Type | Description | Default | Required |
+| :-------- | :--- | :---------- | :------ | :------- |
+| `jobName` | `string` | Job name | - | Yes |
+| `page` | `integer` | Zero-based page index (0..N) | 0 | No |
+| `size` | `integer` | The size of the page to be returned | 10 | No |
+| `sort` | `array` | Sorting criteria in format: property,(asc\|desc) | - | No |
 
-kubectl delete pods --all
-kubectl delete pods --all -n default
-kubectl delete pod <pod name>
+#### Get Running Job Executions By Job Name
 
-minikube image rm spark-job-service:0.0.1
-
-docker rmi spark-job-service:0.0.1
-
-minikube delete
+```http
+GET /v1/spark-jobs/executions/{jobName}/running
 ```
+
+| Parameter | Type | Description | Default | Required |
+| :-------- | :--- | :---------- | :------ | :------- |
+| `jobName` | `string` | Job name | - | Yes |
+| `page` | `integer` | Zero-based page index (0..N) | 0 | No |
+| `size` | `integer` | The size of the page to be returned | 10 | No |
+| `sort` | `array` | Sorting criteria in format: property,(asc\|desc) | - | No |
+
+#### Get Latest Job Execution By Job Name
+
+```http
+GET /v1/spark-jobs/executions/{jobName}/latest
+```
+
+| Parameter | Type | Description | Required |
+| :-------- | :--- | :---------- | :------- |
+| `jobName` | `string` | Job name | Yes |
+
+#### Get Latest Job Executions By Job Names
+
+```http
+GET /v1/spark-jobs/executions/latest
+```
+
+| Parameter | Type | Description | Required |
+| :-------- | :--- | :---------- | :------- |
+| `jobNames` | `array` | Job Names | Yes |
+
+#### Get Job Names
+
+```http
+GET /v1/spark-jobs/executions/job-names
+```
+No parameters required
+
+#### Get Job Executions Count
+
+```http
+GET /v1/spark-jobs/executions/count
+```
+No parameters required
+
+#### Get Job Executions Count By Job Name
+
+```http
+GET /v1/spark-jobs/executions/count/{jobName}
+```
+
+| Parameter | Type | Description | Required |
+| :-------- | :--- | :---------- | :------- |
+| `jobName` | `string` | Job name | Yes |
+
+#### Get Running Job Executions Count
+
+```http
+GET /v1/spark-jobs/executions/count-running
+```
+No parameters required
+
+#### Get Job Executions Count By Correlation Id
+
+```http
+GET /v1/spark-jobs/executions/count-by-correlation-id/{correlationId}
+```
+
+| Parameter | Type | Description | Required |
+| :-------- | :--- | :---------- | :------- |
+| `correlationId` | `string` | Job Correlation Id | Yes |
+
+#### Get Job Executions By Correlation Id
+
+```http
+GET /v1/spark-jobs/executions/by-correlation-id/{correlationId}
+```
+
+| Parameter | Type | Description | Default | Required |
+| :-------- | :--- | :---------- | :------ | :------- |
+| `correlationId` | `string` | Job Correlation Id | - | Yes |
+| `page` | `integer` | Zero-based page index (0..N) | 0 | No |
+| `size` | `integer` | The size of the page to be returned | 10 | No |
+| `sort` | `array` | Sorting criteria in format: property,(asc\|desc) | - | No |

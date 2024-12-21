@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/spark-jobs")
-@Tag(name = "Spark Job Submit", description = "APIs")
+@Tag(name = "Spark Job Launcher", description = "APIs")
 @Slf4j
 @RequiredArgsConstructor
 class SparkJobController {
