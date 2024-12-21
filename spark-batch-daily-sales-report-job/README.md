@@ -1,4 +1,5 @@
-# Daily sales Report Job implemented as Spring Cloud Task
+# Daily Sales Report Job
+Demo Spark Batch job implemented as Spring Cloud Task
 
 Run [**`DailySalesReportJob`**](src/main/java/com/ksoot/spark/sales/DailySalesReportJob.java) as Spring boot application.
 

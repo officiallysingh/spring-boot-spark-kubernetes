@@ -13,30 +13,34 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class SparkSubmitJobLauncher implements SparkJobLauncher {
+public class SparkSubmitJobLauncher extends AbstractSparkJobLauncher {
 
-  private static final ExecutorService executor = Executors.newCachedThreadPool();
+  private final KafkaTemplate<String, String> kafkaTemplate;
 
-  private final Properties sparkProperties;
+  private final ExecutorService executor;
 
-  private final SparkLauncherProperties sparkLauncherProperties;
+  private final String jobStopTopic;
 
   public SparkSubmitJobLauncher(
       @Qualifier("sparkProperties") final Properties sparkProperties,
-      final SparkLauncherProperties sparkLauncherProperties) {
-    this.sparkProperties = sparkProperties;
-    this.sparkLauncherProperties = sparkLauncherProperties;
+      final SparkLauncherProperties sparkLauncherProperties,
+      final KafkaTemplate<String, String> kafkaTemplate,
+      @Value("${spark-launcher.job-stop-topic}") final String jobStopTopic) {
+    super(sparkProperties, sparkLauncherProperties);
+    this.kafkaTemplate = kafkaTemplate;
+    this.jobStopTopic = jobStopTopic;
+    this.executor = Executors.newCachedThreadPool();
   }
 
   public void startJob(final JobLaunchRequest jobLaunchRequest) {
@@ -54,10 +58,7 @@ public class SparkSubmitJobLauncher implements SparkJobLauncher {
                             String.join(", ", this.sparkLauncherProperties.getJobs().keySet()))
                         .throwAble(HttpStatus.BAD_REQUEST));
     final Properties sparkConfigurations =
-        this.sparkConfigurations(
-            this.sparkProperties,
-            sparkJobProperties.getSparkConfig(),
-            jobLaunchRequest.getSparkConfigs());
+        this.sparkConfigurations(sparkJobProperties, jobLaunchRequest.getSparkConfigs());
 
     final Map<String, Object> envVars = this.mergeEnvironmentVariables(sparkJobProperties);
 
@@ -65,7 +66,7 @@ public class SparkSubmitJobLauncher implements SparkJobLauncher {
     jobArgs.put(CORRELATION_ID, jobLaunchRequest.getCorrelationId());
     jobArgs.put(PERSIST_JOB, String.valueOf(this.sparkLauncherProperties.isPersistJobs()));
 
-    String sparkSubmitCommand =
+    final String sparkSubmitCommand =
         SparkSubmitCommand.jobName(jobLaunchRequest.getJobName())
             .mainClass(sparkJobProperties.getMainClassName())
             .sparkConfigurations(sparkConfigurations)
@@ -149,58 +150,6 @@ public class SparkSubmitJobLauncher implements SparkJobLauncher {
     return sparkSubmitScriptPath;
   }
 
-  private Properties sparkConfigurations(
-      final Properties sparkCommonProperties,
-      final Properties sparkJobSpecificProperties,
-      final Map<String, Object> sparkRuntimeJobSpecificProperties) {
-
-    Properties confProperties =
-        this.mergeSparkConfigurations(
-            sparkCommonProperties, sparkJobSpecificProperties, sparkRuntimeJobSpecificProperties);
-
-    if (!confProperties.containsKey(DEPLOY_MODE)) {
-      log.warn(DEPLOY_MODE + " not specified, falling back to: " + DEPLOY_MODE_CLIENT);
-      confProperties.putIfAbsent(DEPLOY_MODE, DEPLOY_MODE_CLIENT);
-    }
-    return confProperties.entrySet().stream()
-        .filter(
-            property -> property != null && StringUtils.isNotBlank(property.getValue().toString()))
-        .collect(
-            Collectors.toMap(
-                entry -> entry.getKey().toString(),
-                Map.Entry::getValue,
-                (v1, v2) -> v1,
-                Properties::new));
-  }
-
-  // Merge common properties with job-specific properties, giving precedence to job-specific
-  // properties
-  private Properties mergeSparkConfigurations(
-      final Properties sparkCommonProperties,
-      final Properties sparkJobSpecificProperties,
-      final Map<String, Object> sparkRuntimeJobSpecificProperties) {
-    final Properties confProperties = new Properties();
-    // Overriding properties with low precedence by that with high precedence.
-    confProperties.putAll(sparkCommonProperties);
-    confProperties.putAll(sparkJobSpecificProperties);
-    confProperties.putAll(sparkRuntimeJobSpecificProperties);
-    return confProperties;
-  }
-
-  private Map<String, Object> mergeEnvironmentVariables(
-      final SparkJobProperties sparkJobProperties) {
-    Map<String, Object> mergedEnvVars = new LinkedHashMap<>();
-    mergedEnvVars.putAll(this.sparkLauncherProperties.getEnv());
-    mergedEnvVars.putAll(sparkJobProperties.getEnv());
-    mergedEnvVars =
-        mergedEnvVars.entrySet().stream()
-            .filter(
-                property ->
-                    property != null && StringUtils.isNotBlank(property.getValue().toString()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    return mergedEnvVars;
-  }
-
   static class StreamGobbler implements Runnable {
     private final InputStream inputStream;
     private final Consumer<String> consumer;
@@ -217,5 +166,7 @@ public class SparkSubmitJobLauncher implements SparkJobLauncher {
   }
 
   @Override
-  public void stopJob(String jobCorrelationId) {}
+  public void stopJob(final String jobCorrelationId) {
+    this.kafkaTemplate.send(this.jobStopTopic, jobCorrelationId);
+  }
 }

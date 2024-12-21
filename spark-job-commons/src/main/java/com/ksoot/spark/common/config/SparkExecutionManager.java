@@ -97,7 +97,7 @@ public class SparkExecutionManager {
         taskExecution.getExternalExecutionId(),
         taskExecution.getStartTime(),
         taskExecution.getArguments());
-    taskExecution.setExitMessage("Job Running");
+    taskExecution.setExitMessage("Running");
   }
 
   @AfterTask
@@ -105,12 +105,14 @@ public class SparkExecutionManager {
     DurationRepresentation duration =
         DurationRepresentation.of(
             Duration.between(taskExecution.getStartTime(), taskExecution.getEndTime()));
-    if (this.exitCode != -1) {
+    if (this.exitCode == 2) {
       //      taskExecution.setExitCode(this.exitCode); // You can not change exit code, it is
       // derived in task lifecycle listener
       taskExecution.setExitMessage(this.exitMessage);
-    } else if (StringUtils.isBlank(taskExecution.getExitMessage())) {
-      taskExecution.setExitMessage("Completed Successfully");
+    } else if (taskExecution.getExitCode() == 0) {
+      taskExecution.setExitMessage("Completed");
+    } else if (taskExecution.getExitCode() == 1) {
+      taskExecution.setExitMessage("Failed");
     }
     log.info(
         "Job: {} with executionId: {} and correlationId: {} {} at: {} with exitCode: {} and exitMessage: {}. "

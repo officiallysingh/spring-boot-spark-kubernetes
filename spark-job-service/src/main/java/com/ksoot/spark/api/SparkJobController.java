@@ -10,9 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,11 +21,6 @@ import org.springframework.web.bind.annotation.*;
 class SparkJobController {
 
   private final SparkJobLauncher sparkJobLauncher;
-
-  private final KafkaTemplate<String, String> kafkaTemplate;
-
-  @Value("${spark-launcher.job-stop-topic}")
-  private String jobStopTopic;
 
   @Operation(operationId = "start-spark-job", summary = "Start Spark Job")
   @ApiResponses(
@@ -77,7 +70,7 @@ class SparkJobController {
           final String correlationId) {
     log.info("Stop Spark Job request received for Job with Correlation Id: {}", correlationId);
 
-    this.kafkaTemplate.send(this.jobStopTopic, correlationId);
+    this.sparkJobLauncher.stopJob(correlationId);
 
     return ResponseEntity.accepted()
         .body(
