@@ -32,7 +32,7 @@ debug: false
 #------------------------- Spark configurations -------------------------
 spark:
   # Need to change this whenever minikube is restarted. Find using `kubectl cluster-info`
-  master: k8s://https://127.0.0.1:63197
+  master: k8s://https://127.0.0.1:50537
 #  master: k8s://https://kubernetes.default.svc
   executor:
     instances: 2
