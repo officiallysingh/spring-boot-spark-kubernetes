@@ -304,14 +304,11 @@ curl -X 'POST' \
 #### Job Request class
 * Each Job has a corresponding Request class to take the Job Start request as each job may have a different set of arguments, though some job arguments are common to all jobs.
 * So a base abstract class [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) is defined with common arguments.
-* For each job a Request class extending [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) should be implemented.
+* For each Job a Request class extending [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) should be implemented.
 * Refer to [DailySalesReportJobLaunchRequest](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java) for [spark-batch-daily-sales-report-job](../spark-batch-daily-sales-report-job) and [LogsAnalysisJobLaunchRequest](src/main/java/ksoot/spark/dto/LogsAnalysisJobLaunchRequest.java) for [spark-stream-logs-analysis-job](../spark-stream-logs-analysis-job).
-* Refer to [Jackson Inheritance](https://www.baeldung.com/jackson-inheritance#2-per-class-annotations) for help in implementing inheritance request classes.
+* Refer to [Jackson Inheritance](https://www.baeldung.com/jackson-inheritance#2-per-class-annotations) for help in implementing inheritance in request classes.
 
 ## References
 - [Spark Submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html)
-- [Running Spark Kubernetes](https://spark.apache.org/docs/3.5.4/running-on-kubernetes.html)
-- [Spark MongoDB Connector](https://www.mongodb.com/docs/spark-connector/v10.4)
-- [Spark ArangoDB Connector](https://docs.arangodb.com/3.13/develop/integrations/arangodb-datasource-for-apache-spark)
-- [Spark Kafka Connector](https://spark.apache.org/docs/3.5.1/structured-streaming-kafka-integration.html)
+- [Running Spark on Kubernetes](https://spark.apache.org/docs/3.5.4/running-on-kubernetes.html)
 
