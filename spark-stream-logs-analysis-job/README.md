@@ -52,7 +52,7 @@ to avail the following features.
 - Spark dependencies compatible with Spring boot 3+.
 - Customizable `SparkSession` bean auto-configured.
 - Enables auto-completion assistance for Spark configuration properties in `application.yml`
-- Any Spark configuration can be set in `application.yml` as follows.
+- All possible [Spark configurations](https://spark.apache.org/docs/3.5.3/configuration.html) can be set in `application.yml` as follows. 
 ```yaml
 spark:
   ui:

@@ -113,7 +113,7 @@ try {
 ```
 
 [JobProblem.java](src/main/java/com/ksoot/spark/common/error/JobProblem.java) provides a fluent builder pattern to build its instance.
-* Create an exception with hardcoded message. Optionally can set a cause exception and can set runtime arguments to inject into message placeholders.
+* Create an exception with hardcoded message. Optionally can set a cause exception and runtime arguments to inject into message placeholders.
 ```java
 JobProblem.of("Error while reading file: {}").cause(fileNotFoundException).args("/home/data/input.csv").build();
 ```
@@ -134,7 +134,9 @@ This way you can customize the error title and message in `messages.properties` 
 Please note `title` and `message` prefix to error codes mentioned in above enum.
 ```text
 title.spark.streaming.exception=My custom title
-message.spark.streaming.exception=My custom message, check param: {0}, {1}
+message.spark.streaming.exception=My custom message, check param: {0}, {1}ception=My custom title
+title.invalid.configuration=Some title
+message.invalid.configuration=Some message
 ```
 
 ## Utilites
