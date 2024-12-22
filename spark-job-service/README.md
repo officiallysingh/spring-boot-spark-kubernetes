@@ -7,7 +7,7 @@ It provides simple REST APIs for that, internally using `spark-submit` to start 
 - [Scala 2.12.18](https://sdkman.io/install/)
 - [Spark 3.5.3](https://archive.apache.org/dist/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz)
 
-Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) as Spring boot application.
+Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) as Spring boot application in `local` profile.
 > [!IMPORTANT]  
 > Make sure environment variable `SPARK_HOME` is set to local spark installation.  
 > Make sure environment variable `M2_REPO` is set to local maven repository.
@@ -20,7 +20,7 @@ Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) 
 * Open swagger in browser at http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs
 
 ## API Reference
-You can directly import the [Postman Collection](api-spec/Spark Job Service APIs.postman_collection.json)
+You can directly import the [**Postman Collection**](api-spec/Spark%20Job%20Service%20APIs.postman_collection.json)
 
 ### Spark Job Submit APIs
 
@@ -40,8 +40,6 @@ POST /v1/spark-jobs/start
 - [DailySalesReportJobLaunchRequest](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java)
 - [LogsAnalysisJobLaunchRequest](src/main/java/com/ksoot/spark/dto/LogsAnalysisJobLaunchRequest.java)
 - [SparkExampleJobLaunchRequest](src/main/java/com/ksoot/spark/dto/SparkExampleJobLaunchRequest.java)
-
-
 
 #### Stop Spark Job
 
