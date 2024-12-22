@@ -69,7 +69,7 @@ public class SparkPipelineExecutor {
             .orderBy(col("product_name"), col("date"));
 
     // Show the final result
-    SparkUtils.logDataset("Daily Sales report", dailySalesReport, 1000);
+    SparkUtils.logDataset("Daily Sales report", dailySalesReport);
 
     final String salesReportCollection = "sales_report_" + statementMonth.replace('-', '_');
     //    this.fileConnector.write(dailySalesReport); // For testing

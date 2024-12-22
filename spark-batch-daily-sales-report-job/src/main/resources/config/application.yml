@@ -93,41 +93,6 @@ logging:
     '[org.apache.kafka.clients]': error
 debug: false
 
-# ===================================================================
-# Application specific properties
-# Add your own application properties here
-# ===================================================================
-
-#------------------------- Job configurations -------------------------
-ksoot:
-  hadoop-dll: ${HOME}/hadoop-3.0.0/bin/hadoop.dll
-  job:
-    month: ${STATEMENT_MONTH:}
-    correlation-id: ${CORRELATION_ID:${spring.application.name}-1}
-    persist: ${PERSIST_JOB:false}
-    job-stop-topic: ${JOB_STOP_TOPIC:job-stop-requests}
-  connector:
-    save-mode: Append
-    output-mode: Update
-    mongo-options:
-      url: ${MONGODB_URL:mongodb://localhost:27017}
-      database: ${MONGODB_DATABASE:sales_db}
-    arango-options:
-      endpoints: ${ARANGODB_URL:localhost:8529}
-      database: ${ARANGODB_DATABASE:products_db}
-      username: ${ARANGODB_USER:root}
-      password: ${ARANGODB_PASSWORD:admin}
-      ssl-enabled: false
-      ssl-cert-value: ""
-      cursor-ttl: PT5M # 5 minutes, see the ISO 8601 standard for java.time.Duration String patterns
-    file-options:
-      format: csv
-      header: true
-      path: ${SPARK_OUTPUT_PATH:spark-space/output}
-      merge: true
-    kafka-options:
-      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-      fail-on-data-loss: ${KAFKA_FAIL_ON_DATA_LOSS:false}
 #------------------------- Spark configurations -------------------------
 spark:
   app.name: ${spring.application.name}
@@ -161,4 +126,39 @@ spark:
         fast.upload: true  # Enable faster uploads
     google.cloud.auth.service.account.json.keyfile: ${GCS_KEY_FILE:<put your sa-key.json>}
 
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
 
+#------------------------- Job configurations -------------------------
+ksoot:
+#  Applicable only while running on Windows machine
+  hadoop-dll: ${HOME}/hadoop-3.0.0/bin/hadoop.dll
+  job:
+    month: ${STATEMENT_MONTH:}
+    correlation-id: ${CORRELATION_ID:${spring.application.name}-1}
+    persist: ${PERSIST_JOB:false}
+    job-stop-topic: ${JOB_STOP_TOPIC:job-stop-requests}
+  connector:
+    save-mode: Append
+    output-mode: Update
+    mongo-options:
+      url: ${MONGODB_URL:mongodb://localhost:27017}
+      database: ${MONGODB_DATABASE:sales_db}
+    arango-options:
+      endpoints: ${ARANGODB_URL:localhost:8529}
+      database: ${ARANGODB_DATABASE:products_db}
+      username: ${ARANGODB_USER:root}
+      password: ${ARANGODB_PASSWORD:admin}
+      ssl-enabled: false
+      ssl-cert-value: ""
+      cursor-ttl: PT5M # 5 minutes, see the ISO 8601 standard for java.time.Duration String patterns
+    file-options:
+      format: csv
+      header: true
+      path: ${SPARK_OUTPUT_PATH:spark-space/output}
+      merge: true
+    kafka-options:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      fail-on-data-loss: ${KAFKA_FAIL_ON_DATA_LOSS:false}

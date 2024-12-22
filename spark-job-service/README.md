@@ -1,6 +1,6 @@
 # Spark Job service
 Spring boot service to start and stop spark jobs and Track job status, job duration, and error messages if there is any.  
-It provides simple REST APIs for that, internally using `spark-submit` and kafka messaging to start and stop jobs respectively.
+It provides simple REST APIs for that, internally using `spark-submit` to start and kafka messaging to stop jobs respectively.
 
 ## Prerequisites
 - Java 17
@@ -11,8 +11,6 @@ Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) 
 > [!IMPORTANT]  
 > Make sure environment variable `SPARK_HOME` is set to local spark installation.  
 > Make sure environment variable `M2_REPO` is set to local maven repository.
-> To execute Spark jobs locally run application in active profile `local`.  
-> To execute Spark jobs on `minikube` run application in active profile `minikube`. 
 
 ## IntelliJ Run Configurations
 * Got to main class [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) and Modify run

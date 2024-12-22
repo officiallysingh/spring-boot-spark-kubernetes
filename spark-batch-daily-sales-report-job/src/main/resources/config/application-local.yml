@@ -14,17 +14,6 @@ logging:
     '[com.mongodb.spark.sql.connector.read.partitioner.Partitioner]': warn
 debug: false
 
-# ===================================================================
-# Application specific properties
-# Add your own application properties here
-# ===================================================================
-
-#------------------------- Job configurations -------------------------
-ksoot:
-  job:
-#    month: 2024-11
-#    correlation-id: 1
-    persist: true
 #------------------------- Spark configurations -------------------------
 spark:
   master: local
@@ -37,3 +26,14 @@ spark:
     cores: 2
   ui:
     enabled: true
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
+
+#------------------------- Job configurations -------------------------
+ksoot:
+  job:
+#    month: 2024-11
+#    correlation-id: 1
+    persist: true
