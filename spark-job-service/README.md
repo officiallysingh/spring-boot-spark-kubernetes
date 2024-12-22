@@ -198,131 +198,6 @@ GET /v1/spark-jobs/executions/by-correlation-id/{correlationId}
 | `size`          | `Integer` | The size of the page to be returned              | 10      | No       |
 | `sort`          | `Sort`    | Sorting criteria in format: property,(asc\|desc) | -       | No       |
 
-## Implementation
-* At its core it uses [spark-submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html) to launch a Spark Job locally,  
-on minikube or kubernetes in a unified way.  
-* `spark-submit` command is derived with options coming through configurations in `application.yml` and Job start request Object.  
-Refer to [SparkSubmitCommand Builder](src/main/java/com/ksoot/spark/launcher/SparkSubmitCommand.java) to see how the `spark-submit` command is built.
-* [SparkJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkJobLauncher.java) is the interface to launch a Spark Job.
-As of now the only implementation is [SparkSubmitJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkSubmitJobLauncher.java). However, similar Job Launcher can be implemented for EMR also, placeholder at [SparkEmrJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkEmrJobLauncher.java)
-* [SparkSubmitJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkSubmitJobLauncher.java) launches the Job using `spark-submit` with options derived after merging common Spark configurations, job specific configurations in `application.yml` and Job request object.
-  Following is the `spark-submit` command generated for local deployment.
-```shell
-./bin/spark-submit --verbose --name daily-sales-report-job --class com.ksoot.spark.sales.DailySalesReportJob 
- --conf spark.master=local --conf spark.executor.memory=2g --conf spark.driver.memory=1g --conf spark.driver.cores=3 
---conf spark.executor.cores=1 --conf spark.submit.deployMode=client --conf spark.executor.instances=4 
---conf spark.driver.extraJavaOptions="-Dspring.profiles.active=local -DSTATEMENT_MONTH=2024-11 -DCORRELATION_ID=71643ba2-1177-4e10-a43b-a21177de1022 -DPERSIST_JOB=true" 
- /Users/myusername/.m2/repository/com/ksoot/spark/spark-batch-daily-sales-report-job/0.0.1-SNAPSHOT/spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar
-```
-This command String is then passed to [spark-job-submit.sh](cmd/spark-job-submit.sh) on mac or linux and [spark-job-submit.bat](cmd/spark-job-submit.bat) on windows to execute the command, as command length could exceed java [Process](https://docs.oracle.com/javase/8/docs/api/java/lang/Process.html) API limit.
-* Currently Spark Job can be triggered by REST API.  
-  However, it can be enhanced to trigger spark jobs on arrival of Kafka messages, or Scheduler triggers or any other event also.
-  You just need to provide the corresponding implementation selected by some runtime strategy and call the intended `SparkJobLauncher` implementation to launch the job, as follows.
-```java
-this.sparkJobLauncher.startJob(jobLaunchRequest);   
-```
-
-### Running locally
-Jobs can be either run locally or on minikube on local.
-#### Local profile
-- Make sure **Postgres** is running at `localhost:5432` with username `postgres` and password `admin`.  
-  Create database `spark_jobs_db` and `error_logs_db` if they do not exist.
-- Make sure **ArangoDB** running at `localhost:8529` with `root` password as `admin`.
-- Make sure **MongoDB** running at `localhost:27017`.
-- Make sure **Kafka** running with bootstrap servers `localhost:9092`
-- Make sure **Kafka UI** running at `http://localhost:8100`. Create topics `job-stop-requests` and `error-logs` if they do not exist.
-
-> [!IMPORTANT]  
-> If any port or credentials are different from above mentioned then override respective configurations in [application-local.yml](src/main/resources/config/application-local.yml).
-
-Either above infrastructure is up and running as local installations in your system, or use **docker compose** using [docker-compose.yml](../docker-compose.yml) to run required infrastructure.
-In Terminal go to project root `spring-boot-spark-kubernetes` and execute following command. Make sure Docker is running.
-```shell
-docker compose up -d
-```
-* Perform `mvn clean install` to build the jobs and install in local `M2_REPO`. Job jars are picked from local `M2_REPO` while `spark-submit`.
-* Run the application in `local` profile and make a call to Job Start API.
-
-#### Minikube profile
-* Set minikube core to 4 and memory to 8GB atleast.
-* Make sure docker is running and minikube is started.
-* Check cluster ip by executing following command.
-```shell
-kubectl cluster-info
-```
-The output should look like below.
-```shell
-Kubernetes control plane is running at https://127.0.0.1:50537
-CoreDNS is running at https://127.0.0.1:50537/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-
-To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
-```
-* Set above port number `50537` in configuration `spark.master` value k8s://https://127.0.0.1:50537
-* Whenever minikube is restarted this port number changes, so make sure to get the new port and change in `spark.master` configuration.
-* In Terminal go to project root project `spring-boot-spark-kubernetes` and execute following command.
-```shell
-kubectl apply -f infra-k8s-deployment.yml
-```
-* Set default namespace to `ksoot` in minikube. You can always rollback it to default namespace.
-```shell
-kubectl config set-context --current --namespace=ksoot
-```
-* Check if all infra pods are running.
-```shell
-kubectl get pods
-```
-Output should look like below.
-```shell
-NAME                         READY   STATUS    RESTARTS   AGE
-arango-65d6fff6c5-4bjwq      1/1     Running   0          6m16s
-kafka-74c8d9579f-jmcr5       1/1     Running   0          6m16s
-kafka-ui-797446869-9d8zw     1/1     Running   0          6m16s
-mongo-6785c5cf8b-mtbk7       1/1     Running   0          6m16s
-postgres-685b766f66-7dnsl    1/1     Running   0          6m16s
-zookeeper-6fc87d48df-2t5pf   1/1     Running   0          6m16s
-```
-* Execute following command to build base spark image.
-```shell
-docker image build . -t ksoot/spark:3.5.3 -f Dockerfile
-```
-* In Terminal go to project `spring-boot-spark-kubernetes/spark-batch-daily-sales-report-job` and execute following command to build docker image for `daily-sales-report-job`.
-```shell
-docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
-```
-* In Terminal go to project `spring-boot-spark-kubernetes/spark-stream-logs-analysis-job` and execute following command to build docker image for `logs-analysis-job`.
-```shell
-docker image build . -t spark-stream-logs-analysis-job:0.0.1 -f Dockerfile
-```
-* Load Job images in minikube.
-```shell
-docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
-docker image build . -t spark-stream-logs-analysis-job:0.0.1 -f Dockerfile
-```
-* To Launch the Jobs on minikube in `cluster` deploy mode, run the application in `minikube` profile and make a call to Job Start API.
-API response should look like below.
-```text
-Spark Job: 'daily-sales-report-job' submit request accepted for asynchronous execution. Correlation Id: 71643ba2-1177-4e10-a43b-a21177de1022. For real status of Job look into application logs or Driver POD logs if deploying on Kubernetes
-```
-* If `spark-submit` command is successful, you can see the Spark Driver and executor pods running in minikube.
-```shell
-kubectl get pods
-```
-Output should look like below.
-```shell
-NAME                                             READY   STATUS    RESTARTS   AGE
-daily-sales-report-job-2e9c6f93ef784c17-driver   1/1     Running   0          11s
-daily-sales-report-job-9ac2e493ef78625a-exec-1   1/1     Running   0          6s
-daily-sales-report-job-9ac2e493ef78625a-exec-2   1/1     Running   0          6s
-```
-* Once Job is complete executor pods are terminated automatically. 
-But driver pod remains in completed state, it does not consume any resources.
-```shell
-NAME                                             READY   STATUS      RESTARTS   AGE
-daily-sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          2m56s
-```
-* If Job fails executor pods are still terminated, but driver pod remains in error state. For debugging you can see pod logs.
-* Eventually you may want to cleanup by deleting the pods or `minikube delete`.
-
 ### Configurations
 #### Spark Configurations
 All possible [Spark configurations](https://spark.apache.org/docs/3.5.3/configuration.html) can be set here.  
@@ -422,7 +297,131 @@ curl -X 'POST' \
 * Refer to [DailySalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java) for [spark-batch-daily-sales-report-job](../spark-batch-daily-sales-report-job) and [LogsAnalysisJobLaunchRequest.java](src/main/java/ksoot/spark/dto/LogsAnalysisJobLaunchRequest.java) for [spark-stream-logs-analysis-job](../spark-stream-logs-analysis-job).
 * Refer to [Jackson Inheritance](https://www.baeldung.com/jackson-inheritance#2-per-class-annotations) for help in implementing inheritance in request classes.
 
-#### Launching Jobs
+
+## Implementation
+* At its core it uses [spark-submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html) to launch a Spark Job locally,  
+  on minikube or kubernetes in a unified way.
+* `spark-submit` command is derived with options coming through configurations in `application.yml` and Job start request Object.  
+  Refer to [SparkSubmitCommand Builder](src/main/java/com/ksoot/spark/launcher/SparkSubmitCommand.java) to see how the `spark-submit` command is built.
+* [SparkJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkJobLauncher.java) is the interface to launch a Spark Job.
+  As of now the only implementation is [SparkSubmitJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkSubmitJobLauncher.java). However, similar Job Launcher can be implemented for EMR also, placeholder at [SparkEmrJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkEmrJobLauncher.java)
+* [SparkSubmitJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkSubmitJobLauncher.java) launches the Job using `spark-submit` with options derived after merging common Spark configurations, job specific configurations in `application.yml` and Job request object.
+  Following is the `spark-submit` command generated for local deployment.
+```shell
+./bin/spark-submit --verbose --name daily-sales-report-job --class com.ksoot.spark.sales.DailySalesReportJob 
+ --conf spark.master=local --conf spark.executor.memory=2g --conf spark.driver.memory=1g --conf spark.driver.cores=3 
+--conf spark.executor.cores=1 --conf spark.submit.deployMode=client --conf spark.executor.instances=4 
+--conf spark.driver.extraJavaOptions="-Dspring.profiles.active=local -DSTATEMENT_MONTH=2024-11 -DCORRELATION_ID=71643ba2-1177-4e10-a43b-a21177de1022 -DPERSIST_JOB=true" 
+ /Users/myusername/.m2/repository/com/ksoot/spark/spark-batch-daily-sales-report-job/0.0.1-SNAPSHOT/spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar
+```
+This command String is then passed to [spark-job-submit.sh](cmd/spark-job-submit.sh) on mac or linux and [spark-job-submit.bat](cmd/spark-job-submit.bat) on windows to execute the command, as command length could exceed java [Process](https://docs.oracle.com/javase/8/docs/api/java/lang/Process.html) API limit.
+* Currently Spark Job can be triggered by REST API. However, it can be enhanced to trigger spark jobs on arrival of Kafka messages, or Scheduler triggers or any other event also.
+  You just need to provide the corresponding implementation selected by some runtime strategy and call the intended `SparkJobLauncher` implementation to launch the job, as follows.
+```java
+this.sparkJobLauncher.startJob(jobLaunchRequest);   
+```
+
+### Launching Jobs
+Jobs can be launched to run locally or on minikube.
+
+#### Local profile
+- Make sure **Postgres** is running at `localhost:5432` with username `postgres` and password `admin`.  
+  Create database `spark_jobs_db` and `error_logs_db` if they do not exist.
+- Make sure **ArangoDB** running at `localhost:8529` with `root` password as `admin`.
+- Make sure **MongoDB** running at `localhost:27017`.
+- Make sure **Kafka** running with bootstrap servers `localhost:9092`
+- Make sure **Kafka UI** running at `http://localhost:8100`. Create topics `job-stop-requests` and `error-logs` if they do not exist.
+
+> [!IMPORTANT]  
+> If any port or credentials are different from above mentioned then override respective configurations in [application-local.yml](src/main/resources/config/application-local.yml).
+
+Either above infrastructure is up and running as local installations in your system, or use **docker compose** using [docker-compose.yml](../docker-compose.yml) to run required infrastructure.
+In Terminal go to project root `spring-boot-spark-kubernetes` and execute following command. Make sure Docker is running.
+```shell
+docker compose up -d
+```
+* Perform `mvn clean install` to build the jobs and install in local `M2_REPO`. Job jars are picked from local `M2_REPO` while `spark-submit`.
+* Run the application in `local` profile and make a call to Job Start API.
+
+#### Minikube profile
+* Set minikube core to 4 and memory to 8GB atleast.
+* Make sure docker is running and minikube is started.
+* Check cluster ip by executing following command.
+```shell
+kubectl cluster-info
+```
+The output should look like below.
+```shell
+Kubernetes control plane is running at https://127.0.0.1:50537
+CoreDNS is running at https://127.0.0.1:50537/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
+* Set above port number `50537` in configuration `spark.master` value k8s://https://127.0.0.1:50537
+* Whenever minikube is restarted this port number changes, so make sure to get the new port and change in `spark.master` configuration.
+* In Terminal go to project root project `spring-boot-spark-kubernetes` and execute following command.
+```shell
+kubectl apply -f infra-k8s-deployment.yml
+```
+* Set default namespace to `ksoot` in minikube. You can always rollback it to default namespace.
+```shell
+kubectl config set-context --current --namespace=ksoot
+```
+* Check if all infra pods are running.
+```shell
+kubectl get pods
+```
+Output should look like below.
+```shell
+NAME                         READY   STATUS    RESTARTS   AGE
+arango-65d6fff6c5-4bjwq      1/1     Running   0          6m16s
+kafka-74c8d9579f-jmcr5       1/1     Running   0          6m16s
+kafka-ui-797446869-9d8zw     1/1     Running   0          6m16s
+mongo-6785c5cf8b-mtbk7       1/1     Running   0          6m16s
+postgres-685b766f66-7dnsl    1/1     Running   0          6m16s
+zookeeper-6fc87d48df-2t5pf   1/1     Running   0          6m16s
+```
+* Execute following command to build base spark image.
+```shell
+docker image build . -t ksoot/spark:3.5.3 -f Dockerfile
+```
+* In Terminal go to project `spring-boot-spark-kubernetes/spark-batch-daily-sales-report-job` and execute following command to build docker image for `daily-sales-report-job`.
+```shell
+docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
+```
+* In Terminal go to project `spring-boot-spark-kubernetes/spark-stream-logs-analysis-job` and execute following command to build docker image for `logs-analysis-job`.
+```shell
+docker image build . -t spark-stream-logs-analysis-job:0.0.1 -f Dockerfile
+```
+* Load Job images in minikube.
+```shell
+docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
+docker image build . -t spark-stream-logs-analysis-job:0.0.1 -f Dockerfile
+```
+* To Launch the Jobs on minikube in `cluster` deploy mode, run the application in `minikube` profile and make a call to Job Start API.
+  API response should look like below.
+```text
+Spark Job: 'daily-sales-report-job' submit request accepted for asynchronous execution. Correlation Id: 71643ba2-1177-4e10-a43b-a21177de1022. For real status of Job look into application logs or Driver POD logs if deploying on Kubernetes
+```
+* If `spark-submit` command is successful, you can see the Spark Driver and executor pods running in minikube.
+```shell
+kubectl get pods
+```
+Output should look like below.
+```shell
+NAME                                             READY   STATUS    RESTARTS   AGE
+daily-sales-report-job-2e9c6f93ef784c17-driver   1/1     Running   0          11s
+daily-sales-report-job-9ac2e493ef78625a-exec-1   1/1     Running   0          6s
+daily-sales-report-job-9ac2e493ef78625a-exec-2   1/1     Running   0          6s
+```
+* Once Job is complete executor pods are terminated automatically.
+  But driver pod remains in completed state, it does not consume any resources.
+```shell
+NAME                                             READY   STATUS      RESTARTS   AGE
+daily-sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          2m56s
+```
+* If Job fails executor pods are still terminated, but driver pod remains in error state. For debugging you can see pod logs.
+* Eventually you may want to cleanup by deleting the pods or `minikube delete`.
 
 ## References
 - [Spark Submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html)
