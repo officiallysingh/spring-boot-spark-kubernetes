@@ -83,6 +83,7 @@ debug: false
 
 #------------------------- Job configurations -------------------------
 ksoot:
+  #  Applicable only while running on Windows machine, replace ${HOME} with your directory
   hadoop-dll: ${HOME}/hadoop-3.0.0/bin/hadoop.dll
   job:
     correlation-id: ${CORRELATION_ID:${spring.application.name}-1}

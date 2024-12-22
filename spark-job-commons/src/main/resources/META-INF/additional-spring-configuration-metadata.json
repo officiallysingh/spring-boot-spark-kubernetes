@@ -193,11 +193,23 @@
       "values": [
         {
           "value": "csv",
-          "description": "Output in csv format."
+          "description": "File format csv."
         },
         {
           "value": "parquet",
-          "description": "Output in parquet format."
+          "description": "File format parquet."
+        },
+        {
+          "value": "avro",
+          "description": "File format avro."
+        },
+        {
+          "value": "text",
+          "description": "File format text."
+        },
+        {
+          "value": "orc",
+          "description": "File format avro."
         }
       ]
     },

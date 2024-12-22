@@ -76,7 +76,7 @@ public class SparkExecutionManager {
       }
     } finally {
       this.exitCode = 2;
-      this.exitMessage = "Termination requested";
+      this.exitMessage = "Terminated";
       final SparkContext sparkContext = this.sparkSession.sparkContext();
       if (!sparkContext.isStopped()) {
         sparkContext.cancelAllJobs();

@@ -30,11 +30,11 @@ You can directly import the [**Postman Collection**](api-spec/Spark%20Job%20Serv
 POST /v1/spark-jobs/start
 ```
 
-| Request Body | Type | Description | Default                           |Required | 
-| :----------- | :--- | :---------- | :----------------------------------| :------- |
-| `jobName` | `string` | Spark Job name, must be present in application.yml spark-submit.jobs | -                                 | Yes |
-| `correlationId` | `string` | Unique correlation id for each Job execution | Random UUID, returned in response | Yes |
-| `sparkConfigs` | `object` | Runtime Spark conf properties for this job | Empty | Yes |
+| Request Body    | Type                  | Description                                                          | Default                           | Required | 
+|:----------------|:----------------------|:---------------------------------------------------------------------|:----------------------------------|:---------|
+| `jobName`       | `String`              | Spark Job name, must be present in application.yml spark-submit.jobs | -                                 | Yes      |
+| `correlationId` | `String`              | Unique correlation id for each Job execution                         | Random UUID, returned in response | Yes      |
+| `sparkConfigs`  | `Map<String, String>` | Runtime Spark conf properties for this job                           | Empty                             | Yes      |
 
 **Supports three types of job launch requests. To support more jobs, Similarly write the corresponding Request class.**
 - [DailySalesReportJobLaunchRequest](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java)
@@ -47,9 +47,9 @@ POST /v1/spark-jobs/start
 POST /v1/spark-jobs/stop/{correlationId}
 ```
 
-| Parameter | Type | Description | Required |
-| :-------- | :--- | :---------- | :------- |
-| `correlationId` | `string` | Job Correlation Id | Yes |
+| Parameter       | Type     | Description        | Required |
+|:----------------|:---------|:-------------------| :------- |
+| `correlationId` | `String` | Job Correlation Id | Yes |
 
 ### Spark Job Executions APIs
 
@@ -59,11 +59,11 @@ POST /v1/spark-jobs/stop/{correlationId}
 GET /v1/spark-jobs/executions
 ```
 
-| Parameter | Type | Description | Default | Required |
-| :-------- | :--- | :---------- | :------ | :------- |
-| `page` | `integer` | Zero-based page index (0..N) | 0 | No |
-| `size` | `integer` | The size of the page to be returned | 10 | No |
-| `sort` | `array` | Sorting criteria in format: property,(asc\|desc) | - | No |
+| Parameter | Type      | Description                                      | Default | Required |
+|:----------|:----------|:-------------------------------------------------|:--------|:---------|
+| `page`    | `Integer` | Zero-based page index (0..N)                     | 0       | No       |
+| `size`    | `Integer` | The size of the page to be returned              | 10      | No       |
+| `sort`    | `Sort`    | Sorting criteria in format: property,(asc\|desc) | -       | No       |
 
 #### Get Job Executions By Job Name
 
@@ -71,12 +71,12 @@ GET /v1/spark-jobs/executions
 GET /v1/spark-jobs/executions/{jobName}
 ```
 
-| Parameter | Type | Description | Default | Required |
-| :-------- | :--- | :---------- | :------ | :------- |
-| `jobName` | `string` | Job name | - | Yes |
-| `page` | `integer` | Zero-based page index (0..N) | 0 | No |
-| `size` | `integer` | The size of the page to be returned | 10 | No |
-| `sort` | `array` | Sorting criteria in format: property,(asc\|desc) | - | No |
+| Parameter | Type      | Description                                      | Default | Required |
+|:----------|:----------|:-------------------------------------------------|:--------|:---------|
+| `jobName` | `String`  | Job name                                         | -       | Yes      |
+| `page`    | `Integer` | Zero-based page index (0..N)                     | 0       | No       |
+| `size`    | `Integer` | The size of the page to be returned              | 10      | No       |
+| `sort`    | `Sort`    | Sorting criteria in format: property,(asc\|desc) | -       | No       |
 
 #### Get Running Job Executions By Job Name
 
@@ -84,12 +84,12 @@ GET /v1/spark-jobs/executions/{jobName}
 GET /v1/spark-jobs/executions/{jobName}/running
 ```
 
-| Parameter | Type | Description | Default | Required |
-| :-------- | :--- | :---------- | :------ | :------- |
-| `jobName` | `string` | Job name | - | Yes |
-| `page` | `integer` | Zero-based page index (0..N) | 0 | No |
-| `size` | `integer` | The size of the page to be returned | 10 | No |
-| `sort` | `array` | Sorting criteria in format: property,(asc\|desc) | - | No |
+| Parameter | Type      | Description                                      | Default | Required |
+|:----------|:----------|:-------------------------------------------------|:--------|:---------|
+| `jobName` | `String`  | Job name                                         | -       | Yes      |
+| `page`    | `Integer` | Zero-based page index (0..N)                     | 0       | No       |
+| `size`    | `Integer` | The size of the page to be returned              | 10      | No       |
+| `sort`    | `Sort`    | Sorting criteria in format: property,(asc\|desc) | -       | No       |
 
 #### Get Latest Job Execution By Job Name
 
@@ -97,9 +97,9 @@ GET /v1/spark-jobs/executions/{jobName}/running
 GET /v1/spark-jobs/executions/{jobName}/latest
 ```
 
-| Parameter | Type | Description | Required |
-| :-------- | :--- | :---------- | :------- |
-| `jobName` | `string` | Job name | Yes |
+| Parameter | Type     | Description | Required |
+|:----------|:---------|:------------|:---------|
+| `jobName` | `String` | Job name    | Yes      |
 
 #### Get Latest Job Executions By Job Names
 
@@ -107,9 +107,9 @@ GET /v1/spark-jobs/executions/{jobName}/latest
 GET /v1/spark-jobs/executions/latest
 ```
 
-| Parameter | Type | Description | Required |
-| :-------- | :--- | :---------- | :------- |
-| `jobNames` | `array` | Job Names | Yes |
+| Parameter  | Type           | Description | Required |
+|:-----------|:---------------|:------------|:---------|
+| `jobNames` | `List<String>` | Job Names   | Yes      |
 
 #### Get Job Names
 
@@ -131,9 +131,9 @@ No parameters required
 GET /v1/spark-jobs/executions/count/{jobName}
 ```
 
-| Parameter | Type | Description | Required |
-| :-------- | :--- | :---------- | :------- |
-| `jobName` | `string` | Job name | Yes |
+| Parameter | Type     | Description | Required |
+| :-------- |:---------|:------------|:---------|
+| `jobName` | `String` | Job name    | Yes      |
 
 #### Get Running Job Executions Count
 
@@ -148,9 +148,9 @@ No parameters required
 GET /v1/spark-jobs/executions/count-by-correlation-id/{correlationId}
 ```
 
-| Parameter | Type | Description | Required |
-| :-------- | :--- | :---------- | :------- |
-| `correlationId` | `string` | Job Correlation Id | Yes |
+| Parameter       | Type     | Description        | Required |
+|:----------------|:---------|:-------------------|:---------|
+| `correlationId` | `String` | Job Correlation Id | Yes      |
 
 #### Get Job Executions By Correlation Id
 
@@ -158,9 +158,9 @@ GET /v1/spark-jobs/executions/count-by-correlation-id/{correlationId}
 GET /v1/spark-jobs/executions/by-correlation-id/{correlationId}
 ```
 
-| Parameter | Type | Description | Default | Required |
-| :-------- | :--- | :---------- | :------ | :------- |
-| `correlationId` | `string` | Job Correlation Id | - | Yes |
-| `page` | `integer` | Zero-based page index (0..N) | 0 | No |
-| `size` | `integer` | The size of the page to be returned | 10 | No |
-| `sort` | `array` | Sorting criteria in format: property,(asc\|desc) | - | No |
+| Parameter       | Type      | Description                                      | Default | Required |
+|:----------------|:----------|:-------------------------------------------------|:--------|:---------|
+| `correlationId` | `String`  | Job Correlation Id                               | -       | Yes      |
+| `page`          | `Integer` | Zero-based page index (0..N)                     | 0       | No       |
+| `size`          | `Integer` | The size of the page to be returned              | 10      | No       |
+| `sort`          | `Sort`    | Sorting criteria in format: property,(asc\|desc) | -       | No       |

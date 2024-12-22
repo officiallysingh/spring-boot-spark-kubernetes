@@ -133,7 +133,7 @@ spark:
 
 #------------------------- Job configurations -------------------------
 ksoot:
-#  Applicable only while running on Windows machine
+#  Applicable only while running on Windows machine, replace ${HOME} with your directory
   hadoop-dll: ${HOME}/hadoop-3.0.0/bin/hadoop.dll
   job:
     month: ${STATEMENT_MONTH:}

@@ -51,7 +51,6 @@ public class SparkPipelineExecutor {
         this.kafkaConnector.readStream(this.connectorProperties.getKafkaOptions().getTopic());
     // Deserialize Kafka messages as text
     Dataset<Row> logLines = kafkaLogs.selectExpr("CAST(value AS STRING) as log_line");
-    //    Dataset<Row> errorLogs = logLines.filter(col("log_line").rlike(LOG_REGEX));
     // Just for testing
     //    this.writeToConsole(errorLogs);
 
@@ -86,6 +85,7 @@ public class SparkPipelineExecutor {
     }
   }
 
+  // Just for testing
   private void writeToConsole(final Dataset<Row> errorLogs) {
     try {
       errorLogs
@@ -95,7 +95,7 @@ public class SparkPipelineExecutor {
           .start()
           .awaitTermination();
     } catch (final TimeoutException | StreamingQueryException e) {
-      e.printStackTrace();
+      log.error("Error while writing to Console", e);
     }
   }
 }
