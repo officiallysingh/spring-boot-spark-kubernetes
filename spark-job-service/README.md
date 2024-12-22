@@ -196,15 +196,17 @@ GET /v1/spark-jobs/executions/by-correlation-id/{correlationId}
 | `sort`          | `Sort`    | Sorting criteria in format: property,(asc\|desc) | -       | No       |
 
 ## Implementation
-At its core it uses [spark-submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html) to launch a Spark Job locally,  
-on minikube or kubernetes in a unified way derived through configurations in `application.yml`.
-[SparkJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkJobLauncher.java) is the interface to launch a Spark Job.
+* At its core it uses [spark-submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html) to launch a Spark Job locally,  
+on minikube or kubernetes in a unified way.  
+* `spark-submit` command is derived with options coming through configurations in `application.yml` and Job start request Object.  
+Refer to [SparkSubmitCommand Builder](src/main/java/com/ksoot/spark/launcher/SparkSubmitCommand.java) to see how the `spark-submit` command is built.
+* [SparkJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkJobLauncher.java) is the interface to launch a Spark Job.
 Currently the only implementation is [SparkSubmitJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkSubmitJobLauncher.java). However, similarl Job Launcher can be implemented for EMR also, placeholder at [SparkEmrJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkEmrJobLauncher.java)
 
 ### Job Triggering
 Currently Spark Job can be triggered by REST API.  
 However, it can be enhanced to trigger spark jobs on arrival of Kafka messages, or Scheduler triggers or any other event also.
-You just need to implement the corresponding trigger and call the `SparkJobLauncher` to launch the job, as follows.
+You just need to provide the corresponding implementation selected by some runtime strategy and call the intended `SparkJobLauncher` implementation to launch the job, as follows.
 ```java
 this.sparkJobLauncher.startJob(jobLaunchRequest);   
 ```
@@ -241,7 +243,6 @@ spark:
 #### Job Launcher Configurations
 Following are Spark Job Launcher configurations.
 ```yaml
-#------------------------- Spark Submit Job configurations -------------------------
 spark-launcher:
   #  spark-home: ${SPARK_HOME}
   capture-jobs-logs: true
@@ -272,10 +273,10 @@ spark-launcher:
 * `persist-jobs`:- If set to `true` the Spring cloud task tracks the Jobs status in configured database. Default value `false`. Recommended in production.
 * `env`:- Remember, there are environment variables defined in individual Job's `application.yml` such as `KAFKA_BOOTSTRAP_SERVERS`, `MONGODB_URL` etc.
 The values of these environment variables to jobs can be provided from here. It should have environment variables that are common to all jobs.
-* `jobs`:- It is a Map of all the Jobs you wish to trigger from this service.
-Each job has must be provided with some basic mandatory configurations and few optional configurations.
-  * `main-class-name`:- Fully qualified Main class name of the Spark Job.
-  * `jar-file`:- Jar file path of the Spark Job.
+* `jobs`:- A Map of each Job's configurations you wish to trigger from this service.
+Each job has must be provided with some basic mandatory configurations and a few optional configurations.
+  * `main-class-name`:- Fully qualified Main class name of the Spark Job. Its mandatory, as Spark needs to launch the Job by running its main class.
+  * `jar-file`:- Jar file path of the Spark Job. This jar file is used in `spark-submit` command to launch the Job.
   * `env`:- Environment variables specific to this job. It overrides the common environment variables at `spark-launcher.env`.
   * `spark-config`:- Spark configurations specific to this job. It overrides the common Spark configurations at `spark`.
   You can unset any configuration coming from common spark configuration by setting it to `` (blank) here.
@@ -307,6 +308,18 @@ curl -X 'POST' \
 * For each Job a Request class extending [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) should be implemented.
 * Refer to [DailySalesReportJobLaunchRequest](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java) for [spark-batch-daily-sales-report-job](../spark-batch-daily-sales-report-job) and [LogsAnalysisJobLaunchRequest](src/main/java/ksoot/spark/dto/LogsAnalysisJobLaunchRequest.java) for [spark-stream-logs-analysis-job](../spark-stream-logs-analysis-job).
 * Refer to [Jackson Inheritance](https://www.baeldung.com/jackson-inheritance#2-per-class-annotations) for help in implementing inheritance in request classes.
+
+#### Spark submit
+[SparkSubmitJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkSubmitJobLauncher.java) launches the Job using `spark-submit` with options derived after merging common Spark configurations, job specific configurations in `application.yml` and Job request object.
+Following is the `spark-submit` command generated for local deployment.
+```shell
+./bin/spark-submit --verbose --name daily-sales-report-job --class com.ksoot.spark.sales.DailySalesReportJob 
+--conf spark.executor.memory=2g --conf spark.driver.memory=1g --conf spark.master=local --conf spark.driver.cores=3 
+--conf spark.executor.cores=1 --conf spark.submit.deployMode=client --conf spark.executor.instances=4 
+--conf spark.driver.extraJavaOptions="-Dspring.profiles.active=local -DSTATEMENT_MONTH=2024-11 -DCORRELATION_ID=71643ba2-1177-4e10-a43b-a21177de1022 -DPERSIST_JOB=true" 
+ /Users/myusername/.m2/repository/com/ksoot/spark/spark-batch-daily-sales-report-job/0.0.1-SNAPSHOT/spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar
+```
+This command String is then passed to [spark-job-submit.sh](cmd/spark-job-submit.sh) on mac or linux and [spark-job-submit.bat](cmd/spark-job-submit.bat) on windows to execute the command.
 
 ## References
 - [Spark Submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html)
