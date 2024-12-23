@@ -22,9 +22,9 @@ Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) 
 * Go to `Modify options`, click on `Add VM options` and set the value as `-Dspring.profiles.active=minikube` to run in `minikube` profile.
 * Open swagger at http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs
 ![Swagger](Swagger.png)
+* Or import the [**Postman Collection**](api-spec/Spark%20Job%20Service%20APIs.postman_collection.json)
 
 ## API Reference
-You can directly import the [**Postman Collection**](api-spec/Spark%20Job%20Service%20APIs.postman_collection.json)
 
 ### Spark Job Launcher APIs
 
@@ -62,7 +62,7 @@ curl -X 'POST' \
 }'
 ```
 
-Similary curl to start [spark-stream-logs-analysis-job](../spark-stream-logs-analysis-job):
+Similarly, curl to start [spark-stream-logs-analysis-job](../spark-stream-logs-analysis-job):
 ```curl
 curl -X 'POST' \
   'http://localhost:8090/v1/spark-jobs/start' \
@@ -201,7 +201,8 @@ GET /v1/spark-jobs/executions/by-correlation-id/{correlationId}
 ### Configurations
 #### Spark Configurations
 All possible [Spark configurations](https://spark.apache.org/docs/3.5.3/configuration.html) can be set here.  
-Remember you have similar Spark configurations in individual Job also. Any configuration set here will override the Job specific configuration.
+Remember, you have similar Spark configurations in individual Jobs such as [daily-sales-report-job's application](../spark-batch-daily-sales-report-job/src/main/resources/config/application.yml) and [logs-analysis-job's application](../spark-stream-logs-analysis-job/src/main/resources/config/application.yml) also.  
+Any configuration set here will override that Job's yml configurations.
 ```yaml
 #---------- Spark configurations common to all Jobs -------------------------
 spark:
@@ -256,24 +257,24 @@ spark-launcher:
 ```
 **Description**
 * `spark-home`: Spark installation directory. Default value is environment variable `SPARK_HOME`.
-* `capture-jobs-logs`:- If set to `true` the triggered Job's logs are captures and displayed in this service's logs. Default value `false`. Not recommended in production.
-* `persist-jobs`:- If set to `true` the Spring cloud task tracks the Jobs status in configured database. Default value `false`. Recommended in production.
+* `capture-jobs-logs`:- If set to `true` the triggered Job's logs are captures and displayed in this service's logs. Default value `false`. Enable for local dev/testing only, Not recommended in production.
+* `persist-jobs`:- If set to `true` the Spring cloud task tracks the Jobs status in configured Postgres database. Default value `false`. Recommended in production.
 * `env`:- Remember, there are environment variables defined in individual Job's `application.yml` such as `KAFKA_BOOTSTRAP_SERVERS`, `MONGODB_URL` etc.
-The values of these environment variables to jobs can be provided from here. It should have environment variables that are common to all jobs.
+The values of these environment variables to jobs can be provided from here. It should have environment variables overrides that are common to all jobs.
 * `jobs`:- A Map of each Job's configurations you wish to trigger from this service.
 Each job must be provided with some basic mandatory configurations and a few optional configurations.
   * `main-class-name`:- Fully qualified Main class name of the Spark Job. Its mandatory, as Spark needs to launch the Job by running its main class.
   * `jar-file`:- Jar file path of the Spark Job. This jar file is used in `spark-submit` command to launch the Job.
   * `env`:- Environment variables specific to this job. It overrides the common environment variables at `spark-launcher.env`.
-  * `spark-config`:- Spark configurations specific to this job. It overrides the common Spark configurations at `spark`.
+  * `spark-config`:- Spark configurations specific to this job. It overrides the common Spark configurations in this `application.yml`.
   You can unset any configuration coming from common spark configuration by setting it to `` (blank) here.
 
 > [!IMPORTANT]  
-> Job names `daily-sales-report-job` and `logs-analysis-job` given as keys in `spark-launcher.jobs` Map are used in Job start Request.
+> Job names `daily-sales-report-job` and `logs-analysis-job` given as keys in `spark-launcher.jobs` Map, are used in Job start Request.
 > Refer to below given curl to start [spark-batch-daily-sales-report-job](../spark-batch-daily-sales-report-job)   
 > and Note that `jobName` in Request body must match the key name in `spark-launcher.jobs` Map for this job, `daily-sales-report-job` in this case.
-> It is recommended to have job name as `spring.application.name` in Job's `application.yml`.
-> Also important to mention that the `sparkConfigs` in Request body will override the configurations in `spark-launcher.jobs.<jobName>.spark-config`, hence takes the highest precedence.
+> It is recommended to have job name as `spring.application.name` in respective Job's `application.yml`.
+> Another thing to note about this job name is that the Driver and Executor pods created for this job in Kubernetes will have this job name as prefix.
 ```curl
 curl -X 'POST' \
   'http://localhost:8090/v1/spark-jobs/start' \
@@ -292,10 +293,12 @@ curl -X 'POST' \
 
 #### Job Request class
 * Each Job has a corresponding Request class to take the Job Start request as each job may have a different set of arguments, though some job arguments are common to all jobs.
-* So a base abstract class [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) is defined with common arguments.
+* So a base abstract class [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) is defined with common arguments i.e. `jobName`, `correlationId` and `sparkConfigs`.
 * For each Job a Request class extending [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) should be implemented.
 * Refer to [DailySalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java) for [spark-batch-daily-sales-report-job](../spark-batch-daily-sales-report-job) and [LogsAnalysisJobLaunchRequest.java](src/main/java/ksoot/spark/dto/LogsAnalysisJobLaunchRequest.java) for [spark-stream-logs-analysis-job](../spark-stream-logs-analysis-job).
 * Refer to [Jackson Inheritance](https://www.baeldung.com/jackson-inheritance#2-per-class-annotations) for help in implementing inheritance in request classes.
+> [!IMPORTANT]  
+> Also important to mention that the `sparkConfigs` in Request body will override the configurations in `spark-launcher.jobs.<jobName>.spark-config`, hence takes the highest precedence.
 
 
 ## Implementation
@@ -395,8 +398,8 @@ docker image build . -t spark-stream-logs-analysis-job:0.0.1 -f Dockerfile
 ```
 * Load Job images in minikube.
 ```shell
-docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
-docker image build . -t spark-stream-logs-analysis-job:0.0.1 -f Dockerfile
+minikube image load spark-batch-daily-sales-report-job:0.0.1
+minikube image load spark-stream-logs-analysis-job:0.0.1
 ```
 * To Launch the Jobs on minikube in `cluster` deploy mode, run the application in `minikube` profile and make a call to Job Start API.
   API response should look like below.

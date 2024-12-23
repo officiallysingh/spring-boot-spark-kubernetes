@@ -10,14 +10,6 @@ Moreover, the framework supports one-click deployment of Spark jobs with RESTful
 and when combined with Spring Boot, it offers a robust framework for building scalable, enterprise-grade data processing applications.
 But for beginners it's tedious to get up and running.
 
-# Framework Architecture
-
-The proposed framework provides a comprehensive solution for managing Spark jobs through a RESTful interface, offering:
-- Job Launching: Trigger Spark jobs and requests to stop running jobs via REST endpoints for deployment on local and kubernetes.
-- Job Monitoring: Track job status, start and end time, duration taken, error messages if there is any.
-- Auto-configurations: of Common components such as `SparkSession`, Job lifecycle listener and Connectors to read and write to various datasources.
-- Demo Jobs: To start with a [Spark Batch Job](spark-batch-daily-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job)
-
 # Installation
 ## Prerequisites
 - Java 17
@@ -52,3 +44,83 @@ export SPARK_HOME="/<your directory>/spark-3.5.3-bin-hadoop3"
 export SPARK_CONF_DIR=$SPARK_HOME/conf
 export PATH="$SPARK_HOME/bin:$PATH"
 ```
+
+### Environment setup
+The demo jobs and `spark-job-service` need following services up and running.
+- Make sure **Postgres** is running at `localhost:5432` with username `postgres` and password `admin`.  
+  Create database `spark_jobs_db` if it does not exist.
+- Make sure **MongoDB** running at `localhost:27017`.
+- Make sure **ArangoDB** running at `localhost:8529` with `root` password as `admin`.
+- Make sure **Kafka** running with bootstrap servers `localhost:9092`.
+- Make sure **Kafka UI** running at `http://localhost:8100`. Create topic `job-stop-requests` if it does not exist.
+
+#### There are multiple ways to have required infrastructure up and running.
+1. **Local installations**  
+All these services can be installed locally on your machine, and should be accessible at above-mentioned urls and credentials (wherever applicable).
+
+> [!IMPORTANT]  
+> If any port or credentials are different from above mentioned then override respective configurations in [application-local.yml](src/main/resources/config/application-local.yml).
+
+2. **Docker compose**   
+* The [docker-compose.yml](../docker-compose.yml) file defines the services and configurations to run required infrastructure in Docker. 
+* Make sure Docker is running. 
+* In Terminal go to project root `spring-boot-spark-kubernetes` and execute following command and Check if all services are running.
+```shell
+docker compose up -d
+```
+
+> [!IMPORTANT]  
+> While using docker compose make sure the required ports are free on your machine otherwise it will throw port busy error.
+
+3. **Minikube**  
+The [infra-k8s-deployment.yml](../infra-k8s-deployment.yml) file defines the services and configurations to run required infrastructure in Minikube.
+* Set minikube cores to 4 and memory to 8GB atleast.
+* Make sure docker is running and minikube is started.
+* In Terminal go to project root `spring-boot-spark-kubernetes` and execute following command.
+```shell
+kubectl apply -f infra-k8s-deployment.yml
+```
+* Set default namespace to `ksoot` in minikube. You can always rollback it to default namespace.
+```shell
+kubectl config set-context --current --namespace=ksoot
+```
+* Check if all infra pods are running.
+```shell
+kubectl get pods
+```
+Output should look like below.
+```shell
+NAME                         READY   STATUS    RESTARTS   AGE
+arango-65d6fff6c5-4bjwq      1/1     Running   0          6m16s
+kafka-74c8d9579f-jmcr5       1/1     Running   0          6m16s
+kafka-ui-797446869-9d8zw     1/1     Running   0          6m16s
+mongo-6785c5cf8b-mtbk7       1/1     Running   0          6m16s
+postgres-685b766f66-7dnsl    1/1     Running   0          6m16s
+zookeeper-6fc87d48df-2t5pf   1/1     Running   0          6m16s
+```
+* Eastablish minikube tunnel to expose services of type LoadBalancer running in Minikube cluster to local machine.  
+It creates a bridge between your local network and the Minikube cluster, making the required infrastructure accessible to local.
+```shell
+minikube tunnel
+```
+Keep it running in a separate terminal. Output should look like below.
+```shell
+✅  Tunnel successfully started
+
+📌  NOTE: Please do not close this terminal as this process must stay alive for the tunnel to be accessible ...
+
+🏃  Starting tunnel for service arango.
+🏃  Starting tunnel for service kafka.
+🏃  Starting tunnel for service kafka-ui.
+🏃  Starting tunnel for service mongo.
+🏃  Starting tunnel for service postgres.
+🏃  Starting tunnel for service zookeeper.
+```
+
+# Framework Architecture
+
+The proposed framework provides a comprehensive solution for managing Spark jobs through a RESTful interface, offering:
+- Job Launching: Trigger Spark jobs and requests to stop running jobs via REST endpoints for deployment on local and kubernetes.
+- Job Monitoring: Track job status, start and end time, duration taken, error messages if there is any.
+- Auto-configurations: of Common components such as `SparkSession`, Job lifecycle listener and Connectors to read and write to various datasources.
+- Demo Jobs: To start with a [Spark Batch Job](spark-batch-daily-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job)

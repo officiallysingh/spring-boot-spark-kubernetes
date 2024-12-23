@@ -26,6 +26,7 @@ spark:
     cores: 2
   ui:
     enabled: true
+
 # ===================================================================
 # Application specific properties
 # Add your own application properties here

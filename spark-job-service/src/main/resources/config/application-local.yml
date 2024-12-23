@@ -9,11 +9,6 @@ logging:
     ROOT: info
 debug: false
 
-# ===================================================================
-# Application specific properties
-# Add your own application properties here
-# ===================================================================
-
 #------------------------- Spark configurations -------------------------
 spark:
   master: local
@@ -27,6 +22,11 @@ spark:
     extraJavaOptions: >
       -Dspring.profiles.active=local
   submit.deployMode: client
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
 
 #------------------------- Spark Submit Job configurations -------------------------
 spark-launcher:

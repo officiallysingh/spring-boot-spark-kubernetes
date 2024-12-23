@@ -76,39 +76,6 @@ logging:
     '[org.apache.kafka.clients]': error
 debug: false
 
-# ===================================================================
-# Application specific properties
-# Add your own application properties here
-# ===================================================================
-
-#------------------------- Job configurations -------------------------
-ksoot:
-  #  Applicable only while running on Windows machine, replace ${HOME} with your directory
-  hadoop-dll: ${HOME}/hadoop-3.0.0/bin/hadoop.dll
-  job:
-    correlation-id: ${CORRELATION_ID:${spring.application.name}-1}
-    persist: ${PERSIST_JOB:false}
-    job-stop-topic: ${JOB_STOP_TOPIC:job-stop-requests}
-  connector:
-    save-mode: Append
-    output-mode: Update
-    jdbc-options:
-      url: ${JDBC_URL:jdbc:postgresql://localhost:5432}
-      database: ${JDBC_DB:error_logs_db}
-      username: ${JDBC_USER:postgres}
-      password: ${JDBC_PASSWORD:admin}
-      batchsize: ${JDBC_BATCH_SIZE:1000}
-      isolation-level: ${JDBC_ISOLATION_LEVEL:READ_UNCOMMITTED}
-    file-options:
-      format: csv
-      header: true
-      path: ${SPARK_OUTPUT_PATH:spark-space/output}
-      merge: true
-    kafka-options:
-      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-      topic: ${KAFKA_ERROR_LOGS_TOPIC:error-logs}
-      fail-on-data-loss: ${KAFKA_FAIL_ON_DATA_LOSS:false}
-
 #------------------------- Spark configurations -------------------------
 spark:
   app.name: ${spring.application.name}
@@ -143,5 +110,39 @@ spark:
         connection.ssl.enabled: true  # Enable SSL
         fast.upload: true  # Enable faster uploads
     google.cloud.auth.service.account.json.keyfile: ${GCS_KEY_FILE:<put your sa-key.json>}
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
+
+#------------------------- Job configurations -------------------------
+ksoot:
+  #  Applicable only while running on Windows machine, replace ${HOME} with your directory
+  hadoop-dll: ${HOME}/hadoop-3.0.0/bin/hadoop.dll
+  job:
+    correlation-id: ${CORRELATION_ID:${spring.application.name}-1}
+    persist: ${PERSIST_JOB:false}
+    job-stop-topic: ${JOB_STOP_TOPIC:job-stop-requests}
+  connector:
+    save-mode: Append
+    output-mode: Update
+    jdbc-options:
+      url: ${JDBC_URL:jdbc:postgresql://localhost:5432}
+      database: ${JDBC_DB:error_logs_db}
+      username: ${JDBC_USER:postgres}
+      password: ${JDBC_PASSWORD:admin}
+      batchsize: ${JDBC_BATCH_SIZE:1000}
+      isolation-level: ${JDBC_ISOLATION_LEVEL:READ_UNCOMMITTED}
+    file-options:
+      format: csv
+      header: true
+      path: ${SPARK_OUTPUT_PATH:spark-space/output}
+      merge: true
+    kafka-options:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      topic: ${KAFKA_ERROR_LOGS_TOPIC:error-logs}
+      fail-on-data-loss: ${KAFKA_FAIL_ON_DATA_LOSS:false}
+
 
 

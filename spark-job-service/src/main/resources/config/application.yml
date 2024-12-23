@@ -127,11 +127,6 @@ logging:
     '[org.apache.kafka.clients]': error
 debug: false
 
-# ===================================================================
-# Application specific properties
-# Add your own application properties here
-# ===================================================================
-
 #---------- Spark configurations common to all Jobs -------------------------
 spark:
   master: k8s://https://kubernetes.default.svc
@@ -144,17 +139,22 @@ spark:
     cores: 2
   default:
     parallelism: 32
-#    extraJavaOptions: >
-#      -DMONGODB_URL=${MONGODB_URL:mongodb://localhost:27017}
-#      -DMONGO_FEATURE_DB=${MONGO_FEATURE_DB:feature-repo}
+  #    extraJavaOptions: >
+  #      -DMONGODB_URL=${MONGODB_URL:mongodb://localhost:27017}
+  #      -DMONGO_FEATURE_DB=${MONGO_FEATURE_DB:feature-repo}
   kubernetes:
     namespace: spark
     authenticate.driver.serviceAccountName: spark
     driverEnv:
       SPARK_USER: spark
     #Always, Never, and IfNotPresent
-#    container.image.pullPolicy: IfNotPresent
+  #    container.image.pullPolicy: IfNotPresent
   submit.deployMode: cluster
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
 
 #------------------- Spark Job Launcher configurations --------------------
 spark-launcher:

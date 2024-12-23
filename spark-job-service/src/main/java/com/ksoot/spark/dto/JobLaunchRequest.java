@@ -37,7 +37,7 @@ public abstract class JobLaunchRequest {
   protected final String jobName;
 
   @Schema(
-      description = "Unique correlation id for each Job execution.",
+      description = "Correlation id for each Job execution. Recommended but not mandatory to be Unique.",
       example = "71643ba2-1177-4e10-a43b-a21177de1022")
   @NotEmpty
   protected final String correlationId;
