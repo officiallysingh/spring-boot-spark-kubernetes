@@ -4,7 +4,7 @@ Demo **Spark Batch job** implemented as Spring Cloud Task
 Run [**`DailySalesReportJob`**](src/main/java/com/ksoot/spark/sales/DailySalesReportJob.java) as Spring boot application.
 
 > [!IMPORTANT]  
-> Run in active profile `local` locally.  
+> Run in active profile `local` locally by setting VM argument `-Dspring.profiles.active=local`
 > Set VM argument `--add-exports java.base/sun.nio.ch=ALL-UNNAMED` to avoid exception `Factory method 'sparkSession' threw exception with message: class org.apache.spark.storage.StorageUtils$ (in unnamed module @0x2049a9c1) cannot access class sun.nio.ch.DirectBuffer (in module java.base) because module java.base does not export sun.nio.ch to unnamed module @0x2049a9c1`.
 
 ## Environment setup

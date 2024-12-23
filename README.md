@@ -54,7 +54,7 @@ The demo jobs and `spark-job-service` need following services up and running.
 - Make sure **Kafka** running with bootstrap servers `localhost:9092`.
 - Make sure **Kafka UI** running at `http://localhost:8100`. Create topic `job-stop-requests` if it does not exist.
 
-#### There are multiple ways to have required infrastructure up and running.
+#### There are three ways to have required infrastructure up and running.
 1. **Local installations**  
 All these services can be installed locally on your machine, and should be accessible at above-mentioned urls and credentials (wherever applicable).
 
@@ -98,7 +98,7 @@ mongo-6785c5cf8b-mtbk7       1/1     Running   0          6m16s
 postgres-685b766f66-7dnsl    1/1     Running   0          6m16s
 zookeeper-6fc87d48df-2t5pf   1/1     Running   0          6m16s
 ```
-* Eastablish minikube tunnel to expose services of type LoadBalancer running in Minikube cluster to local machine.  
+* Establish minikube tunnel to expose services of type `LoadBalancer` running in Minikube cluster to local machine.  
 It creates a bridge between your local network and the Minikube cluster, making the required infrastructure accessible to local.
 ```shell
 minikube tunnel

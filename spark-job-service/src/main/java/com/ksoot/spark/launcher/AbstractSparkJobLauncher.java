@@ -29,7 +29,7 @@ public abstract class AbstractSparkJobLauncher implements SparkJobLauncher {
       final SparkJobProperties sparkJobProperties,
       final Map<String, Object> sparkRuntimeJobSpecificProperties) {
     Properties confProperties =
-        this.mergeSparkConfigurations(
+        this.effectiveSparkConfigurations(
             sparkJobProperties.getSparkConfig(), sparkRuntimeJobSpecificProperties);
 
     if (!confProperties.containsKey(DEPLOY_MODE)) {
@@ -49,7 +49,7 @@ public abstract class AbstractSparkJobLauncher implements SparkJobLauncher {
 
   // Merge common properties with job-specific properties, giving precedence to job-specific
   // properties
-  protected Properties mergeSparkConfigurations(
+  protected Properties effectiveSparkConfigurations(
       final Properties sparkJobSpecificProperties,
       final Map<String, Object> sparkRuntimeJobSpecificProperties) {
     final Properties confProperties = new Properties();
@@ -60,7 +60,7 @@ public abstract class AbstractSparkJobLauncher implements SparkJobLauncher {
     return confProperties;
   }
 
-  protected Map<String, Object> mergeEnvironmentVariables(
+  protected Map<String, Object> effectiveEnvironmentVariables(
       final SparkJobProperties sparkJobProperties) {
     Map<String, Object> mergedEnvVars = new LinkedHashMap<>();
     mergedEnvVars.putAll(this.sparkLauncherProperties.getEnv());

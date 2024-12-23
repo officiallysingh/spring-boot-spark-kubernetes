@@ -60,7 +60,7 @@ public class SparkSubmitJobLauncher extends AbstractSparkJobLauncher {
     final Properties sparkConfigurations =
         this.sparkConfigurations(sparkJobProperties, jobLaunchRequest.getSparkConfigs());
 
-    final Map<String, Object> envVars = this.mergeEnvironmentVariables(sparkJobProperties);
+    final Map<String, Object> envVars = this.effectiveEnvironmentVariables(sparkJobProperties);
 
     final Map<String, String> jobArgs = new LinkedHashMap<>(jobLaunchRequest.jobArgs());
     jobArgs.put(CORRELATION_ID, jobLaunchRequest.getCorrelationId());

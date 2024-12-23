@@ -169,7 +169,7 @@ spark-launcher:
     daily-sales-report-job:
       main-class-name: com.ksoot.spark.sales.DailySalesReportJob
       jar-file: local:///opt/spark/job-apps/spark-batch-daily-sales-report-job.jar
-      # This job specific environment variables
+      # This job-specific environment variables
 #      env:
 #        SPARK_OUTPUT_PATH: spark-output
       # This job specific Spark configurations, overrides common Spark configurations
@@ -178,7 +178,7 @@ spark-launcher:
     logs-analysis-job:
       main-class-name: com.ksoot.spark.loganalysis.LogAnalysisJob
       jar-file: local:///opt/spark/job-apps/spark-stream-logs-analysis-job.jar
-      # This job specific environment variables
+      # This job-specific environment variables
 #      env:
 #        SPARK_OUTPUT_PATH: spark-output
       # This job specific Spark configurations, overrides common Spark configurations
