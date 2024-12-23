@@ -54,12 +54,12 @@ The demo jobs and `spark-job-service` need following services up and running.
 - Make sure **Kafka** running with bootstrap servers `localhost:9092`.
 - Make sure **Kafka UI** running at `http://localhost:8100`. Create topics `job-stop-requests` and `error-logs` if they do not exist.
 
+> [!IMPORTANT]  
+> It is recommended to have port numbers same as mentioned above, otherwise you may need to change at multiple places i.e. in job's `application-local.yml`, `spark-job-service` application ymls and deployment yml etc.
+
 #### There are three ways to have required infrastructure up and running.
 1. **Local installations**  
 All these services can be installed locally on your machine, and should be accessible at above-mentioned urls and credentials (wherever applicable).
-
-> [!IMPORTANT]  
-> It is recommended to have port numbers same as mentioned above, otherwise you may need to change at multiple places i.e. in job's `application-local.yml`, `spark-job-service` ymls etc.
 
 2. **Docker compose**   
 * The [docker-compose.yml](docker-compose.yml) file defines the services and configurations to run required infrastructure in Docker. 
