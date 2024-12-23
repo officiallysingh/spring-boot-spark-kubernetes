@@ -20,14 +20,14 @@ Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) 
 * Go to `Modify options`, click on `Add VM options` and set the value as `-Dspring.profiles.active=local` to run in `local` profile. 
 * Go to `Modify options`, click on `Add VM options` and set the value as `-Dspring.profiles.active=minikube` to run in `minikube` profile.
 * Import the [**Postman Collection**](api-spec/Spark%20Job%20Service%20APIs.postman_collection.json) and make API calls to start, stop or track jobs.
-* Alternatively, Open Swagger at http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs and make API calls to start and stop or explore jobs.
+* Alternatively, you can open Swagger at http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs and make API calls to start and stop or explore jobs.
 ![Swagger](../img/Swagger.png)
 
 ## Configurations
 ### Spark Configurations
 All possible [Spark configurations](https://spark.apache.org/docs/3.5.3/configuration.html) can be set here.  
 Remember, you have similar Spark configurations in individual Jobs such as [daily-sales-report-job's application](../spark-batch-daily-sales-report-job/src/main/resources/config/application.yml) and [logs-analysis-job's application](../spark-stream-logs-analysis-job/src/main/resources/config/application.yml) also.  
-Any configuration set here will override that Job's yml configurations. So, set only configuration overrides here which are common to all Jobs.
+Any configuration set here will override that all Job's yml configurations. So, set only configuration overrides here which are common to all Jobs.
 ```yaml
 #---------- Spark configurations common to all Jobs -------------------------
 spark:
@@ -91,10 +91,10 @@ The values of these environment variables to jobs can be provided from here. It 
 * `jobs`:- A Map of each Job's configurations you wish to trigger from this service.
 Each job must be provided with some basic mandatory configurations and a few optional configurations.
   * `main-class-name`:- Fully qualified Main class name of the Spark Job. Its mandatory, as Spark needs to launch the Job by running its main class.
-  * `jar-file`:- Jar file path of the Spark Job. This jar file is used in `spark-submit` command to launch the Job.
-  * `env`:- Environment variables specific to this job. It overrides the common environment variables at `spark-launcher.env`.
-  * `spark-config`:- Spark configurations specific to this job. It overrides the common Spark configurations in this `application.yml`.
-  You can unset any configuration coming from common spark configuration by setting it to `` (blank) here.
+  * `jar-file`:- Jar file path of the Spark Job. Its also mandatory, as this jar file is used in `spark-submit` command to launch the Job.
+  * `env`:- Optional environment variables specific to this job. It overrides the common environment variables at `spark-launcher.env`.
+  * `spark-config`:- Optional spark configurations specific to this job. It overrides the common Spark configurations in this `application.yml`.
+  You can also unset any configuration coming from common spark configuration by setting it to `` (blank) here.
 
 > [!IMPORTANT]  
 > Job names `daily-sales-report-job` and `logs-analysis-job` given as keys in `spark-launcher.jobs` Map, are used in Job start Request.

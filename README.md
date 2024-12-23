@@ -120,8 +120,19 @@ Keep it running in a separate terminal. Output should look like below.
 * No need to create any databases or kafka topics required by applications as they are automatically created by [infra-k8s-deployment.yml](infra-k8s-deployment.yml).
 
 # Framework Architecture
-The proposed framework provides a comprehensive solution for managing Spark jobs through a RESTful interface, offering:
-- Job Launching: Trigger Spark jobs and requests to stop running jobs via REST endpoints for deployment on local and kubernetes.
-- Job Monitoring: Track job status, start and end time, duration taken, error messages if there is any.
-- Auto-configurations: of Common components such as `SparkSession`, Job lifecycle listener and Connectors to read and write to various datasources.
-- Demo Jobs: To start with a [Spark Batch Job](spark-batch-daily-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job)
+The proposed framework provides a comprehensive solution for building, running and deploying Spark jobs seamlessly.
+
+### Features
+Offers following features.
+- **Job Launching**: Trigger Spark jobs and requests to stop running jobs via REST endpoints for deployment on local and kubernetes.
+- **Job Monitoring**: Track job status, start and end time, duration taken, error messages if there is any.
+- **Auto-configurations**: of Common components such as `SparkSession`, Job lifecycle listener and Connectors to read and write to various datasources.
+- **Demo Jobs**: To start with a [Spark Batch Job](spark-batch-daily-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job)
+
+### Components
+The framework consists of following components.
+- [**spark-job-service**](spark-job-service/README.md): A Spring Boot application to launch Spark jobs and monitor their status.
+- [**spring-boot-starter-spark**](https://github.com/officiallysingh/spring-boot-starter-spark): Spring boot starter for Spark for Csutomizable `SparkSession` auto-configurations.
+- [**spark-job-commons**](spark-job-commons/README.md): A library to provide common Job components and utilities for Spark jobs.
+- [**spark-batch-daily-sales-report-job**](spark-batch-daily-sales-report-job/README.md): A demo Spark Batch Job to generate daily sales report.
+- [**spark-stream-logs-analysis-job**](spark-stream-logs-analysis-job/README.md): A demo Spark Streaming Job to analyze logs in real-time.
