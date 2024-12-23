@@ -45,35 +45,36 @@ export SPARK_CONF_DIR=$SPARK_HOME/conf
 export PATH="$SPARK_HOME/bin:$PATH"
 ```
 
-### Environment setup
+## Environment setup
 The demo jobs and `spark-job-service` need following services up and running.
 - Make sure **Postgres** is running at `localhost:5432` with username `postgres` and password `admin`.  
-  Create database `spark_jobs_db` if it does not exist.
+  Create databases `spark_jobs_db` and `error_logs_db` if they do not exist.
 - Make sure **MongoDB** running at `localhost:27017`.
 - Make sure **ArangoDB** running at `localhost:8529` with `root` password as `admin`.
 - Make sure **Kafka** running with bootstrap servers `localhost:9092`.
-- Make sure **Kafka UI** running at `http://localhost:8100`. Create topic `job-stop-requests` if it does not exist.
+- Make sure **Kafka UI** running at `http://localhost:8100`. Create topics `job-stop-requests` and `error-logs` if they do not exist.
 
 #### There are three ways to have required infrastructure up and running.
 1. **Local installations**  
 All these services can be installed locally on your machine, and should be accessible at above-mentioned urls and credentials (wherever applicable).
 
 > [!IMPORTANT]  
-> If any port or credentials are different from above mentioned then override respective configurations in [application-local.yml](src/main/resources/config/application-local.yml).
+> It is recommended to have port numbers same as mentioned above, otherwise you may need to change at multiple places i.e. in job's `application-local.yml`, `spark-job-service` ymls etc.
 
 2. **Docker compose**   
-* The [docker-compose.yml](../docker-compose.yml) file defines the services and configurations to run required infrastructure in Docker. 
+* The [docker-compose.yml](docker-compose.yml) file defines the services and configurations to run required infrastructure in Docker. 
 * Make sure Docker is running. 
 * In Terminal go to project root `spring-boot-spark-kubernetes` and execute following command and Check if all services are running.
 ```shell
 docker compose up -d
 ```
+* Create databases `spark_jobs_db` and `error_logs_db` and Kafka topics `job-stop-requests` and `error-logs` if they do not exist.
 
 > [!IMPORTANT]  
 > While using docker compose make sure the required ports are free on your machine otherwise it will throw port busy error.
 
 3. **Minikube**  
-The [infra-k8s-deployment.yml](../infra-k8s-deployment.yml) file defines the services and configurations to run required infrastructure in Minikube.
+The [infra-k8s-deployment.yml](infra-k8s-deployment.yml) file defines the services and configurations to run required infrastructure in Minikube.
 * Set minikube cores to 4 and memory to 8GB atleast.
 * Make sure docker is running and minikube is started.
 * In Terminal go to project root `spring-boot-spark-kubernetes` and execute following command.
@@ -116,9 +117,9 @@ Keep it running in a separate terminal. Output should look like below.
 🏃  Starting tunnel for service postgres.
 🏃  Starting tunnel for service zookeeper.
 ```
+* No need to create any databases or kafka topics required by applications as they are automatically created by [infra-k8s-deployment.yml](infra-k8s-deployment.yml).
 
 # Framework Architecture
-
 The proposed framework provides a comprehensive solution for managing Spark jobs through a RESTful interface, offering:
 - Job Launching: Trigger Spark jobs and requests to stop running jobs via REST endpoints for deployment on local and kubernetes.
 - Job Monitoring: Track job status, start and end time, duration taken, error messages if there is any.

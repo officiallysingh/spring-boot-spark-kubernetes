@@ -25,7 +25,7 @@ For Spark auto-configurations [spring-boot-starter-spark](https://github.com/off
 <dependency>
     <groupId>io.github.officiallysingh</groupId>
     <artifactId>spring-boot-starter-spark</artifactId>
-    <version>1.2</version>
+    <version>1.1</version>
 </dependency>
 ```
 to avail the following features.
@@ -179,6 +179,10 @@ try {
 ```
 - On job exit and error is logged by [@AfterTask Listener method](../spark-job-commons/src/main/java/com/ksoot/spark/common/config/SparkExecutionManager.java).
 - For scenarios where you don't want the job to exit, Catch and Handle exceptions properly.
+
+### Build
+It is required to build the application jar using [`maven-shade-plugin`](https://maven.apache.org/plugins/maven-shade-plugin/), to make it compatible with Spark.
+`spring-boot-maven-plugin` should not be used as it packages classes differently in folder `BOOT-INF`. Refer to [pom.xml](pom.xml) for details.
 
 ## Spring Cloud Task database
 When `ksoot.job.persist` is set to true, Spring cloud task initializes its database schema in Postgres database `spark_jobs_db`.

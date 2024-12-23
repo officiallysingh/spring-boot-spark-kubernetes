@@ -25,7 +25,7 @@ For Spark auto-configurations [spring-boot-starter-spark](https://github.com/off
 <dependency>
     <groupId>io.github.officiallysingh</groupId>
     <artifactId>spring-boot-starter-spark</artifactId>
-    <version>1.2</version>
+    <version>1.1</version>
 </dependency>
 ```
 to avail the following features.
@@ -181,6 +181,10 @@ try {
 - On job exit and error is logged by [@AfterTask Listener method](../spark-job-commons/src/main/java/com/ksoot/spark/common/config/SparkExecutionManager.java).
 - For scenarios where you don't want the job to exit, Catch and Handle exceptions properly.
 
+### Build
+It is required to build the application jar using [`maven-shade-plugin`](https://maven.apache.org/plugins/maven-shade-plugin/), to make it compatible with Spark.
+`spring-boot-maven-plugin` should not be used as it packages classes differently in folder `BOOT-INF`. Refer to [pom.xml](pom.xml) for details.
+
 ## Spring Cloud Task database
 When `ksoot.job.persist` is set to true, Spring cloud task initializes its database schema in Postgres database `spark_jobs_db`.
 
@@ -196,3 +200,4 @@ This is a Spring Cloud Task feature, for details refer to [documentation](https:
 | 4                 | 2024-12-21 13:40:22.491883 | 2024-12-21 13:40:25.539387 | daily-sales-report-job | 0         | Completed    | NULL                                                                                     | 2024-12-21 13:40:25.827281    | daily-sales-report-job-2             | NULL                  |
 | 5                 | 2024-12-21 13:40:42.24037  | 2024-12-21 13:41:53.290863 | daily-sales-report-job | 0         | Terminated   | NULL                                                                                     | 2024-12-21 13:41:53.789612    | d63965ff-2123-4c0e-b965-ff21234c0e9b | NULL                  |
 | 6                 | 2024-12-21 13:45:09.334699 | 2024-12-21 13:45:50.076483 | daily-sales-report-job | 0         | Terminated   | NULL                                                                                     | 2024-12-21 13:46:32.726645    | d63965ff-2123-4c0e-b965-ff21234c0e9b | NULL                  |
+

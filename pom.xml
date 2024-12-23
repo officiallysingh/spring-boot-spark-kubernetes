@@ -94,7 +94,6 @@
                 <groupId>io.github.officiallysingh</groupId>
                 <artifactId>spring-boot-starter-spark</artifactId>
                 <version>${spring-boot-starter-spark.version}</version>
-                <!--                <scope>provided</scope>-->
             </dependency>
             <dependency>
                 <groupId>org.mongodb.spark</groupId>
@@ -121,11 +120,6 @@
                 <artifactId>hadoop-aws</artifactId>
                 <version>${hadoop-aws.version}</version>
             </dependency>
-            <!--            <dependency>-->
-            <!--                <groupId>org.postgresql</groupId>-->
-            <!--                <artifactId>postgresql</artifactId>-->
-            <!--                <version>${postgresql.version}</version>-->
-            <!--            </dependency>-->
 
             <!-- Misc Dependencies-->
             <dependency>
