@@ -184,6 +184,14 @@ try {
 ### Build
 It is required to build the application jar using [`maven-shade-plugin`](https://maven.apache.org/plugins/maven-shade-plugin/), to make it compatible with Spark.
 `spring-boot-maven-plugin` should not be used as it packages classes differently in folder `BOOT-INF`. Refer to [pom.xml](pom.xml) for details.
+* To build jar, execute following command.
+```shell
+mvn clean install
+```
+* To build Docker image, execute following command. Refer to [Dockerfile](Dockerfile) for details.
+```shell
+docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
+```
 
 ## Spring Cloud Task database
 When `ksoot.job.persist` is set to true, Spring cloud task initializes its database schema in Postgres database `spark_jobs_db`.
