@@ -1,5 +1,6 @@
 package com.ksoot.spark.common.config;
 
+import com.ksoot.spark.common.SparkExecutionManager;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
@@ -27,14 +28,6 @@ public class SpringCloudTaskConfiguration {
   // To make Spring cloud task to not use any database but in memory only.
   DefaultTaskConfigurer taskConfigurer() {
     return new DefaultTaskConfigurer(TaskProperties.DEFAULT_TABLE_PREFIX);
-  }
-
-  @Bean
-  SparkExecutionManager sparkExecutionManager(
-      final SparkSession sparkSession,
-      final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry,
-      final MessageSource messageSource) {
-    return new SparkExecutionManager(sparkSession, kafkaListenerEndpointRegistry, messageSource);
   }
 
   @Bean

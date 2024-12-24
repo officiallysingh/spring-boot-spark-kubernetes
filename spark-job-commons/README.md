@@ -18,6 +18,9 @@ ksoot:
     save-mode: Append
     output-mode: Update
 ```
+**Description**
+* `ksoot.connector.save-mode`:- To specify the expected behavior of saving a DataFrame to a data source. Applicable in Spark Batch jobs only. Default value `Append`. Allowed values: `Append`, `Overwrite`, `ErrorIfExists`, `Ignore`.
+* `ksoot.connector.output-mode`:- Describes what data will be written to a streaming sink when there is new data available in a streaming Dataset. Applicable in Spark Streaming jobs only. Allowed values: `Append`, `Complete`, `Update`.
 
 #### File Connector
 To read and write to files of various formats in batch and streaming mode. Refer to [FileConnector.java](src/main/java/com/ksoot/spark/common/connector/FileConnector.java) for details.
@@ -92,7 +95,7 @@ ksoot:
 ```
 
 ## Job Listener
-An auto-configured Job listener with the following features. Refer to [SparkExecutionManager.java](src/main/java/com/ksoot/spark/common/config/SparkExecutionManager.java) for details.
+An auto-configured Job listener with the following features. Refer to [SparkExecutionManager.java](src/main/java/com/ksoot/spark/common/SparkExecutionManager.java) for details.
 - Log Job startup and completed timestamps.
 - Log errors in case of Job exit with failures
 - Listens to kafka topic `job-stop-requests` to terminate a running job. Sets the exit message to `Terminated` in this case
@@ -100,6 +103,11 @@ An auto-configured Job listener with the following features. Refer to [SparkExec
 > On Job stop request arrival, it just tries to stop `SparkContext`, but it is not guaranteed method to stop the running job.
 > Sometimes the kafka listener thread may face starvation issue, as the available threads could overwhelmed by Spark job and listener may never get a chance to execute.
 > Or even after calling stop method on `SparkContext`, the job may not stop immediately. To force stop the job you may need to find a mechanism to kill the job.
+
+## Spark Stream Launcher
+An auto-configured Launch Spark streams with following features. Refer to [SparkStreamLauncher.java](src/main/java/com/ksoot/spark/common/SparkStreamLauncher.java) for details.
+- Start and await on Spark stream in a separate thread, so that we can launch multiple streams with blocking in main thread.
+- Optional, Retry mechanism to restart the stream in case of failure.
 
 ## Exceptions
 It is discouraged to create a lot of custom exceptions. Only one customer exception class [JobProblem.java](src/main/java/com/ksoot/spark/common/error/JobProblem.java) can be used to throw exceptions as follows.

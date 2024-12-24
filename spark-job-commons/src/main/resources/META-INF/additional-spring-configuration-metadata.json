@@ -25,6 +25,18 @@
       "description": "Kafka topic name to listen to receive Job stop requests."
     },
     {
+      "name": "ksoot.connector.save-mode",
+      "type": "java.lang.String",
+      "defaultValue": "Overwrite",
+      "description": "To specify the expected behavior of saving a DataFrame to a data source. Applicable in Spark Batch jobs only."
+    },
+    {
+      "name": "ksoot.connector.output-mode",
+      "type": "java.lang.String",
+      "defaultValue": "Append",
+      "description": "Describes what data will be written to a streaming sink when there is new data available in a streaming Dataset. Applicable in Spark Streaming jobs only."
+    },
+    {
       "name": "ksoot.connector.file-options.format",
       "type": "java.lang.String",
       "defaultValue": "csv",

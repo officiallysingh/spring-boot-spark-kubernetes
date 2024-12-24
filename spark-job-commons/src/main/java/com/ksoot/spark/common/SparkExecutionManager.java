@@ -1,4 +1,4 @@
-package com.ksoot.spark.common.config;
+package com.ksoot.spark.common;
 
 import com.ksoot.spark.common.error.JobErrorType;
 import com.ksoot.spark.common.error.JobProblem;

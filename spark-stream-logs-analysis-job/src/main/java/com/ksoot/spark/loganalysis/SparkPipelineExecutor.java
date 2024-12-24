@@ -3,7 +3,8 @@ package com.ksoot.spark.loganalysis;
 import static org.apache.spark.sql.functions.col;
 import static org.apache.spark.sql.functions.regexp_extract;
 
-import com.ksoot.spark.common.config.SparkExecutionManager;
+import com.ksoot.spark.common.SparkExecutionManager;
+import com.ksoot.spark.common.SparkStreamLauncher;
 import com.ksoot.spark.common.config.properties.ConnectorProperties;
 import com.ksoot.spark.common.connector.JdbcConnector;
 import com.ksoot.spark.common.connector.KafkaConnector;
@@ -42,9 +43,7 @@ public class SparkPipelineExecutor {
 
   private final JdbcConnector jdbcConnector;
 
-  //  private final TaskExecutor taskExecutor;
-
-  private final SparkExecutionManager sparkExecutionManager;
+  private final SparkStreamLauncher sparkStreamLauncher;
 
   public void execute() {
     Dataset<Row> kafkaLogs =
@@ -64,25 +63,8 @@ public class SparkPipelineExecutor {
 
     DataStreamWriter<Row> logsStreamWriter =
         this.jdbcConnector.writeStream(errorLogs, ERROR_LOGS_TABLE);
-    this.startAndAwaitRetryableStream(logsStreamWriter);
-    //    this.taskExecutor.execute(() -> this.startAndAwaitRetryableStream(logsStreamWriter));
-  }
-
-  @Retryable(
-      retryFor = {StreamRetryableException.class},
-      maxAttempts = Integer.MAX_VALUE,
-      backoff = @Backoff(delay = 5000)) // Delay of 5 seconds, with unlimited retry attempts
-  private void startAndAwaitRetryableStream(final DataStreamWriter<?> dataStreamWriter) {
-    try {
-      final StreamingQuery streamingQuery = dataStreamWriter.start();
-      this.sparkExecutionManager.addStreamingQuery(streamingQuery);
-      streamingQuery.awaitTermination();
-    } catch (final TimeoutException | StreamingQueryException e) {
-      log.error(
-          "Exception in Spark stream: {}. Will retry to recover from error after 5 seconds",
-          e.getMessage());
-      throw new StreamRetryableException("Exception in spark streaming", e);
-    }
+    // Start the stream in separate thread
+    this.sparkStreamLauncher.startStream(logsStreamWriter);
   }
 
   // Just for testing

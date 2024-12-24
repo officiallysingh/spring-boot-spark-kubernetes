@@ -59,7 +59,6 @@ spark:
 - For details refer to [SparkPipelineExecutor](src/main/java/com/ksoot/spark/loganalysis/SparkPipelineExecutor.java)
 - Following is the Spark pipeline code
 ```java
-
 public void execute() {
   Dataset<Row> kafkaLogs =
           this.kafkaConnector.readStream(this.connectorProperties.getKafkaOptions().getTopic());
@@ -78,25 +77,8 @@ public void execute() {
 
   DataStreamWriter<Row> logsStreamWriter =
           this.jdbcConnector.writeStream(errorLogs, ERROR_LOGS_TABLE);
-  this.startAndAwaitRetryableStream(logsStreamWriter);
-  //    this.taskExecutor.execute(() -> this.startAndAwaitRetryableStream(logsStreamWriter));
-}
-
-@Retryable(
-        retryFor = {StreamRetryableException.class},
-        maxAttempts = Integer.MAX_VALUE,
-        backoff = @Backoff(delay = 5000)) // Delay of 5 seconds, with unlimited retry attempts
-private void startAndAwaitRetryableStream(final DataStreamWriter<?> dataStreamWriter) {
-  try {
-    final StreamingQuery streamingQuery = dataStreamWriter.start();
-    this.sparkExecutionManager.addStreamingQuery(streamingQuery);
-    streamingQuery.awaitTermination();
-  } catch (final TimeoutException | StreamingQueryException e) {
-    log.error(
-            "Exception in Spark stream: {}. Will retry to recover from error after 5 seconds",
-            e.getMessage());
-    throw new StreamRetryableException("Exception in spark streaming", e);
-  }
+  // Start the stream in separate thread
+  this.sparkStreamLauncher.startStream(logsStreamWriter);
 }
 ```
 
