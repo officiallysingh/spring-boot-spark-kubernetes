@@ -21,7 +21,9 @@ public class SparkStreamLauncher {
   private final TaskExecutor taskExecutor;
 
   /**
-   * Start a stream with a fault-tolerant retryable mechanism. If the stream fails, it will retry after 5 seconds.
+   * Start a stream with a fault-tolerant retryable mechanism. If the stream fails, it will retry
+   * after 5 seconds.
+   *
    * @param dataStreamWriter The stream to start.
    */
   public void startStream(final DataStreamWriter<?> dataStreamWriter) {
@@ -30,8 +32,10 @@ public class SparkStreamLauncher {
 
   /**
    * Start a stream. If the stream fails, it will retry after 5 seconds.
+   *
    * @param dataStreamWriter The stream to start.
-   * @param faultTolerant If true, the stream will be fault-tolerant and will retry indefinitely after 5 seconds if it fails, otherwise the stream will fail one error.
+   * @param faultTolerant If true, the stream will be fault-tolerant and will retry indefinitely
+   *     after 5 seconds if it fails, otherwise the stream will fail one error.
    */
   @SneakyThrows
   public void startStream(final DataStreamWriter<?> dataStreamWriter, final boolean faultTolerant) {

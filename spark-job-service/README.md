@@ -167,7 +167,10 @@ Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) 
 
 #### Local profile
 * For environment setup to run in `local` profile, refer to [Installation preferably using docker compose section](../README.md#docker-compose).
-* Launch Jobs in `deploy mode: client`, set VM argument `-Dspring.profiles.active=local` and Run application as Spring boot application.
+* Launch Jobs in `deploy mode: client` on local machine, set VM argument `-Dspring.profiles.active=local` and Run application as Spring boot application.
+* Jobs run in same JVM as `spark-job-service`, multiple JVMs are not spun up.
+
+![Spark Deploy Modes](../img/Spark_deploy_local.png)
 
 #### Minikube profile
 * For environment setup to run in `minikube` profile, refer to [Installation using minikube section](../README.md#minikube).
@@ -229,7 +232,7 @@ daily-sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          
 * Eventually you may want to clean up by deleting the pods or `minikube delete`.
 
 ### Running on Minikube
-* Make sure environment setup is already done and defualt namespace is set to `ksoot`, refer to [Installation using minikube section](../README.md#minikube).
+* Make sure environment setup is already done and default namespace is set to `ksoot`, refer to [Installation using minikube section](../README.md#minikube).
 * In Terminal go to project `spring-boot-spark-kubernetes/spark-job-service` and execute following command to build docker image for `spark-job-service`.
 ```shell
 docker image build . -t spark-job-service:0.0.1 -f Dockerfile
@@ -262,7 +265,7 @@ Forwarding from [::1]:8090 -> 8090
 ```
 * Access Swagger at http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs and make API calls to start and stop or explore jobs.
 > [!IMPORTANT]  
-> All applications run in `default` profile on munikube.
+> All applications run in `default` profile on minikube.
 
 ## API Reference
 
@@ -441,3 +444,4 @@ GET /v1/spark-jobs/executions/by-correlation-id/{correlationId}
 ## References
 - [Spark Submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html)
 - [Running Spark on Kubernetes](https://spark.apache.org/docs/3.5.4/running-on-kubernetes.html)
+- For exception handling in Spring boot Web applications, refer to [**`spring-boot-problem-handler`**](https://github.com/officiallysingh/spring-boot-problem-handler).

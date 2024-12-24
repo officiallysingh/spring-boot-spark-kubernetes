@@ -3,12 +3,10 @@ package com.ksoot.spark.loganalysis;
 import static org.apache.spark.sql.functions.col;
 import static org.apache.spark.sql.functions.regexp_extract;
 
-import com.ksoot.spark.common.SparkExecutionManager;
 import com.ksoot.spark.common.SparkStreamLauncher;
 import com.ksoot.spark.common.config.properties.ConnectorProperties;
 import com.ksoot.spark.common.connector.JdbcConnector;
 import com.ksoot.spark.common.connector.KafkaConnector;
-import com.ksoot.spark.common.util.StreamRetryableException;
 import com.ksoot.spark.loganalysis.conf.JobProperties;
 import java.util.concurrent.TimeoutException;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +15,7 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.streaming.DataStreamWriter;
-import org.apache.spark.sql.streaming.StreamingQuery;
 import org.apache.spark.sql.streaming.StreamingQueryException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 @Component

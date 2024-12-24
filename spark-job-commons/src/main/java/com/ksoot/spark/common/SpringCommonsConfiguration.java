@@ -2,7 +2,6 @@ package com.ksoot.spark.common;
 
 import com.ksoot.spark.common.config.SparkConnectorConfiguration;
 import com.ksoot.spark.common.config.SpringCloudTaskConfiguration;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
@@ -18,7 +17,8 @@ import org.springframework.retry.annotation.Retryable;
 
 @AutoConfiguration
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
-@ImportAutoConfiguration(classes = {SparkConnectorConfiguration.class, SpringCloudTaskConfiguration.class})
+@ImportAutoConfiguration(
+    classes = {SparkConnectorConfiguration.class, SpringCloudTaskConfiguration.class})
 public class SpringCommonsConfiguration {
 
   @ConditionalOnClass(TaskExecution.class)
@@ -26,9 +26,9 @@ public class SpringCommonsConfiguration {
 
     @Bean
     SparkExecutionManager sparkExecutionManager(
-            final SparkSession sparkSession,
-            final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry,
-            final MessageSource messageSource) {
+        final SparkSession sparkSession,
+        final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry,
+        final MessageSource messageSource) {
       return new SparkExecutionManager(sparkSession, kafkaListenerEndpointRegistry, messageSource);
     }
   }
@@ -37,7 +37,8 @@ public class SpringCommonsConfiguration {
   static class SparkStreamLauncherConfiguration {
 
     @Bean
-    SparkStreamLauncher sparkStreamLauncher(final SparkExecutionManager sparkExecutionManager, final TaskExecutor taskExecutor) {
+    SparkStreamLauncher sparkStreamLauncher(
+        final SparkExecutionManager sparkExecutionManager, final TaskExecutor taskExecutor) {
       return new SparkStreamLauncher(sparkExecutionManager, taskExecutor);
     }
   }

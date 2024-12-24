@@ -53,7 +53,7 @@ spark:
 # Add your own application properties here
 # ===================================================================
 
-#------------------------- Spark Submit Job configurations -------------------------
+#------------------------- Spark Job Launcher configurations -------------------------
 spark-launcher:
   capture-jobs-logs: true
   persist-jobs: true

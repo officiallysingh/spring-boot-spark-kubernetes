@@ -1,14 +1,43 @@
 # A Unified Framework for Building and Running Spark Jobs with Spring Boot and Deployment on Local and Minikube or Kubernetes
-
 An innovative approach to implementing Spark Jobs with Spring Boot ecosystem, enabling developer-friendly environment.  
 It integrates cross-cutting concerns as reusable libraries to minimize boilerplate code.  
 Moreover, the framework supports one-click deployment of Spark jobs with RESTful APIs, making it a breeze to run jobs locally, on Minikube or Kubernetes.
 
-## Introduction
+### Apache Spark brief overview
+[Apache Spark](https://spark.apache.org/docs/3.5.3/index.html) is a distributed computing framework designed for fast and efficient large-scale data processing.  
+Its architecture enables in-memory computing, making it significantly faster than traditional disk-based systems like Hadoop MapReduce.  
+Here’s a brief breakdown of Spark’s architecture:
 
-[Apache Spark](https://spark.apache.org/docs/3.5.3/index.html) has become a powerful tool for processing large-scale data,
-and when combined with Spring Boot, it offers a robust framework for building scalable, enterprise-grade data processing applications.
-But for beginners it's tedious to get up and running.
+1. **Core Components**
+- Driver: The driver is the central control unit that coordinates the execution of tasks. It:
+  - Converts user-defined code into tasks.
+  - Distributes these tasks across executors.
+  - Tracks the progress and status of the tasks.
+- Executors: These are worker processes running on cluster nodes. They:
+  - Execute the tasks assigned by the driver.
+  - Store data partitions in memory or disk, enabling iterative computations.
+- Cluster Manager: Spark relies on a cluster manager (e.g., YARN, Mesos, Kubernetes etc.) to manage resources and schedule jobs across the cluster.
+
+2. **Resilient Distributed Dataset (RDD)**  
+At the core of Spark’s architecture is the RDD, a fault-tolerant and immutable distributed collection of objects.  
+RDDs allow parallel operations and automatic recovery from node failures.  
+The Latest Spark versions have introduced and recommend DataFrames and Datasets, which are back by RDD.
+
+3. **Key Abstractions**
+- **Transformations**: Operations like map() or filter() create a new RDD from an existing one. Transformations are lazy and executed only when an action is called.
+- **Actions**: Operations like reduce() or collect() trigger the computation of RDDs and return a result.
+
+4. **Execution Workflow**
+- Spark splits the execution of a job into stages.
+- Within each stage, tasks are executed in parallel across the cluster.
+- The Directed Acyclic Graph (DAG) Scheduler optimizes task execution by constructing a dependency graph of RDD transformations.
+
+![Spark Architecture](img/Spark_Architecture.png)
+
+## Introduction
+Spring Boot has become de-facto standard for Java application developement. It offers a robust framework for building scalable, enterprise-grade data processing applications.
+For beginners, it's tedious to build Spark Jobs on top using Spring boot and deployment on local and Kubernetes.
+This framework aims to simplify the process by providing a unified solution for building, running and deploying Spark jobs with Spring Boot.
 
 # Installation
 ## Prerequisites
@@ -58,7 +87,7 @@ The demo jobs and `spark-job-service` need following services up and running.
 > It is recommended to have port numbers same as mentioned above, otherwise you may need to change at multiple places i.e. in job's `application-local.yml`, `spark-job-service` application ymls and deployment yml etc.
 
 ### There are three ways to have required infrastructure up and running.
-#### Local installations
+#### Manual
 All these services can be installed locally on your machine, and should be accessible at above-mentioned urls and credentials (wherever applicable).
 
 #### Docker compose
@@ -131,7 +160,7 @@ Offers following features.
 - **Demo Jobs**: A [Spark Batch Job](spark-batch-daily-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job), to start with
 
 ### Components
-The framework consists of following components. Refer to respective project's READMEs for details.
+The framework consists of following components. Refer to respective project's README for details.
 - [**spark-job-service**](spark-job-service/README.md): A Spring Boot application to launch Spark jobs and monitor their status.
 - [**spring-boot-starter-spark**](https://github.com/officiallysingh/spring-boot-starter-spark): Spring boot starter for Spark for Csutomizable `SparkSession` auto-configurations.
 - [**spark-job-commons**](spark-job-commons/README.md): A library to provide common Job components and utilities for Spark jobs.
@@ -140,18 +169,122 @@ The framework consists of following components. Refer to respective project's RE
 
 ### Running Jobs Locally
 - Spark Jobs can be run as Spring boot application locally in your favorite IDE. Refer to [daily-sales-job README](spark-batch-daily-sales-report-job/README.md#intellij-run-configurations) and [log-analysis-job README](spark-stream-logs-analysis-job/README.md#intellij-run-configurations).
-- Spark Job can be Launched via REST API provided by `spark-job-service`. Refer to [spark-job-service README](spark-job-service/README.md#running-application-locally) for details.
+- Spark Job can be Launched via REST API provided by `spark-job-service`. Refer to [spark-job-service README](spark-job-service/README.md#running-locally) for details.
 - You can Run `spark-job-service` and Launch Jobs on Minikube or Kubernetes. Refer to [spark-job-service README](spark-job-service/README.md#running-application-locally) for details.
+
+### Running Jobs on Kubernetes
+#### Deploy Modes
+There are two deployment modes for Spark Job deployment on Kubernetes.
+- **Client Deploy Mode**: The driver runs in the client’s JVM process and communicates with the executors managed by the cluster.
+- **Cluster Deploy Mode**: The driver process runs as a separate JVM process in a cluster, and the cluster manages its resources.
+![Spark Deploy Modes](img/Spark_Deploy_Modes.png)
+
+#### Deployment Process
+- **Build Spark base Docker Image**: Build custom base Docker image for Spark for more control over it, refer to [Dockerfile](Dockerfile) for details.  
+Spark contains a lot of jars, some of which may conflict with your application jars. So you may need to exclude such jars from Spark.  
+For example following conflicting jars are excluded from Spark.
+```shell
+# Remove any spark jars that may be conflict with the ones in your application dependencies.
+rm -f jars/protobuf-java-2.5.0.jar; \
+rm -f jars/guava-14.0.1.jar; \
+rm -f jars/HikariCP-2.5.1.jar; \
+```
+- **Build Spark Jobs Docker Images**: Build Docker image for Spark Job, refer to [daily-sales-job README](spark-batch-daily-sales-report-job/README.md#build) and [logs-analysis-job README](spark-stream-logs-analysis-job/README.md#build) for details.
+- **Build `spark-job-service` Docker Image**: Refer to [spark-job-service README](spark-job-service/README.md#running-on-minikube).
+- **Deploy Infrastructure**: As described in [Spark Kubernetes deployment documentation](https://spark.apache.org/docs/3.4.1/running-on-kubernetes.html#rbac). The Following is required to allow Spark to be able to manage Driver and Executor pods.  
+Demo [infra-k8s-deployment.yml](infra-k8s-deployment.yml) is provided to deploy required infrastructure in namespace `ksoot`. You can change the namespace as per your requirement.
+```yaml
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+name: fabric8-rbac
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: ksoot
+  roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+name: spark
+namespace: ksoot
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+name: spark-role
+subjects:
+- kind: ServiceAccount
+  name: spark
+  namespace: ksoot
+  roleRef:
+  kind: ClusterRole
+  name: edit
+  apiGroup: rbac.authorization.k8s.io
+```
+* **Update `spark.master`** with your Kubernetes master URL in [spark-job-service deployment.yml](spark-job-service/deployment.yml).
+* **Deploy `spark-job-service`** using its [deployment.yml](spark-job-service/deployment.yml). Refer to [spark-job-service README](spark-job-service/README.md#running-on-minikube) for details.
+* **Deploy Spark Jobs** using [REST APIs](spark-job-service/README.md#api-reference) provided by `spark-job-service`.
+* You can override any configurations that are defined in [spark-job-service application.yml](spark-job-service/src/main/resources/config/application.yml) of spark-job-service and Spark Jobs using environment variables in [spark-job-service deployment.yml](spark-job-service/deployment.yml) as follows.
+```yaml
+env:
+  - name: SPARK_MASTER
+    value: k8s://https://kubernetes.default.svc
+  - name: SPARK_KUBERNETES_NAMESPACE
+    value: ksoot
+  - name: SPARK_KUBERNETES_AUTHENTICATE_DRIVER_SERVICE_ACCOUNT_NAME
+    value: spark
+  - name: SPARK_KUBERNETES_DRIVER_ENV_SPARK_USER
+    value: spark
+  - name: SPARK_SUBMIT_DEPLOY_MODE
+    value: cluster
+  # Application properties
+  - name: KAFKA_BOOTSTRAP_SERVERS
+    value: kafka:9092
+  - name: POSTGRES_URL
+    value: jdbc:postgresql://postgres:5432/spark_jobs_db
+  - name: JDBC_URL
+    value: jdbc:postgresql://postgres:5432
+  - name: PERSIST_JOBS
+    value: "true"
+  - name: CAPTURE_JOBS_LOGS
+    value: "true"
+```
+* You can override any configurations that are not defined in [spark-job-service application.yml](spark-job-service/src/main/resources/config/application.yml) as follows.
+```yaml
+args:
+  - "--spark.executor.instances=2"
+  - "--spark.default.parallelism=16"
+  - "--spark-launcher.env.POSTGRES_URL=jdbc:postgresql://postgres:5432/spark_jobs_db"
+  - "--spark-launcher.env.KAFKA_BOOTSTRAP_SERVERS=kafka:9092"
+  - "--spark-launcher.jobs.daily-sales-report-job.env.MONGODB_URL=mongodb://mongo:27017"
+  - "--spark-launcher.jobs.daily-sales-report-job.env.ARANGODB_URL=arango:8529"
+  - "--spark-launcher.jobs.logs-analysis-job.env.JDBC_URL=jdbc:postgresql://postgres:5432"
+```
+#### How Spark Job Deployment works
+- Each Docker image has Spark installed in the container.
+- At its core, it executes `spark-submit` command built dynamically using configurations provided at multiple levels when the request to Launch a Spark Job is received, as explained in [Job Launcher Implementation](spark-job-service/README.md#launcher-implementation).
+
+![Spark Deploy Modes](img/Spark_Deployment_Cluster.png)
 
 ## Licence
 Open source [**The MIT License**](http://www.opensource.org/licenses/mit-license.php)
 
 ## Authors and acknowledgment
 [**Rajveer Singh**](https://www.linkedin.com/in/rajveer-singh-589b3950/), In case you find any issues or need any support, please email me at raj14.1984@gmail.com.
-Please give me a :star: and a :clap: on [**medium.com**](https://officiallysingh.medium.com/spark-spring-boot-starter-e206def765b9) if you find it helpful.
+Give me a :star: and a :clap: on [**medium.com**](https://officiallysingh.medium.com/spark-spring-boot-starter-e206def765b9) if you find it helpful.
 
 ## References
 - [Apache Spark](https://spark.apache.org/docs/3.5.3/)
+- [Spark in Action](https://www.manning.com/books/spark-in-action-second-edition)
+- [Spark Configurations](https://spark.apache.org/docs/3.5.3/configuration.html)
 - [Spark Submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html)
 - [Running Spark on Kubernetes](https://spark.apache.org/docs/3.5.4/running-on-kubernetes.html)
 - [Spring Cloud Task](https://spring.io/projects/spring-cloud-task)
+- [Exception handling in Spring boot Web applications](https://github.com/officiallysingh/spring-boot-problem-handler).
+- [Spring boot starter for Spark](https://github.com/officiallysingh/spring-boot-starter-spark).

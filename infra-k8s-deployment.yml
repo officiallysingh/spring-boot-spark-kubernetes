@@ -442,7 +442,7 @@ spec:
   selector:
     app: kafka-ui
 
-#    The Following is required to allow Spark to be able to Create Driver and Executor pods
+#    The Following is required to allow Spark to be able to manage Driver and Executor pods
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

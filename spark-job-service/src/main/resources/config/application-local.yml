@@ -28,7 +28,7 @@ spark:
 # Add your own application properties here
 # ===================================================================
 
-#------------------------- Spark Submit Job configurations -------------------------
+#------------------------- Spark Job Launcher configurations -------------------------
 spark-launcher:
 #  spark-home: ${SPARK_HOME}
   capture-jobs-logs: true
