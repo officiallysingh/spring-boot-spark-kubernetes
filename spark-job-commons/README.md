@@ -174,9 +174,10 @@ The Spark option constants to avoid typos and ensure reusability across Spark jo
 * [ExecutionContext](src/main/java/com/ksoot/spark/common/util/ExecutionContext.java): Contains utility methods to get/set values in the shared execution context of the Spark job.
 
 ## References
+- [Apache Spark](https://spark.apache.org/docs/3.5.3)
 - [Spark Data Sources](https://spark.apache.org/docs/latest/sql-data-sources.html)
 - [Third Party Connectors](https://spark.apache.org/third-party-projects.html)
 - [Spark MongoDB Connector](https://www.mongodb.com/docs/spark-connector/v10.4)
 - [Spark ArangoDB Connector](https://docs.arangodb.com/3.13/develop/integrations/arangodb-datasource-for-apache-spark)
 - [Spark Kafka Connector](https://spark.apache.org/docs/3.5.1/structured-streaming-kafka-integration.html)
-
+- [Spark Streaming](https://spark.apache.org/docs/3.5.3/streaming-programming-guide.html)

@@ -209,3 +209,10 @@ This is a Spring Cloud Task feature, for details refer to [documentation](https:
 | 5                 | 2024-12-21 13:40:42.24037  | 2024-12-21 13:41:53.290863 | daily-sales-report-job | 0         | Terminated   | NULL                                                                                     | 2024-12-21 13:41:53.789612    | d63965ff-2123-4c0e-b965-ff21234c0e9b | NULL                  |
 | 6                 | 2024-12-21 13:45:09.334699 | 2024-12-21 13:45:50.076483 | daily-sales-report-job | 0         | Terminated   | NULL                                                                                     | 2024-12-21 13:46:32.726645    | d63965ff-2123-4c0e-b965-ff21234c0e9b | NULL                  |
 
+## References
+- [Apache Spark](https://spark.apache.org/docs/3.5.3)
+- [Spark Configurations](https://spark.apache.org/docs/3.5.3/configuration.html)
+- [Spring Cloud Task](https://spring.io/projects/spring-cloud-task)
+- [Spring boot starter for Spark](https://github.com/officiallysingh/spring-boot-starter-spark).
+- [Spark ArangoDB Connector](https://docs.arangodb.com/3.13/develop/integrations/arangodb-datasource-for-apache-spark)
+- [Spark MongoDB Connector](https://www.mongodb.com/docs/spark-connector/v10.4)

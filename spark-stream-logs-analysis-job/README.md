@@ -189,3 +189,11 @@ This is a Spring Cloud Task feature, for details refer to [documentation](https:
 | 4                 | 2024-12-21 13:40:22.491883 | 2024-12-21 13:40:25.539387 | logs-analysis-job | 0         | Completed    | NULL                                                                                     | 2024-12-21 13:40:25.827281    | daily-sales-report-job-2             | NULL                  |
 | 5                 | 2024-12-21 13:40:42.24037  | 2024-12-21 13:41:53.290863 | logs-analysis-job | 0         | Terminated   | NULL                                                                                     | 2024-12-21 13:41:53.789612    | db68fc3a-61ec-4b92-a8fc-3a61ec8b9256 | NULL                  |
 | 6                 | 2024-12-21 13:45:09.334699 | 2024-12-21 13:45:50.076483 | logs-analysis-job | 0         | Terminated   | NULL                                                                                     | 2024-12-21 13:46:32.726645    | 2ef21e4b-d31b-45f2-b21e-4bd31b75f2f9 | NULL                  |
+
+## References
+- [Apache Spark](https://spark.apache.org/docs/3.5.3)
+- [Spark Configurations](https://spark.apache.org/docs/3.5.3/configuration.html)
+- [Spark Streaming](https://spark.apache.org/docs/3.5.3/streaming-programming-guide.html)
+- [Spark Kafka Connector](https://spark.apache.org/docs/3.5.1/structured-streaming-kafka-integration.html)
+- [Spring Cloud Task](https://spring.io/projects/spring-cloud-task)
+- [Spring boot starter for Spark](https://github.com/officiallysingh/spring-boot-starter-spark).
