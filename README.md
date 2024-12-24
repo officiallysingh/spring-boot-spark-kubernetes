@@ -280,7 +280,7 @@ Open source [**The MIT License**](http://www.opensource.org/licenses/mit-license
 Give me a :star: and a :clap: on [**medium.com**](https://officiallysingh.medium.com/spark-spring-boot-starter-e206def765b9) if you find it helpful.
 
 ## References
-- [Apache Spark](https://spark.apache.org/docs/3.5.3/)
+- [Apache Spark](https://spark.apache.org/docs/3.5.3)
 - [Spark in Action](https://www.manning.com/books/spark-in-action-second-edition)
 - [Spark Configurations](https://spark.apache.org/docs/3.5.3/configuration.html)
 - [Spark Submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html)
