@@ -57,11 +57,11 @@ The demo jobs and `spark-job-service` need following services up and running.
 > [!IMPORTANT]  
 > It is recommended to have port numbers same as mentioned above, otherwise you may need to change at multiple places i.e. in job's `application-local.yml`, `spark-job-service` application ymls and deployment yml etc.
 
-#### There are three ways to have required infrastructure up and running.
-1. **Local installations**  
+### There are three ways to have required infrastructure up and running.
+#### Local installations
 All these services can be installed locally on your machine, and should be accessible at above-mentioned urls and credentials (wherever applicable).
 
-2. **Docker compose**   
+#### Docker compose
 * The [docker-compose.yml](docker-compose.yml) file defines the services and configurations to run required infrastructure in Docker. 
 * Make sure Docker is running. 
 * In Terminal go to project root `spring-boot-spark-kubernetes` and execute following command and Check if all services are running.
@@ -73,7 +73,7 @@ docker compose up -d
 > [!IMPORTANT]  
 > While using docker compose make sure the required ports are free on your machine otherwise it will throw port busy error.
 
-3. **Minikube**  
+#### Minikube
 The [infra-k8s-deployment.yml](infra-k8s-deployment.yml) file defines the services and configurations to run required infrastructure in Minikube.
 * Set minikube cores to 4 and memory to 8GB atleast.
 * Make sure docker is running and minikube is started.
@@ -124,15 +124,34 @@ The proposed framework provides a comprehensive solution for building, running a
 
 ### Features
 Offers following features.
-- **Job Launching**: Trigger Spark jobs and requests to stop running jobs via REST endpoints for deployment on local and kubernetes.
-- **Job Monitoring**: Track job status, start and end time, duration taken, error messages if there is any.
+- **Job Launching**: Trigger Spark jobs via REST endpoint for deployment on local and kubernetes.
+- **Job Termination**: Accept requests to stop running jobs via REST endpoint, though not a gauranteed method. You may need to kill the job manually if not terminated by this.
+- **Job Monitoring**: Track job status, start and end time, duration taken, error messages if there is any, via REST endpoints.
 - **Auto-configurations**: of Common components such as `SparkSession`, Job lifecycle listener and Connectors to read and write to various datasources.
-- **Demo Jobs**: To start with a [Spark Batch Job](spark-batch-daily-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job)
+- **Demo Jobs**: A [Spark Batch Job](spark-batch-daily-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job), to start with
 
 ### Components
-The framework consists of following components.
+The framework consists of following components. Refer to respective project's READMEs for details.
 - [**spark-job-service**](spark-job-service/README.md): A Spring Boot application to launch Spark jobs and monitor their status.
 - [**spring-boot-starter-spark**](https://github.com/officiallysingh/spring-boot-starter-spark): Spring boot starter for Spark for Csutomizable `SparkSession` auto-configurations.
 - [**spark-job-commons**](spark-job-commons/README.md): A library to provide common Job components and utilities for Spark jobs.
 - [**spark-batch-daily-sales-report-job**](spark-batch-daily-sales-report-job/README.md): A demo Spark Batch Job to generate daily sales report.
 - [**spark-stream-logs-analysis-job**](spark-stream-logs-analysis-job/README.md): A demo Spark Streaming Job to analyze logs in real-time.
+
+### Running Jobs Locally
+- Spark Jobs can be run as Spring boot application locally in your favorite IDE. Refer to [daily-sales-job README](spark-batch-daily-sales-report-job/README.md#intellij-run-configurations) and [log-analysis-job README](spark-stream-logs-analysis-job/README.md#intellij-run-configurations).
+- Spark Job can be Launched via REST API provided by `spark-job-service`. Refer to [spark-job-service README](spark-job-service/README.md#running-application-locally) for details.
+- You can Run `spark-job-service` and Launch Jobs on Minikube or Kubernetes. Refer to [spark-job-service README](spark-job-service/README.md#running-application-locally) for details.
+
+## Licence
+Open source [**The MIT License**](http://www.opensource.org/licenses/mit-license.php)
+
+## Authors and acknowledgment
+[**Rajveer Singh**](https://www.linkedin.com/in/rajveer-singh-589b3950/), In case you find any issues or need any support, please email me at raj14.1984@gmail.com.
+Please give me a :star: and a :clap: on [**medium.com**](https://officiallysingh.medium.com/spark-spring-boot-starter-e206def765b9) if you find it helpful.
+
+## References
+- [Apache Spark](https://spark.apache.org/docs/3.5.3/)
+- [Spark Submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html)
+- [Running Spark on Kubernetes](https://spark.apache.org/docs/3.5.4/running-on-kubernetes.html)
+- [Spring Cloud Task](https://spring.io/projects/spring-cloud-task)

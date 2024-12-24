@@ -146,6 +146,15 @@ this.sparkJobLauncher.startJob(jobLaunchRequest);
 * Each Job has a corresponding Request class to take the Job Start request as each job may have a different set of arguments, though some job arguments are common to all jobs.
 * So a base abstract class [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) is defined with common arguments i.e. `jobName`, `correlationId` and `sparkConfigs`.
 * For each Job, a Request class extending [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) should be implemented.
+* Provide a Map of arguments specific to this Job in `jobArgs` method implementation.  
+For example, [DailySalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java) provides Statement month argument to `daily-sales-report-job` Job, which expects the month argument with name `STATEMENT_MONTH`, as you can see in [application.yml](src/main/resources/config/application.yml) property `ksoot.job.month`.
+```java
+  @Override
+  public Map<String, String> jobArgs() {
+    // Alternatively can use argument name as `ksoot.job.month` also.
+    return Map.of("STATEMENT_MONTH", month.toString());
+  }
+```
 * Refer to [DailySalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java) for [spark-batch-daily-sales-report-job](../spark-batch-daily-sales-report-job) and [LogsAnalysisJobLaunchRequest.java](src/main/java/ksoot/spark/dto/LogsAnalysisJobLaunchRequest.java) for [spark-stream-logs-analysis-job](../spark-stream-logs-analysis-job).
 * Refer to [Jackson Inheritance](https://www.baeldung.com/jackson-inheritance#2-per-class-annotations) for help in implementing inheritance in request classes.
 > [!IMPORTANT]  
@@ -153,16 +162,18 @@ this.sparkJobLauncher.startJob(jobLaunchRequest);
 
 ![Requests](../img/Job_Launch_Request.png)
 
-### Running application
+### Running locally
 Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) locally in either `local` or `minikube` profile as follows.
 
 #### Local profile
-* For environment setup to run in `local` profile, refer to [Installation preferably using docker compose section](../README.md#installation).
-* Launch Jobs in `deploy mode: client` by setting VM argument `-Dspring.profiles.active=local`
+* For environment setup to run in `local` profile, refer to [Installation preferably using docker compose section](../README.md#docker-compose).
+* Launch Jobs in `deploy mode: client`, set VM argument `-Dspring.profiles.active=local` and Run application as Spring boot application.
 
 #### Minikube profile
-* For environment setup to run in `minikube` profile, refer to [Installation using minikube section](../README.md#installation).
-* On minikube in `deploy mode: cluster` by setting VM argument `-Dspring.profiles.active=minikube`
+* For environment setup to run in `minikube` profile, refer to [Installation using minikube section](../README.md#minikube).
+> [!IMPORTANT]  
+> This service still runs on local, but Spark Jobs are launched on minikube using Job's Docker images.
+
 * Get Minikube master port number by running the following command.
 ```shell
 kubectl cluster-info
@@ -193,7 +204,8 @@ docker image build . -t spark-stream-logs-analysis-job:0.0.1 -f Dockerfile
 minikube image load spark-batch-daily-sales-report-job:0.0.1
 minikube image load spark-stream-logs-analysis-job:0.0.1
 ```
-* Run Application and make a call to Job Start API. API response should look like below.
+* Launch Jobs in minikube in `deploy mode: cluster`, Set VM argument `-Dspring.profiles.active=minikube` and Run application as Spring boot application.
+* Make a call to Job Start API. API response should look like below.
 ```text
 Spark Job: 'daily-sales-report-job' submit request accepted for asynchronous execution. Correlation Id: 71643ba2-1177-4e10-a43b-a21177de1022. For real status of Job look into application logs or Driver POD logs if deploying on Kubernetes
 ```
@@ -215,6 +227,42 @@ daily-sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          
 ```
 * If the Job fails, Executor pods are still terminated, but driver pod remains in `Error` state. For debugging, you can see pod logs.
 * Eventually you may want to clean up by deleting the pods or `minikube delete`.
+
+### Running on Minikube
+* Make sure environment setup is already done and defualt namespace is set to `ksoot`, refer to [Installation using minikube section](../README.md#minikube).
+* In Terminal go to project `spring-boot-spark-kubernetes/spark-job-service` and execute following command to build docker image for `spark-job-service`.
+```shell
+docker image build . -t spark-job-service:0.0.1 -f Dockerfile
+```
+* Load Job `spark-job-service` image in minikube.
+```shell
+minikube image load spark-job-service:0.0.1
+```
+* Execute following command to deploy on minikube.
+```shell
+kubectl apply -f deployment.yml
+```
+* Verify that `spark-job-service` pod is running
+```shell
+kubectl get pods
+```
+Output should look like below.
+```shell
+NAME                                READY   STATUS              RESTARTS   AGE
+spark-job-service-f545bd7d8-s4sn5   1/1     Running             0          9s
+```
+* Port forward  `spark-job-service` server port in a separate terminal, to access it from local.
+```shell
+kubectl port-forward spark-job-service-f545bd7d8-s4sn5 8090:8090
+```
+Output should look like below.
+```shell
+Forwarding from 127.0.0.1:8090 -> 8090
+Forwarding from [::1]:8090 -> 8090
+```
+* Access Swagger at http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs and make API calls to start and stop or explore jobs.
+> [!IMPORTANT]  
+> All applications run in `default` profile on munikube.
 
 ## API Reference
 
