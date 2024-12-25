@@ -209,7 +209,7 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 * Set above port number `50537` in configuration `--master` value `k8s://https://127.0.0.1:50537` following `spark-submit` command.
 > [!IMPORTANT]
-> Whenever minikube is restarted this port number changes, so make sure to get the new port and change in `spark.master` configuration again.
+> Whenever minikube is restarted this port number changes, so make sure to get the new port and change in `--master` configuration again.
 * Load `officiallysingh/spark:3.5.3` image into minikube as follows.
 ```shell
 minikube image load officiallysingh/spark:3.5.3
