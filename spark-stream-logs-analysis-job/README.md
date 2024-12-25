@@ -162,7 +162,7 @@ It is required to build the application Uber jar using [`maven-shade-plugin`](ht
 ```shell
 mvn clean install
 ```
-* To build Docker image, execute following command. Refer to [Dockerfile](Dockerfile) for details.
+* To build Docker image, execute following command. Refer to project [Dockerfile](Dockerfile) and [Base Dockerfile](../Dockerfile) for details.
 ```shell
 docker image build . -t spark-stream-logs-analysis-job:0.0.1 -f Dockerfile
 ```
