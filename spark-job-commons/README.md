@@ -100,7 +100,8 @@ An auto-configured Job listener with the following features. Refer to [SparkExec
 > [!IMPORTANT]
 > On Job stop request arrival, it just tries to stop `SparkContext`, but it is not guaranteed method to stop the running job.
 > Sometimes the kafka listener may face thread starvation issue, as the available threads could be overwhelmed by Spark job and listener may never get a chance to execute.
-> Or even after calling stop method on `SparkContext`, the job may not stop immediately. To force-stop the job you may need to find a mechanism to kill the job, like from **Spark UI**.
+> Or even after calling stop method on `SparkContext`, the job may not stop immediately. 
+> To force-stop the job you may need to find a mechanism to kill the job. Kill from **Spark UI** or [**`spark-submit.sh --kill 20160615124014699000`**](https://www.ibm.com/docs/en/ias?topic=spark-canceling-running-application#d141740e99).
 
 ## Spark Stream Launcher
 An auto-configured Launch Spark streams with following features. Refer to [SparkStreamLauncher.java](src/main/java/com/ksoot/spark/common/SparkStreamLauncher.java) for details.

@@ -194,7 +194,7 @@ docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
 ```
 
 ### Spark UI
-Access Spark UI at `http://localhost:4040` to monitor and inspect Spark job execution.
+Access Spark UI at `http://localhost:4040` to monitor and inspect Spark Batch job execution.
 
 ![Spark Architecture](../img/Spark_UI_Batch.png)
 
