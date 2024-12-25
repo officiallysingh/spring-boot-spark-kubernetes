@@ -3,7 +3,7 @@ An innovative approach to implementing Spark Jobs with Spring Boot ecosystem, en
 It integrates cross-cutting concerns as reusable libraries to minimize boilerplate code.  
 Moreover, the framework supports one-click deployment of Spark jobs with RESTful APIs, making it a breeze to run jobs locally, on Minikube or Kubernetes.
 
-### Apache Spark overview
+## Apache Spark overview
 [Apache Spark](https://spark.apache.org/docs/3.5.3/index.html) is a distributed computing framework designed for fast and efficient large-scale data processing.  
 Its architecture enables in-memory computing, making it significantly faster than traditional disk-based systems like Hadoop MapReduce.  
 Here’s a brief breakdown of Spark’s architecture:
@@ -32,16 +32,16 @@ The Latest Spark versions have introduced and recommend DataFrames and Datasets,
 - Within each stage, tasks are executed in parallel across the cluster.
 - The Directed Acyclic Graph (DAG) Scheduler optimizes task execution by constructing a dependency graph of RDD transformations.
 
-**Spark Distributed Architecture**
+**Apache Spark Distributed Architecture**
 ![Spark Architecture](img/Spark_Architecture.png)
 
 ## Introduction
-Spring Boot has become de-facto standard for Java application developement. It offers a robust framework for building scalable, enterprise-grade data processing applications.
-For beginners, it's tedious to build Spark Jobs on top using Spring boot and deployment on local and Kubernetes.
-This framework aims to simplify the process by providing a unified solution for building, running and deploying Spark jobs with Spring Boot.
+Spring Boot has become de-facto standard for Java application developement. It offers a robust framework for building scalable, enterprise-grade applications.
+It could be tedious to build Spark Jobs using Spring boot and deployment on local and Kubernetes.
+This framework aims to simplify this process by providing a unified solution for building Spark jobs with Spring Boot, running locally and deployment on Minikube or Kubernetes.
 
-# Installation
-## Prerequisites
+## Installation
+### Prerequisites
 - Java 17
 - [Maven](https://maven.apache.org), Make sure environment variable `M2_REPO` is set to local maven repository
 - [Scala 2.12.18](https://sdkman.io/install/)
@@ -51,7 +51,7 @@ This framework aims to simplify the process by providing a unified solution for 
 - IDE (IntelliJ, Eclipse or VS Code), Recommended [IntelliJ IDEA](https://www.jetbrains.com/idea).
 - Optional [Configure Formatter in intelliJ](https://github.com/google/google-java-format/blob/master/README.md#intellij-android-studio-and-other-jetbrains-ides), refer to [fmt-maven-plugin](https://github.com/spotify/fmt-maven-plugin) for details.
 
-### Java
+#### Java
 Recommended [sdkman](https://sdkman.io/install/) for managing Java, Scala installations.
 Make sure `JAVA_HOME` set to Java 17 installation path and `PATH` variable contains entry for `$JAVA_HOME/bin`
 Check Java version as follows. It should look like following, showing major version 17.
@@ -62,14 +62,14 @@ OpenJDK Runtime Environment Temurin-17.0.12+7 (build 17.0.12+7)
 OpenJDK 64-Bit Server VM Temurin-17.0.12+7 (build 17.0.12+7, mixed mode)
 ```
 
-### Scala
+#### Scala
 Check Scala version as follows. It should look like following, showing scala version 2.12.18.
 ```shell
 % scala -version
 Scala code runner version 2.12.18 -- Copyright 2002-2023, LAMP/EPFL and Lightbend, Inc.
 ```
 
-### Spark
+#### Spark
 Download and extract [spark-3.5.3-bin-hadoop3](https://archive.apache.org/dist/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz) on your machine and Set the following environment variables.
 ```shell
 export SPARK_HOME="/<your directory>/spark-3.5.3-bin-hadoop3"
@@ -77,7 +77,7 @@ export SPARK_CONF_DIR=$SPARK_HOME/conf
 export PATH="$SPARK_HOME/bin:$PATH"
 ```
 
-## Environment setup
+### Environment setup
 The demo jobs and `spark-job-service` need following services up and running.
 - Make sure **Postgres** is running at `localhost:5432` with username `postgres` and password `admin`.  
   Create databases `spark_jobs_db` and `error_logs_db` if they do not exist.
@@ -89,7 +89,6 @@ The demo jobs and `spark-job-service` need following services up and running.
 > [!IMPORTANT]  
 > It is recommended to have port numbers same as mentioned above, otherwise you may need to change at multiple places i.e. in job's `application-local.yml`, `spark-job-service` application ymls and deployment yml etc.
 
-### There are three ways to have required infrastructure up and running.
 #### Manual
 All these services can be installed locally on your machine, and should be accessible at above-mentioned urls and credentials (wherever applicable).
 
@@ -151,8 +150,7 @@ Keep it running in a separate terminal. Output should look like below.
 ```
 * No need to create any databases or kafka topics required by applications as they are automatically created by [infra-k8s-deployment.yml](infra-k8s-deployment.yml).
 
-# Framework Architecture
-The proposed framework provides a comprehensive solution for building, running and deploying Spark jobs seamlessly.
+## Framework Architecture
 
 ## Features
 - **Job Launching**: Trigger Spark jobs via REST endpoint for deployment on local and kubernetes.
@@ -162,22 +160,20 @@ The proposed framework provides a comprehensive solution for building, running a
 - **Demo Jobs**: A [Spark Batch Job](spark-batch-daily-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job), to start with
 
 ## Kubernetes configuration files
-1. The **[infra-k8s-deployment.yml]**(infra-k8s-deployment.yml) file defines the Kubernetes resources required to deploy various services in namespace `ksoot` .  
-   It includes the following components:
-- Namespace: Creates a namespace named **`ksoot`**.
-- MongoDB: Deployment, PersistentVolumeClaim, and Service for MongoDB.
-- ArangoDB: Deployment, PersistentVolumeClaim, and Service for ArangoDB.
-- PostgreSQL: Deployment, PersistentVolumeClaim, ConfigMap (for initialization script), and Service for PostgreSQL.
-- Zookeeper: Deployment, PersistentVolumeClaims (for data and logs), and Service for Zookeeper.
-- Kafka: Deployment, PersistentVolumeClaim, and Service for Kafka.
-- Kafka UI: Deployment and Service for Kafka UI.
-  Each service is configured with necessary environment variables, volume mounts, and ports to ensure proper operation within the Kubernetes cluster.
-
+The framework includes Kubernetes configuration files to deploy the required infrastructure and services in a Kubernetes cluster in namespace `ksoot`. You can change the namespace in these two files as per your requirement.
+Each service is configured with necessary environment variables, volume mounts, and ports to ensure proper operation within the Kubernetes cluster.
+1. The **[infra-k8s-deployment.yml]**(infra-k8s-deployment.yml) file defines the Kubernetes resources required to deploy various services.  
+- **Namespace**: Creates a namespace named **`ksoot`**.
+- **MongoDB**: Deployment, PersistentVolumeClaim, and Service for MongoDB.
+- **ArangoDB**: Deployment, PersistentVolumeClaim, and Service for ArangoDB.
+- **PostgreSQL**: Deployment, PersistentVolumeClaim, ConfigMap (for initialization script), and Service for PostgreSQL.
+- **Zookeeper**: Deployment, PersistentVolumeClaims (for data and logs), and Service for Zookeeper.
+- **Kafka**: Deployment, PersistentVolumeClaim, and Service for Kafka.
+- **Kafka UI**: Deployment and Service for Kafka UI.
 2. The **[spark-rbac.yml]**(spark-rbac.yml) file defines the Kubernetes RBAC (Role-Based Access Control) resources required to allow Spark to manage Driver and Executor pods within the `ksoot` namespace.  
-   It includes the following components:
-- ClusterRoleBinding: Binds the default ServiceAccount in the `ksoot` namespace to the cluster-admin ClusterRole, allowing it to have cluster-wide administrative privileges.
-- ServiceAccount: Creates a ServiceAccount named spark in the `ksoot` namespace.
-- ClusterRoleBinding: Binds the spark ServiceAccount in the `ksoot` namespace to the edit ClusterRole, granting it permissions to edit resources within the namespace.
+- **ClusterRoleBinding**: Binds the default ServiceAccount to the cluster-admin ClusterRole, allowing it to have cluster-wide administrative privileges.
+- **ServiceAccount**: Creates a ServiceAccount named spark .
+- **ClusterRoleBinding**: Binds the spark ServiceAccount to the edit ClusterRole, granting it permissions to edit resources within the namespace.
 
 ## Components
 The framework consists of following components. Refer to respective project's README for details.
@@ -189,16 +185,9 @@ The framework consists of following components. Refer to respective project's RE
 
 ## Running Jobs Locally
 - Spark Jobs can be run as Spring boot application locally in your favorite IDE. Refer to [daily-sales-job README](spark-batch-daily-sales-report-job/README.md#intellij-run-configurations) and [log-analysis-job README](spark-stream-logs-analysis-job/README.md#intellij-run-configurations).
-- Spark Job can be Launched via REST API provided by `spark-job-service`. Refer to [spark-job-service README](spark-job-service/README.md#running-locally) for details.
-- You can Run `spark-job-service` locally and Launch Jobs on Minikube or Kubernetes. Refer to [spark-job-service README](spark-job-service/README.md#minikube-profile) for details.
+- Spark Job can be Launched via REST API provided by `spark-job-service` locally. Refer to [spark-job-service README](spark-job-service/README.md#running-locally) for details.
 
 ## Running Jobs on Minikube
-#### Deploy Modes
-There are two deployment modes for Spark Job deployment on Kubernetes.
-- **Client Deploy Mode**: The driver runs in the client’s JVM process and communicates with the executors managed by the cluster.
-- **Cluster Deploy Mode**: The driver process runs as a separate JVM process in a cluster, and the cluster manages its resources.
-
-![Spark Deploy Modes](img/Spark_Deploy_Modes.png)
 
 ### Deployment Process
 #### Preparing for Minikube
@@ -308,6 +297,13 @@ Forwarding from [::1]:8090 -> 8090
 - At its core, it executes `spark-submit` command built dynamically using configurations provided at multiple levels when the request to Launch a Spark Job is received, as explained in [Job Launcher Implementation](spark-job-service/README.md#launcher-implementation).
 
 ![Spark Deploy Modes](img/Spark_Deployment_Cluster.png)
+
+#### Deploy Modes
+There are two deployment modes for Spark Job deployment on Kubernetes.
+- **Client Deploy Mode**: The driver runs in the client’s JVM process and communicates with the executors managed by the cluster.
+- **Cluster Deploy Mode**: The driver process runs as a separate JVM process in a cluster, and the cluster manages its resources.
+
+![Spark Deploy Modes](img/Spark_Deploy_Modes.png)
 
 #### Configurations precedence order
 Configurations can be provided at multiple levels. At individual project level, the precedence order is [Standard Spring Boot configurations precedence order](https://docs.spring.io/spring-boot/reference/features/external-config.html).
