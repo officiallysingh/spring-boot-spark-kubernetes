@@ -322,6 +322,8 @@ There are two deployment modes for Spark Job deployment on Kubernetes.
 #### Spark UI
 Access Spark UI at [**`http://localhost:4040`**](http://localhost:4040) to monitor and inspect Spark Batch job execution.
 
+![Spark UI](img/Spark_UI_Streaming.png)
+
 #### Configurations precedence order
 Configurations can be provided at multiple levels. At individual project level, the precedence order is [Standard Spring Boot configurations precedence order](https://docs.spring.io/spring-boot/reference/features/external-config.html).
 * In `application.yml`s of individual Jobs projects and profile specific `yml`s.

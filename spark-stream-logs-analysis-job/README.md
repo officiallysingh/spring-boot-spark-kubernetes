@@ -172,11 +172,26 @@ The job jar can be manually deployed on Minikube using a mounted volume as follo
 * For environment setup, refer to [Installation using minikube section](../README.md#minikube).
 * Create a folder `kubevol/spark-apps` in your local `HOME` directory.
 * Copy Job Jar [`spark-stream-logs-analysis-job-0.0.1-SNAPSHOT.jar`](target/spark-stream-logs-analysis-job-0.0.1-SNAPSHOT.jar) in this folder.
-* Mount this folder in minikube.
+* Mount this folder in minikube. Execute following command in a separate terminal and keep it running.
 ```shell
 echo $HOME
 minikube mount $HOME/kubevol/spark-apps:/tmp/spark-apps
-
+```
+Output should look like below.
+```shell
+📁  Mounting host path /Users/rajveersingh/kubevol/spark-apps into VM as /tmp/spark-apps ...
+    ▪ Mount type:   9p
+    ▪ User ID:      docker
+    ▪ Group ID:     docker
+    ▪ Version:      9p2000.L
+    ▪ Message Size: 262144
+    ▪ Options:      map[]
+    ▪ Bind Address: 127.0.0.1:51527
+🚀  Userspace file server: ufs starting
+✅  Successfully mounted /Users/rajveersingh/kubevol/spark-apps to /tmp/spark-apps
+```
+Confirm if you can see your jar in mounted volume.
+```shell
 minikube ssh
 ls -ld /tmp/spark-apps
 ls /tmp/spark-apps
@@ -227,7 +242,7 @@ cd $SPARK_HOME
 ### Spark UI
 Access Spark UI at [**`http://localhost:4040`**](http://localhost:4040) to monitor and inspect Spark Streaming job execution.
 
-![Spark Architecture](../img/Spark_UI_Streaming.png)
+![Spark UI](../img/Spark_UI_Streaming.png)
 
 ## Spring Cloud Task database
 When `ksoot.job.persist` is set to true, Spring cloud task initializes its database schema in Postgres database `spark_jobs_db`.
