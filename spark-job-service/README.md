@@ -145,7 +145,7 @@ For example, [DailySalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spa
 ```
 * Refer to [Jackson Inheritance](https://www.baeldung.com/jackson-inheritance#2-per-class-annotations) to understand implementing inheritance in request classes.
 > [!IMPORTANT]  
-> Also important to mention that the `sparkConfigs` in Request body enjoys the **highest precedence** hence overrides the configurations in `spark-launcher.jobs.<jobName>.spark-config`.
+> Also important to mention that the `sparkConfigs` in Request body enjoys the **highest precedence** hence overrides the configurations in `spark-job-service`'s ``application.yml` and `deployment.yml` also.
 
 ![Requests](../img/Job_Launch_Request.png)
 
