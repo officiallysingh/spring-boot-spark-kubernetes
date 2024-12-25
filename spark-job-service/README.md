@@ -382,7 +382,7 @@ GET /v1/spark-jobs/executions/by-correlation-id/{correlationId}
 ## Licence
 Open source [**The MIT License**](http://www.opensource.org/licenses/mit-license.php)
 
-## Authors and acknowledgment
+## Author
 [**Rajveer Singh**](https://www.linkedin.com/in/rajveer-singh-589b3950/), In case you find any issues or need any support, please email me at raj14.1984@gmail.com.
 Give it a :star: on [Github](https://github.com/officiallysingh/spring-boot-spark-kubernetes) and a :clap: on [**medium.com**](https://officiallysingh.medium.com/spark-spring-boot-starter-e206def765b9) if you find it helpful.
 
