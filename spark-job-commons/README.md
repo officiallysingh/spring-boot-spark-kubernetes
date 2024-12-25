@@ -34,6 +34,38 @@ ksoot:
       path: spark-space/output
       merge: true
 ```
+Spark can read and write files to [AWS S3](https://aws.amazon.com/pm/serv-s3/?gclid=Cj0KCQiA9667BhDoARIsANnamQa61fwU5NCXspECJZ52q4cOnWuGY7aJWKyKK9KaBNpGTecv49HJ0PYaAigJEALw_wcB&trk=b8b87cd7-09b8-4229-a529-91943319b8f5&sc_channel=ps&ef_id=Cj0KCQiA9667BhDoARIsANnamQa61fwU5NCXspECJZ52q4cOnWuGY7aJWKyKK9KaBNpGTecv49HJ0PYaAigJEALw_wcB:G:s&s_kwcid=AL!4422!3!536324516040!e!!g!!aws%20s3!11539706604!115473954714) and [Google GCS](https://cloud.google.com/storage) as well.  
+Depending upon the file scheme, the following configurations are required.
+* If a file path starts with `s3a://`, Spark would know the file is to be read from or written to AWS S3 and look for following configurations.
+```yaml
+spark:
+  hadoop:
+    fs:
+      s3a:
+        access.key: ${AWS_ACCESS_KEY:<put your aws access key>}
+        secret.key: ${AWS_SECRET_KEY:<put your aws secret key>}
+        endpoint: ${AWS_S3_ENDPOINT:<put your aws s3 endpoint>}
+        impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+        path.style.access: true  # For path-style access, useful in some S3-compatible services
+        connection.ssl.enabled: true  # Enable SSL
+        fast.upload: true  # Enable faster uploads
+    google.cloud.auth.service.account.json.keyfile: ${GCS_KEY_FILE:<put your sa-key.json>}
+```
+* If a file path starts with `gs://`, Spark would know the file is to be read from or written to Google GCS and look for following configurations.
+```yaml
+spark:
+  hadoop:
+    google.cloud.auth.service.account.json.keyfile: ${GCS_KEY_FILE:<put your sa-key.json>}
+```
+* If you want to read or write to local file system, no additional configurations are required.
+* If you want to read or write to different AWS S3 or Google GCS accounts in same Job, you can provide above configurations as `options` to `SparkSesson` at runtime as follows.  
+```java
+this.sparkSession
+    .read()
+    .option(SparkOptions.Aws.S3_ACCESS_KEY, dataSourceConfig.getAws().getAccessKey())
+    .option(SparkOptions.Aws.S3_SECRET_KEY, dataSourceConfig.getAws().getSecretKey())
+    .option(SparkOptions.Aws.S3_ENDPOINT, dataSourceConfig.getAws().getEndpoint())
+```
 
 #### MongoDB Connector
 To read and write to MongoDB collections in batch and streaming mode. Refer to [MongoConnector.java](src/main/java/com/ksoot/spark/common/connector/MongoConnector.java) for details.

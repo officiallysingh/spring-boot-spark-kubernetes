@@ -263,6 +263,7 @@ args:
   - "--spark-launcher.jobs.daily-sales-report-job.env.ARANGODB_URL=arango:8529"
   - "--spark-launcher.jobs.logs-analysis-job.env.JDBC_URL=jdbc:postgresql://postgres:5432"
 ```
+* **In Production, it is recommended to use Kubernetes Secrets for sensitive information like passwords, tokens, and keys etc.**  
 * Execute following command to deploy `spark-job-service` on minikube.
 ```shell
 kubectl apply -f deployment.yml
