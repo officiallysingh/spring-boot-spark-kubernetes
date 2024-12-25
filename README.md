@@ -186,8 +186,7 @@ The framework consists of following components. Refer to respective project's RE
 - Spark Job can be Launched locally via REST API provided by `spark-job-service`. Refer to [spark-job-service README](spark-job-service/README.md#running-locally) for details.
 
 ## Running Jobs on Minikube
-### Deployment Process
-#### Preparing for Minikube
+### Preparing for Minikube
 * Make sure minikube infra is ready as mentioned in [Minikube Environment setup section](#minikube).
 * Build custom base Docker image for Spark for more control over it, Refer to base [Dockerfile](Dockerfile) for details. Spark contains a lot of jars at `${SPARK_HOME/jars}`, some of which may conflict with your application jars. So you may need to exclude such jars from Spark.  
   For example following conflicting jars are excluded from Spark in base [Dockerfile](Dockerfile).
@@ -224,7 +223,9 @@ minikube image load spark-job-service:0.0.1
 ```
 
 ### Running on Minikube
-* Make sure [Environment setup on Minikube]((#minikube)) is already done.
+* Make sure [Environment setup on Minikube]((#minikube)) is already done and [application artifacts are ready](#preparing-for-minikube).
+> [!IMPORTANT]  
+> No configuration change is required except specifically asked to run this code locally.
 * You can override any configurations **that are defined in** [spark-job-service application.yml](spark-job-service/src/main/resources/config/application.yml) and Spark Jobs using environment variables in [spark-job-service deployment.yml](spark-job-service/deployment.yml) as follows.
 ```yaml
 env:
@@ -262,9 +263,6 @@ args:
   - "--spark-launcher.jobs.daily-sales-report-job.env.ARANGODB_URL=arango:8529"
   - "--spark-launcher.jobs.logs-analysis-job.env.JDBC_URL=jdbc:postgresql://postgres:5432"
 ```
-> [!IMPORTANT]  
-> No configuration change is required except specifically asked to run this code locally.
-
 * Execute following command to deploy `spark-job-service` on minikube.
 ```shell
 kubectl apply -f deployment.yml
@@ -292,6 +290,7 @@ Forwarding from [::1]:8090 -> 8090
 > [!IMPORTANT]  
 > All applications run in `default` profile on minikube.
 
+### Deployment process
 #### Deploy Modes
 There are two deployment modes for Spark Job deployment on Kubernetes.
 - **Client Deploy Mode**: The driver runs in the client’s JVM process and communicates with the executors managed by the cluster.
