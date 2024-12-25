@@ -239,7 +239,7 @@ Output should look like below.
 NAME                                READY   STATUS              RESTARTS   AGE
 spark-job-service-f545bd7d8-s4sn5   1/1     Running             0          9s
 ```
-* Port forward  `spark-job-service` server port in a separate terminal, to access it from local.
+* Port forward  `spark-job-service` server port in a separate terminal, to access it from local. Replace following POD name with your POD name.
 ```shell
 kubectl port-forward spark-job-service-f545bd7d8-s4sn5 8090:8090
 ```
@@ -248,7 +248,8 @@ Output should look like below.
 Forwarding from 127.0.0.1:8090 -> 8090
 Forwarding from [::1]:8090 -> 8090
 ```
-* Access Swagger at http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs and make API calls to start and stop or explore jobs.
+* Now everything is ready on Minikube, make API calls from Swagger or Postman to start and stop or explore jobs.
+
 > [!IMPORTANT]  
 > All applications run in `default` profile on minikube.
 
