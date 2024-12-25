@@ -6,15 +6,6 @@ Spring boot service providing Simple REST APIs to Start, Stop Spark Jobs and Tra
 ### Environment setup
 For prerequisites and environment setup, refer to [Installation Instructions](../README.md#installation)
 
-### IntelliJ Run Configurations
-* Got to main class [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) and Modify run configurations as follows.
-* Go to `Modify options`, click on `Add VM options` and set `-Dspring.profiles.active=local` to run in `local` profile. 
-* Go to `Modify options`, click on `Add VM options` and set `-Dspring.profiles.active=minikube` to run in `minikube` profile.
-* Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) as Spring boot application
-* Import the [**Postman Collection**](api-spec/Spark%20Job%20Service%20APIs.postman_collection.json) and make API calls to start, stop or track jobs.
-* Alternatively, you can open Swagger at http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs and make API calls to start and stop or explore jobs.
-![Swagger](../img/Swagger.png)
-
 ## Configurations
 ### Spark Configurations
 All possible [Spark configurations](https://spark.apache.org/docs/3.5.3/configuration.html) can be set in [application.yml](src/main/resources/config/application.yml) as follows. Remember, there are Spark configurations in individual Jobs such as [daily-sales-report-job's application.yml](../spark-batch-daily-sales-report-job/src/main/resources/config/application.yml) and [logs-analysis-job's application.yml](../spark-stream-logs-analysis-job/src/main/resources/config/application.yml) also.  
@@ -145,22 +136,16 @@ For example, [DailySalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spa
 ```
 * Refer to [Jackson Inheritance](https://www.baeldung.com/jackson-inheritance#2-per-class-annotations) to understand implementing inheritance in request classes.
 > [!IMPORTANT]  
-> Also important to mention that the `sparkConfigs` in Request body enjoys the **highest precedence** hence overrides the configurations in `spark-job-service`'s ``application.yml` and `deployment.yml` also.
+> Also important to mention that the `sparkConfigs` in Request body enjoys the **highest precedence** hence overrides the configurations in `spark-job-service`'s `application.yml` and `deployment.yml`, as explained in [Configurations precedence order]()
 
 ![Requests](../img/Job_Launch_Request.png)
 
 ### Running locally
-Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) locally in either `local` or `minikube` profile as follows.
-
-#### IntelliJ Run Configurations
-* Got to main class [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) and Modify run configurations as follows.
-* Set active profile as either `local` or `minikube` as explained in next sections.
-* Go to `Modify options`, click on `Add VM options` and set `-Dspring.profiles.active=local` to run in `local` profile.
-* Go to `Modify options`, click on `Add VM options` and set `-Dspring.profiles.active=minikube` to run in `minikube` profile.
-* Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) as Spring boot application.
+Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) locally in either [`local`](#local-profile) or [`minikube`](#minikube-profile) profile. Once application is up and running.
 * Import the [**Postman Collection**](api-spec/Spark%20Job%20Service%20APIs.postman_collection.json) and make API calls to start, stop or track jobs.
-* Alternatively, you can open Swagger at http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs and make API calls to start and stop or explore jobs.
-  ![Swagger](../img/Swagger.png)
+* Alternatively, you can open Swagger at http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs and make API calls.
+
+![Swagger](../img/Swagger.png)
 
 #### Local profile
 * For environment setup to run in `local` profile, refer to [Installation preferably using docker compose section](../README.md#docker-compose).

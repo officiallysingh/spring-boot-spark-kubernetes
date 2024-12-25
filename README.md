@@ -155,7 +155,6 @@ Keep it running in a separate terminal. Output should look like below.
 The proposed framework provides a comprehensive solution for building, running and deploying Spark jobs seamlessly.
 
 ### Features
-Offers following features.
 - **Job Launching**: Trigger Spark jobs via REST endpoint for deployment on local and kubernetes.
 - **Job Termination**: Accept requests to stop running jobs via REST endpoint, though not a gauranteed method. You may need to kill the job manually if not terminated by this.
 - **Job Monitoring**: Track job status, start and end time, duration taken, error messages if there is any, via REST endpoints.
