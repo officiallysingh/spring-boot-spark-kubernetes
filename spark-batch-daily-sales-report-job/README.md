@@ -144,7 +144,7 @@ ksoot:
 * `ksoot.job.job-stop-topic`:- The kafka topic name where the job listens for requests to Stop the long-running Job. Default value `job-stop-requests`. 
   Expected message content is `correlation-id` of Job execution for which the termination is requested.  
   Multiple Job executions could be running at a time, the running jobs that match the correlation id received in kafka message are terminated.
-* `ksoot.job.connector`:- Configurations for various Spark connectors. Refer to [spark-job-commons README.md](../spark-job-commons/README.md#connectors) for details.
+* `ksoot.job.connector`:- Configurations for various Spark connectors. Refer to [Connectors configurations](../spark-job-commons/README.md#connectors) for details.
 
 > [!IMPORTANT]  
 > Configurations in [application.yml](src/main/resources/config/application.yml) are supposed to be production defaults. 
