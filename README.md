@@ -44,7 +44,7 @@ This framework aims to simplify this process by providing a unified solution for
 ### Prerequisites
 - Java 17
 - [Maven](https://maven.apache.org), Make sure environment variable `M2_REPO` is set to local maven repository
-- [Scala 2.12.18](https://sdkman.io/install/)
+- [Scala 2.12.18](https://www.scala-lang.org/download/2.12.18.html)
 - [Spark 3.5.3](https://archive.apache.org/dist/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz), Make sure environment variable `SPARK_HOME` is set to local spark installation.
 - [Docker](https://www.docker.com), Make sure Docker is allocated with enough resources.
 - [Minikube](https://minikube.sigs.k8s.io/docs/)
