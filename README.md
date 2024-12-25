@@ -94,7 +94,7 @@ All these services can be installed locally on your machine, and should be acces
 
 #### Docker compose
 * The [docker-compose.yml](docker-compose.yml) file defines the services and configurations to run required infrastructure in Docker. 
-* In Terminal go to project root `spring-boot-spark-kubernetes` and execute following command and Check if all services are running.
+* In Terminal go to project root `spring-boot-spark-kubernetes` and execute following command and confirm if all services are running.
 ```shell
 docker compose up -d
 ```
