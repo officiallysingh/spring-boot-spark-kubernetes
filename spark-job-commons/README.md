@@ -19,8 +19,8 @@ ksoot:
     output-mode: Update
 ```
 **Description**
-* `ksoot.connector.save-mode`:- To specify the expected behavior of saving a DataFrame to a data source, with Default value as `Append`. **Applicable in Spark Batch jobs only** . Allowed values: `Append`, `Overwrite`, `ErrorIfExists`, `Ignore`.
-* `ksoot.connector.output-mode`:- Describes what data will be written to a streaming sink when there is new data available in a streaming Dataset, with Default value as `Append`. **Applicable in Spark Streaming jobs only**. Allowed values: `Append`, `Complete`, `Update`.
+* `ksoot.connector.save-mode`:- To specify the expected behavior of saving a DataFrame to a data source, with Default value as `Append`. Applicable in Spark **Batch** jobs only. Allowed values: `Append`, `Overwrite`, `ErrorIfExists`, `Ignore`.
+* `ksoot.connector.output-mode`:- Describes what data will be written to a streaming sink when there is new data available in a streaming Dataset, with Default value as `Append`. Applicable in Spark **Streaming** jobs only. Allowed values: `Append`, `Complete`, `Update`.
 
 #### File Connector
 To read and write to files of various formats in batch and streaming mode. Refer to [FileConnector.java](src/main/java/com/ksoot/spark/common/connector/FileConnector.java) for details.
