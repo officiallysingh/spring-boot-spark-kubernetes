@@ -99,16 +99,16 @@ An auto-configured Job listener with the following features. Refer to [SparkExec
 - Listens to kafka topic `job-stop-requests` to terminate a running job.
 > [!IMPORTANT]
 > On Job stop request arrival, it just tries to stop `SparkContext`, but it is not guaranteed method to stop the running job.
-> Sometimes the kafka listener thread may face starvation issue, as the available threads could overwhelmed by Spark job and listener may never get a chance to execute.
-> Or even after calling stop method on `SparkContext`, the job may not stop immediately. To force stop the job you may need to find a mechanism to kill the job.
+> Sometimes the kafka listener may face thread starvation issue, as the available threads could be overwhelmed by Spark job and listener may never get a chance to execute.
+> Or even after calling stop method on `SparkContext`, the job may not stop immediately. To force-stop the job you may need to find a mechanism to kill the job, like from **Spark UI**.
 
 ## Spark Stream Launcher
 An auto-configured Launch Spark streams with following features. Refer to [SparkStreamLauncher.java](src/main/java/com/ksoot/spark/common/SparkStreamLauncher.java) for details.
-- Start and await on Spark stream in a separate thread, so that we can launch multiple streams with blocking in main thread.
+- Start and await on Spark stream in a separate thread, so that multiple streams can be started without blocking the main thread.
 - Optional, Retry mechanism to restart the stream in case of failure.
 
 ## Exceptions
-It is discouraged to create a lot of custom exceptions. Only one customer exception class [JobProblem.java](src/main/java/com/ksoot/spark/common/error/JobProblem.java) can be used to throw exceptions as follows.
+It is discouraged to create a lot of custom exceptions. Only one custom exception class [JobProblem.java](src/main/java/com/ksoot/spark/common/error/JobProblem.java) can be used to throw exceptions as follows.
 
 ```java
 try {
@@ -136,8 +136,8 @@ public enum PipelineErrors implements ErrorType {
   // Skipping constructor and other methods
 }
 ```
-This way you can customize the error title and message in `messages.properties` or any other configured resource bundle as follows.  
-Please note `title` and `message` prefix to error codes mentioned in above enum.
+This way the error title and message can be customized in `messages.properties` or any other configured resource bundle as follows.  
+Note in following message keys, `title` and `message` prefix to error codes mentioned in above enum.
 ```text
 title.spark.streaming.exception=My custom title
 message.spark.streaming.exception=My custom message, check param: {0}, {1}ception=My custom title
@@ -150,7 +150,7 @@ message.invalid.configuration=Some message
 * Convert column names to Spark Column objects.
 * Check if a dataset contains specific columns.
 * Wrap column names with backticks if they contain slashes.
-* Log the schema and content of a dataset.
+* Log the schema and content of a dataset, see method `public static void logDataset(final String datasetName, final Dataset<Row> dataset, final int numRows)`.
 
 #### [SparkOptions](src/main/java/com/ksoot/spark/common/util/SparkOptions.java)
 The Spark option constants to avoid typos and ensure reusability across Spark jobs.:
@@ -166,10 +166,10 @@ The Spark option constants to avoid typos and ensure reusability across Spark jo
 * Aws: Defines constants for AWS S3 options.
 
 #### Miscellaneous
-* String Utilities: Contains utility methods for string manipulation.
-* SparkJobConstants: Contains constants used across Spark jobs.
-* Date Time Utilities: Contains utility methods for date and time manipulation and formatting.
-* [ExecutionContext](src/main/java/com/ksoot/spark/common/util/ExecutionContext.java): Contains utility methods to get/set values in the shared execution context of the Spark job.
+* [StringUtils.java](src/main/java/com/ksoot/spark/common/util/StringUtils.java): Utility methods for string manipulation.
+* [JobConstants](src/main/java/com/ksoot/spark/common/util/JobConstants.java): Constants used across Spark jobs.
+* [DateTimeUtils.java](src/main/java/com/ksoot/spark/common/util/DateTimeUtils.java) and [DateTimeFormatUtils.java](src/main/java/com/ksoot/spark/common/util/DateTimeFormatUtils.java): Utility methods for date and time manipulation and formatting.
+* [ExecutionContext](src/main/java/com/ksoot/spark/common/util/ExecutionContext.java): A cleaner way to share and manage shared data or dependencies without using global variables or static references.
 
 ## References
 - [Apache Spark](https://spark.apache.org/docs/3.5.3)
@@ -179,3 +179,4 @@ The Spark option constants to avoid typos and ensure reusability across Spark jo
 - [Spark ArangoDB Connector](https://docs.arangodb.com/3.13/develop/integrations/arangodb-datasource-for-apache-spark)
 - [Spark Kafka Connector](https://spark.apache.org/docs/3.5.1/structured-streaming-kafka-integration.html)
 - [Spark Streaming](https://spark.apache.org/docs/3.5.3/streaming-programming-guide.html)
+- [Spark UI](https://spark.apache.org/docs/3.5.3/web-ui.html)
