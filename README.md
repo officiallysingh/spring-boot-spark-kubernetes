@@ -290,7 +290,7 @@ Forwarding from [::1]:8090 -> 8090
 > [!IMPORTANT]  
 > All applications run in `default` profile on minikube.
 
-### Deployment process
+### Deployment architecture
 #### Deploy Modes
 There are two deployment modes for Spark Job deployment on Kubernetes.
 - **Client Deploy Mode**: The driver runs in the client’s JVM process and communicates with the executors managed by the cluster.
@@ -298,9 +298,9 @@ There are two deployment modes for Spark Job deployment on Kubernetes.
 
 ![Spark Deploy Modes](img/Spark_Deploy_Modes.png)
 
-#### How Spark Job Deployment works
+#### Deployment process
 
-![Spark Deploy Modes](img/Spark_Deployment_Cluster.png)
+![Spark Deployment on Kubernetes](img/Spark_Deployment_Cluster.png)
 
 #### Configurations precedence order
 Configurations can be provided at multiple levels. At individual project level, the precedence order is [Standard Spring Boot configurations precedence order](https://docs.spring.io/spring-boot/reference/features/external-config.html).
