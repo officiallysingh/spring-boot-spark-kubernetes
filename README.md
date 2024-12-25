@@ -182,8 +182,8 @@ Each service is configured with necessary environment variables, volume mounts, 
 - **ClusterRoleBinding**: Binds the spark ServiceAccount to the edit ClusterRole, granting it permissions to edit resources within the namespace.
 
 ## Running Jobs Locally
-- Individual Spark Jobs can be run as Spring boot application locally in your favorite IDE. Refer to [daily-sales-job README](spark-batch-daily-sales-report-job/README.md#intellij-run-configurations) and [log-analysis-job README](spark-stream-logs-analysis-job/README.md#intellij-run-configurations).
-- Spark Job can be Launched locally via REST API provided by `spark-job-service`. Refer to [spark-job-service README](spark-job-service/README.md#running-locally) for details.
+- Individual Spark Jobs can be run as Spring boot application locally in your favorite IDE. Refer to [daily-sales-job](spark-batch-daily-sales-report-job/README.md#intellij-run-configurations) and [log-analysis-job](spark-stream-logs-analysis-job/README.md#intellij-run-configurations).
+- Spark Job can be Launched locally via REST API provided by `spark-job-service`. Refer to [spark-job-service](spark-job-service/README.md#running-locally) for details.
 
 ## Running Jobs on Minikube
 ### Preparing for Minikube
