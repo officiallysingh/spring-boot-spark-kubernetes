@@ -98,7 +98,7 @@ All these services can be installed locally on your machine, and should be acces
 ```shell
 docker compose up -d
 ```
-* Create databases `spark_jobs_db` and `error_logs_db` in Potgres and Kafka topics `job-stop-requests` and `error-logs` if they do not exist.
+* Create databases `spark_jobs_db` and `error_logs_db` in Postgres and Kafka topics `job-stop-requests` and `error-logs` if they do not exist.
 
 > [!IMPORTANT]  
 > While using docker compose make sure the required ports are free on your machine otherwise it will throw port busy error.
