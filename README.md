@@ -319,11 +319,6 @@ There are two deployment modes for Spark Job deployment on Kubernetes.
 
 ![Spark Deployment on Kubernetes](img/Spark_Deployment_Cluster.png)
 
-#### Spark UI
-Access Spark UI at [**`http://localhost:4040`**](http://localhost:4040) to monitor and inspect Spark Batch job execution.
-
-![Spark UI](img/Spark_UI_Streaming.png)
-
 #### Configurations precedence order
 Configurations can be provided at multiple levels. At individual project level, the precedence order is [Standard Spring Boot configurations precedence order](https://docs.spring.io/spring-boot/reference/features/external-config.html).
 * In `application.yml`s of individual Jobs projects and profile specific `yml`s.
@@ -334,6 +329,11 @@ Configurations can be provided at multiple levels. At individual project level, 
 **Configurations are resolved in the following order.**
 
 ![Configurations Precedence Order](img/Configurations_Precedence_Order.png)
+
+#### Spark UI
+Access Spark UI at [**`http://localhost:4040`**](http://localhost:4040) to monitor and inspect Spark Batch job execution.
+
+![Spark UI](img/Spark_UI_Streaming.png)
 
 ## Common Errors
 * `24/12/26 01:07:11 INFO KerberosConfDriverFeatureStep: You have not specified a krb5.conf file locally or via a ConfigMap. Make sure that you have the krb5.conf locally on the driver image.
