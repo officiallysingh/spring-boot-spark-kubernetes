@@ -57,8 +57,8 @@ spark:
   hadoop:
     google.cloud.auth.service.account.json.keyfile: ${GCS_KEY_FILE:<put your sa-key.json>}
 ```
-* If you want to read or write to local file system, no additional configurations are required.
-* If you want to read or write to different AWS S3 or Google GCS accounts in same Job, you can provide above configurations as `options` to `SparkSesson` at runtime as follows.  
+* If you want to read from or write to a local file system, so no additional configurations are required.
+* If you want to read from or write to different AWS S3 or Google GCS accounts in same Job, you can provide above configurations as `options` to `SparkSesson` at runtime as follows.  
 ```java
 this.sparkSession
     .read()
