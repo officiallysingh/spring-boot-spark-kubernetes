@@ -143,8 +143,7 @@ ksoot:
 
 ### Error Handling
 - In case of any uncaught exceptions, the Job will exit with non-zero exit code.
-- Following best practices no need to create any custom exception classes.  
-  [JobProblem.java](../spark-job-commons/src/main/java/com/ksoot/spark/common/error/JobProblem.java) can be used to throw exceptions as follows.
+- Following best practices no need to create any custom exception classes. [JobProblem.java](../spark-job-commons/src/main/java/com/ksoot/spark/common/error/JobProblem.java) can be used to throw exceptions as follows.
 
 ```java
 try {
