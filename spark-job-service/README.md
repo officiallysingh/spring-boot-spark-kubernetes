@@ -18,8 +18,7 @@ For prerequisites and environment setup, refer to [Installation Instructions](..
 ## Configurations
 ### Spark Configurations
 All possible [Spark configurations](https://spark.apache.org/docs/3.5.3/configuration.html) can be set in [application.yml](src/main/resources/config/application.yml) as follows. Remember, there are Spark configurations in individual Jobs such as [daily-sales-report-job's application.yml](../spark-batch-daily-sales-report-job/src/main/resources/config/application.yml) and [logs-analysis-job's application.yml](../spark-stream-logs-analysis-job/src/main/resources/config/application.yml) also.  
-Any configuration set here will override all Job's yml configurations. So, set only those configuration overrides here which are common to all Jobs.  
-Individual Job configurations can be overridden in `spark-launcher.jobs` configuration as highlighted in next section.
+Any configuration set here takes higher precedence hence override all Job's default Spark configurations as given in respective Job's `application.yml`. So, set only those configuration overrides here, which are common to all Jobs. Individual Job configurations can be overridden in `spark-launcher.jobs` configuration as highlighted in next section.
 ```yaml
 #---------- Spark configurations common to all Jobs -------------------------
 spark:
