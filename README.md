@@ -43,10 +43,12 @@ This framework aims to simplify the process by providing a unified solution for 
 # Installation
 ## Prerequisites
 - Java 17
+- [Maven](https://maven.apache.org), Make sure environment variable `M2_REPO` is set to local maven repository
 - [Scala 2.12.18](https://sdkman.io/install/)
-- [Spark 3.5.3](https://archive.apache.org/dist/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz)
+- [Spark 3.5.3](https://archive.apache.org/dist/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz), Make sure environment variable `SPARK_HOME` is set to local spark installation.
+- [Docker](https://www.docker.com), Make sure Docker is allocated with enough resources.
 - [Minikube](https://minikube.sigs.k8s.io/docs/)
-- IDE (IntelliJ, Eclipse or VS Code)
+- IDE (IntelliJ, Eclipse or VS Code), Recommended [IntelliJ IDEA](https://www.jetbrains.com/idea).
 - Optional [Configure Formatter in intelliJ](https://github.com/google/google-java-format/blob/master/README.md#intellij-android-studio-and-other-jetbrains-ides), refer to [fmt-maven-plugin](https://github.com/spotify/fmt-maven-plugin) for details.
 
 ### Java
