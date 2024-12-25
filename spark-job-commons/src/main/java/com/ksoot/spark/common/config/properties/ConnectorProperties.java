@@ -18,8 +18,6 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "ksoot.connector")
 public class ConnectorProperties {
 
-  //  @NotEmpty private String checkpointLocation = "spark-space/checkpoints";
-
   /**
    * Save mode for the output file. Applicable only to Batch writers. Options are Append, Overwrite,
    * ErrorIfExists, Ignore. Default: Overwrite

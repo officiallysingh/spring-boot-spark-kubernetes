@@ -1,6 +1,6 @@
 # Spark Job Commons
-The common components and utilities to be used across Spark Jobs to reduce boilerplate and enhance reusability.
-Spark jobs use this as a dependency as follows.
+Provides the common components and utilities to be used across Spark Jobs to reduce boilerplate and enhance reusability.
+Spark jobs includes it as a dependency.
 ```xml
 <dependency>
     <groupId>com.ksoot.spark</groupId>
@@ -11,7 +11,7 @@ Spark jobs use this as a dependency as follows.
 
 ## Connectors
 Spark can connect with almost any datasource, followings are configurable connectors readily available.
-You can add more connectors or modify existing as per your need. Refer to [ConnectorProperties.java](src/main/java/com/ksoot/spark/common/config/properties/ConnectorProperties.java) for connector configurations.
+More connectors can be added similarly, existing can also be modified as per requirements. Refer to [ConnectorProperties.java](src/main/java/com/ksoot/spark/common/config/properties/ConnectorProperties.java) for connector configurations.
 ```yaml
 ksoot:
   connector:
@@ -19,12 +19,12 @@ ksoot:
     output-mode: Update
 ```
 **Description**
-* `ksoot.connector.save-mode`:- To specify the expected behavior of saving a DataFrame to a data source. Applicable in Spark Batch jobs only. Default value `Append`. Allowed values: `Append`, `Overwrite`, `ErrorIfExists`, `Ignore`.
-* `ksoot.connector.output-mode`:- Describes what data will be written to a streaming sink when there is new data available in a streaming Dataset. Applicable in Spark Streaming jobs only. Allowed values: `Append`, `Complete`, `Update`.
+* `ksoot.connector.save-mode`:- To specify the expected behavior of saving a DataFrame to a data source, with Default value as `Append`. **Applicable in Spark Batch jobs only** . Allowed values: `Append`, `Overwrite`, `ErrorIfExists`, `Ignore`.
+* `ksoot.connector.output-mode`:- Describes what data will be written to a streaming sink when there is new data available in a streaming Dataset, with Default value as `Append`. **Applicable in Spark Streaming jobs only**. Allowed values: `Append`, `Complete`, `Update`.
 
 #### File Connector
 To read and write to files of various formats in batch and streaming mode. Refer to [FileConnector.java](src/main/java/com/ksoot/spark/common/connector/FileConnector.java) for details.
-It can be customized with the following configurations. Refer to [FileOptions.java](src/main/java/com/ksoot/spark/common/config/properties/FileOptions.java) for details on available configuration options.
+It can be customized with the following configurations as follows. Refer to [FileOptions.java](src/main/java/com/ksoot/spark/common/config/properties/FileOptions.java) for details on available configuration options.
 ```yaml
 ksoot:
   connector:
@@ -37,7 +37,7 @@ ksoot:
 
 #### MongoDB Connector
 To read and write to MongoDB collections in batch and streaming mode. Refer to [MongoConnector.java](src/main/java/com/ksoot/spark/common/connector/MongoConnector.java) for details.
-It can be customized with the following configurations. Refer to [MongoOptions.java](src/main/java/com/ksoot/spark/common/config/properties/MongoOptions.java) for details on available configuration options.
+Following database connection configurations are required as follows. Refer to [MongoOptions.java](src/main/java/com/ksoot/spark/common/config/properties/MongoOptions.java) for details on available configuration options.
 ```yaml
 ksoot:
   connector:
@@ -48,7 +48,7 @@ ksoot:
 
 #### ArangoDB Connector
 To read and write to ArangoDB collections in batch and streaming mode. Refer to [ArangoConnector.java](src/main/java/com/ksoot/spark/common/connector/ArangoConnector.java) for details.
-It can be customized with the following configurations. Refer to [ArangoOptions.java](src/main/java/com/ksoot/spark/common/config/properties/ArangoOptions.java) for details on available configuration options.
+Expects to be provided with basic database connection configurations as follows. Refer to [ArangoOptions.java](src/main/java/com/ksoot/spark/common/config/properties/ArangoOptions.java) for details on available configuration options.
 ```yaml
 ksoot:
   connector:
@@ -64,7 +64,7 @@ ksoot:
 
 #### JDBC Connector
 To read and write to JDBC database tables in batch and streaming mode. Refer to [JdbcConnector.java](src/main/java/com/ksoot/spark/common/connector/JdbcConnector.java) for details.
-It can be customized with the following configurations. Refer to [JdbcOptions.java](src/main/java/com/ksoot/spark/common/config/properties/JdbcOptions.java) for details on available configuration options.
+Expects to be provided with basic database connection configurations along with few customization parameters as follows. Refer to [JdbcOptions.java](src/main/java/com/ksoot/spark/common/config/properties/JdbcOptions.java) for details on available configuration options.
 ```yaml
 ksoot:
   connector:
@@ -79,26 +79,24 @@ ksoot:
 ```
 
 #### Kafka Connector
-To read and write to JDBC database tables in batch and streaming mode. Refer to [JdbcConnector.java](src/main/java/com/ksoot/spark/common/connector/JdbcConnector.java) for details.
-It can be customized with the following configurations. Refer to [JdbcOptions.java](src/main/java/com/ksoot/spark/common/config/properties/JdbcOptions.java) for details on available configuration options.
+To read and write to JDBC database tables in batch and streaming mode. Refer to [KafkaConnector.java](src/main/java/com/ksoot/spark/common/connector/KafkaConnector.java) for details.
+Expects to be provided with basic kafka connection configurations along with few customization parameters as follows. Refer to [KafkaOptions.java](src/main/java/com/ksoot/spark/common/config/properties/KafkaOptions.java) for details on available configuration options.
 ```yaml
 ksoot:
   connector:
-    jdbc-options:
-      url: jdbc:postgresql://localhost:5432
-      database: error_logs_db
-      username: postgres
-      password: admin
-      fetchsize: 100
-      batchsize: 1000
-      isolation-level: READ_UNCOMMITTED
+    kafka-options:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    topic: ${KAFKA_ERROR_LOGS_TOPIC:error-logs}
+    fail-on-data-loss: ${KAFKA_FAIL_ON_DATA_LOSS:false}
 ```
 
 ## Job Listener
 An auto-configured Job listener with the following features. Refer to [SparkExecutionManager.java](src/main/java/com/ksoot/spark/common/SparkExecutionManager.java) for details.
-- Log Job startup and completed timestamps.
-- Log errors in case of Job exit with failures
-- Listens to kafka topic `job-stop-requests` to terminate a running job. Sets the exit message to `Terminated` in this case
+- Log Job startup and completed on timestamps, time taken by Job.
+- Sets status as `Completed` for successful completion, `Failed` for failed Jobs and `Terminated` if stopped prematurely as per Job stop request.
+- Set an exit message as Job status.
+- Log errors as per thrown exception in case of Job exit with failures.
+- Listens to kafka topic `job-stop-requests` to terminate a running job.
 > [!IMPORTANT]
 > On Job stop request arrival, it just tries to stop `SparkContext`, but it is not guaranteed method to stop the running job.
 > Sometimes the kafka listener thread may face starvation issue, as the available threads could overwhelmed by Spark job and listener may never get a chance to execute.

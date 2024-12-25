@@ -441,37 +441,3 @@ spec:
       name: kafka-ui-port
   selector:
     app: kafka-ui
-
-#    The Following is required to allow Spark to be able to manage Driver and Executor pods
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: fabric8-rbac
-subjects:
-  - kind: ServiceAccount
-    name: default
-    namespace: ksoot
-roleRef:
-  kind: ClusterRole
-  name: cluster-admin
-  apiGroup: rbac.authorization.k8s.io
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: spark
-  namespace: ksoot
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: spark-role
-subjects:
-  - kind: ServiceAccount
-    name: spark
-    namespace: ksoot
-roleRef:
-  kind: ClusterRole
-  name: edit
-  apiGroup: rbac.authorization.k8s.io
