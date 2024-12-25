@@ -1,11 +1,5 @@
 # Daily Sales Report Job
-Demo **Spark Batch job** implemented as Spring Cloud Task
-
-Run [**`DailySalesReportJob`**](src/main/java/com/ksoot/spark/sales/DailySalesReportJob.java) as Spring boot application.
-
-> [!IMPORTANT]  
-> Run in active profile `local` locally by setting VM argument `-Dspring.profiles.active=local`
-> Set VM argument `--add-exports java.base/sun.nio.ch=ALL-UNNAMED` to avoid exception `Factory method 'sparkSession' threw exception with message: class org.apache.spark.storage.StorageUtils$ (in unnamed module @0x2049a9c1) cannot access class sun.nio.ch.DirectBuffer (in module java.base) because module java.base does not export sun.nio.ch to unnamed module @0x2049a9c1`.
+Demo **Spark Batch job** implemented as [Spring Cloud Task](https://spring.io/projects/spring-cloud-task).
 
 ## Environment setup
 For prerequisites and environment setup instructions refer to [Installation section](../README.md#installation)
@@ -17,10 +11,11 @@ For prerequisites and environment setup instructions refer to [Installation sect
 * Go to `Modify options`, click on `Add VM options` and set the value as `--add-exports java.base/sun.nio.ch=ALL-UNNAMED`  
   to avoid exception `Factory method 'sparkSession' threw exception with message: class org.apache.spark.storage.StorageUtils$ (in unnamed module @0x2049a9c1) cannot access class sun.nio.ch.DirectBuffer (in module java.base) because module java.base does not export sun.nio.ch to unnamed module @0x2049a9c1`.
 * Go to `Modify options` and make sure `Add dependencies with "provided" scope to classpath` is checked.
+* Run [**`DailySalesReportJob`**](src/main/java/com/ksoot/spark/sales/DailySalesReportJob.java) as Spring boot application. 
 
 ## Spark Job implementation
 ### Spark Configurations
-For Spark auto-configurations [spring-boot-starter-spark](https://github.com/officiallysingh/spring-boot-starter-spark) is used by adding the following dependency.
+[spring-boot-starter-spark](https://github.com/officiallysingh/spring-boot-starter-spark) is used by adding the following dependency.
 ```xml
 <dependency>
     <groupId>io.github.officiallysingh</groupId>
@@ -35,30 +30,25 @@ to avail the following features.
 - All possible [Spark configurations](https://spark.apache.org/docs/3.5.3/configuration.html) can be set in `application.yml` as follows.
 ```yaml
 spark:
+  driver:
+    memory: 2g
+    cores: 2
+  executor:
+    instances: 2
+    memory: 2g
+    cores: 2
   ui:
     enabled: true
-  streaming:
-    stopGracefullyOnShutdown: true
-  sql:
-    streaming:
-      checkpointLocation: ${CHECKPOINT_LOCATION:spark-space/checkpoints}
-      forceDeleteTempCheckpointLocation: true
-    adaptive:
-      enabled: true
-  checkpoint:
-    compress: true
 ```
 
 ### Spark Pipeline
-- This Spark Job is implemented as [Spring Cloud Task](https://spring.io/projects/spring-cloud-task).
 - On application startup it populates sample transaction and master data into respective database collections for last 6 months.
 Refer to [DataPopulator](src/main/java/com/ksoot/spark/sales/DataPopulator.java) for details.
 - It expects an argument `month` of type `java.time.YearMonth` with default value as current month if not specified and generates sales report for given month.
-- Reads sales transaction data from MongoDB database `sales_db`, collection `sales` as a Spark `Dataset<Row>`
+- Reads sales transaction data from MongoDB database `sales_db`, collection `sales` in Spark `Dataset<Row>`
 - Filter this dataset for a given month.
 - Then joins it with Product master data fetched from ArangoDB database `products_db`, collection `products` to produce the result dataset.
-- The result dataset is then written into MongoDB collection named `sales_report_<input month>`.  
-  For example if input month is `2024-11` then output will be written into collection `sales_report_2024_11`.
+- The result dataset is then written into MongoDB collection named `sales_report_<input month>`. For example if input month is `2024-11` then output will be written into collection `sales_report_2024_11`.
 - For details refer to [SparkPipelineExecutor](src/main/java/com/ksoot/spark/sales/SparkPipelineExecutor.java)
 - Following is the Spark pipeline code
 ```java
@@ -146,10 +136,10 @@ ksoot:
 
 **Description**
 * `ksoot.hadoop-dll`:- To run Spark Job on Windows machine, you need to download [winutils](https://github.com/steveloughran/winutils/tree/master/hadoop-3.0.0/bin), extract and set the path in this config.
-* `ksoot.job.month`:- The input month for which to generate sales report. Cuurent month is taken as default if not specified. Example `2024-11`.
+* `ksoot.job.month`:- The input month for which to generate sales report. The current month is taken as default if not specified. Example `2024-11`.
 * `ksoot.job.correlation-id`:- The Job Correlation Id used to track job status or stop a running job from [spark-job-service](../spark-job-service/src/main/java/com/ksoot/spark/api/SparkJobExplorerController.java) REST API.
   Its value is set to `spring.cloud.task.external-execution-id`. It is recommended but not required to be unique for each Job execution.
-* `ksoot.job.persist`:- If set to true the Job status is tracked in Postgres database `spark_job_db`, table `task_execution`.  
+* `ksoot.job.persist`:- If set to `true` the Job status is tracked in Postgres database `spark_job_db`, table `task_execution`.  
   Its value is set to `spring.cloud.task.initialize-enabled`. Default value `false`.
 * `ksoot.job.job-stop-topic`:- The kafka topic name where the job listens for requests to Stop the long-running Job. Default value `job-stop-requests`. 
   Expected message content is `correlation-id` of Job execution for which the termination is requested.  
@@ -182,7 +172,7 @@ try {
 - For scenarios where you don't want the job to exit, Catch and Handle exceptions properly.
 
 ### Build
-It is required to build the application jar using [`maven-shade-plugin`](https://maven.apache.org/plugins/maven-shade-plugin/), to make it compatible with Spark.
+It is required to build the application Uber jar using [`maven-shade-plugin`](https://maven.apache.org/plugins/maven-shade-plugin/), to make it compatible with Spark.
 `spring-boot-maven-plugin` should not be used as it packages classes differently in folder `BOOT-INF`. Refer to [pom.xml](pom.xml) for details.
 * To build jar, execute following command.
 ```shell

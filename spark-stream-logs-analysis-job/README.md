@@ -1,11 +1,5 @@
 # Log Analysis Job
-Demo **Spark Streaming job** implemented as Spring Cloud Task
-
-Run [**`LogAnalysisJob`**](src/main/java/com/ksoot/spark/loganalysis/LogAnalysisJob.java) as Spring boot application.
-
-> [!IMPORTANT]  
-> Run in active profile `local` locally.  
-> Set VM argument `--add-exports java.base/sun.nio.ch=ALL-UNNAMED` to avoid exception `Factory method 'sparkSession' threw exception with message: class org.apache.spark.storage.StorageUtils$ (in unnamed module @0x2049a9c1) cannot access class sun.nio.ch.DirectBuffer (in module java.base) because module java.base does not export sun.nio.ch to unnamed module @0x2049a9c1`.
+Demo **Spark Streaming job** implemented as [Spring Cloud Task](https://spring.io/projects/spring-cloud-task).
 
 ## Environment setup
 For prerequisites and environment setup instructions refer to [Installation section](../README.md#installation)
@@ -17,10 +11,11 @@ For prerequisites and environment setup instructions refer to [Installation sect
 * Go to `Modify options`, click on `Add VM options` and set the value as `--add-exports java.base/sun.nio.ch=ALL-UNNAMED`  
   to avoid exception `Factory method 'sparkSession' threw exception with message: class org.apache.spark.storage.StorageUtils$ (in unnamed module @0x2049a9c1) cannot access class sun.nio.ch.DirectBuffer (in module java.base) because module java.base does not export sun.nio.ch to unnamed module @0x2049a9c1`.
 * Go to `Modify options` and make sure `Add dependencies with "provided" scope to classpath` is checked.
+* Run [**`LogAnalysisJob`**](src/main/java/com/ksoot/spark/loganalysis/LogAnalysisJob.java) as Spring boot application.
 
 ## Spark Job implementation
 ### Spark Configurations
-For Spark auto-configurations [spring-boot-starter-spark](https://github.com/officiallysingh/spring-boot-starter-spark) is used by adding the following dependency.
+[spring-boot-starter-spark](https://github.com/officiallysingh/spring-boot-starter-spark) is used by adding the following dependency.
 ```xml
 <dependency>
     <groupId>io.github.officiallysingh</groupId>
@@ -50,11 +45,10 @@ spark:
 ```
 
 ### Spark Pipeline
-- This Spark Job is implemented as [Spring Cloud Task](https://spring.io/projects/spring-cloud-task).
-- Randomly generated error logs are written to kafka topic `error-logs`, for details refer to [LogsGenerator](src/main/java/com/ksoot/spark/loganalysis/LogsGenerator.java).
+- Randomly generated error logs are written to kafka topic `error-logs` every 3 seconds to generate data artificially for Spark stream to run. For details refer to [LogsGenerator](src/main/java/com/ksoot/spark/loganalysis/LogsGenerator.java).
 - Spark streaming pipeline connects to kafka topic `error-logs` and read the text log messages as stream in `Dataset<Row>`.
-- Then it filters the data with log leve `ERROR`.
-- Then it writes the output to Postgres database `error_logs_db` table `error_logs` as stream continuously.
+- Then it filters the data with log level `ERROR`.
+- Then it writes the output to Postgres database `error_logs_db` table `error_logs` as continuous stream.
 - Application starts and awaits on Spark `DataStreamWriter` in a `Retryable` wrapper to make it fault-tolerant.
 - For details refer to [SparkPipelineExecutor](src/main/java/com/ksoot/spark/loganalysis/SparkPipelineExecutor.java)
 - Following is the Spark pipeline code
@@ -85,7 +79,7 @@ public void execute() {
 > [!IMPORTANT]  
 > In case of recoverable errors always wrap exception in `StreamRetryableException` and throw it,  
 > so that Job does not exit, but keep on retrying to connect to recover from transient errors such as kafka connectivity issues.
-> But in some error situations you may want the job to fail.
+> But in some error situations you may want the job to fail, don't catch such exceptions.
 
 
 ### Configurations
@@ -124,7 +118,7 @@ ksoot:
 * `ksoot.hadoop-dll`:- To run Spark Job on Windows machine, you need to download [winutils](https://github.com/steveloughran/winutils/tree/master/hadoop-3.0.0/bin), extract and set the path in this config.
 * `ksoot.job.correlation-id`:- The Job Correlation Id used to track job status or stop a running job from [spark-job-service](../spark-job-service/src/main/java/com/ksoot/spark/api/SparkJobExplorerController.java) REST API.
   Its value is set to `spring.cloud.task.external-execution-id`. It is recommended but not required to be unique for each Job execution.
-* `ksoot.job.persist`:- If set to true the Job status is tracked in Postgres database `spark_job_db`, table `task_execution`.  
+* `ksoot.job.persist`:- If set to `true` the Job status is tracked in Postgres database `spark_job_db`, table `task_execution`.  
   Its value is set to `spring.cloud.task.initialize-enabled`. Default value `false`.
 * `ksoot.job.job-stop-topic`:- The kafka topic name where the job listens for requests to Stop the long-running Job. Default value `job-stop-requests`.
   Expected message content is `correlation-id` of Job execution for which the termination is requested.  
@@ -163,7 +157,7 @@ try {
 - For scenarios where you don't want the job to exit, Catch and Handle exceptions properly.
 
 ### Build
-It is required to build the application jar using [`maven-shade-plugin`](https://maven.apache.org/plugins/maven-shade-plugin/), to make it compatible with Spark.
+It is required to build the application Uber jar using [`maven-shade-plugin`](https://maven.apache.org/plugins/maven-shade-plugin/), to make it compatible with Spark.
 `spring-boot-maven-plugin` should not be used as it packages classes differently in folder `BOOT-INF`. Refer to [pom.xml](pom.xml) for details.
 * To build jar, execute following command.
 ```shell
