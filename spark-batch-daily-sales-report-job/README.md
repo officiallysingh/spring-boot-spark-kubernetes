@@ -183,6 +183,65 @@ mvn clean install
 docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
 ```
 
+## Deploy on minikube
+The job jar can be manually deployed on Minikube using a mounted volume as follows. The `jar` size is too large to `spark-submit` without mounting volume.
+* For environment setup, refer to [Installation using minikube section](../README.md#minikube).
+* Create a folder `kubevol/spark-apps` in your local `HOME` directory.
+* Copy Job Jar [`spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar`](target/spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar) in this folder.
+* Mount this folder in minikube. Execute following command in a separate terminal and keep it running.
+```shell
+echo $HOME
+minikube mount $HOME/kubevol/spark-apps:/tmp/spark-apps
+```
+  Confirm if you can see your jar in mounted volume.
+```shell
+minikube ssh
+ls -ld /tmp/spark-apps
+ls /tmp/spark-apps
+```
+* Get Minikube master port number by running the following command.
+```shell
+kubectl cluster-info
+```
+The output should look like below.
+```shell
+Kubernetes control plane is running at https://127.0.0.1:50537
+CoreDNS is running at https://127.0.0.1:50537/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
+* Set above port number `50537` in configuration `--master` value `k8s://https://127.0.0.1:50537` following `spark-submit` command.
+> [!IMPORTANT]
+> Whenever minikube is restarted this port number changes, so make sure to get the new port and change in `spark.master` configuration again.
+* Load `officiallysingh/spark:3.5.3` image into minikube as follows.
+```shell
+minikube image load officiallysingh/spark:3.5.3
+```
+* Go to `SPARK_HOME` in terminal.
+```shell
+cd $SPARK_HOME
+```
+* Launch Job using `spark-submit` as follows.
+```shell
+./bin/spark-submit \
+    --master k8s://https://127.0.0.1:50537 \
+    --deploy-mode cluster \
+    --name daily-sales-report-job \
+    --class com.ksoot.spark.sales.DailySalesReportJob \
+    --conf spark.kubernetes.container.image=officiallysingh/spark:3.5.3 \
+    --conf spark.kubernetes.namespace=ksoot \
+    --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
+    --conf spark.kubernetes.driverEnv.SPARK_USER=spark \
+    --conf spark.executor.instances=2 \
+    --conf spark.driver.extraJavaOptions="-DPOSTGRES_URL=jdbc:postgresql://postgres:5432/spark_jobs_db -DKAFKA_BOOTSTRAP_SERVERS=kafka:9092 -DMONGODB_URL=mongodb://mongo:27017 -DARANGODB_URL=arango:8529" \
+    --conf spark.kubernetes.file.upload.path=/tmp/spark-apps \
+    --conf spark.kubernetes.driver.volumes.hostPath.spark-host-mount.mount.path=/tmp/spark-apps \
+    --conf spark.kubernetes.driver.volumes.hostPath.spark-host-mount.options.path=/tmp/spark-apps \
+    --conf spark.kubernetes.executor.volumes.hostPath.spark-host-mount.mount.path=/tmp/spark-apps \
+    --conf spark.kubernetes.executor.volumes.hostPath.spark-host-mount.options.path=/tmp/spark-apps \
+    local:///tmp/spark-apps/spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar
+```
+
 ### Spark UI
 Access Spark UI at [**`http://localhost:4040`**](http://localhost:4040) to monitor and inspect Spark Batch job execution.
 

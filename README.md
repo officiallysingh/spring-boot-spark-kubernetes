@@ -157,22 +157,6 @@ Keep it running in a separate terminal. Output should look like below.
 - **Auto-configurations**: of Common components such as `SparkSession`, Job lifecycle listener and Connectors to read and write to various datasources.
 - **Demo Jobs**: A [Spark Batch Job](spark-batch-daily-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job), to start with
 
-## Kubernetes configuration files
-The framework includes Kubernetes configuration files to deploy the required infrastructure and services in a Kubernetes cluster in namespace `ksoot`. You can change the namespace in these two files as per your requirement.
-Each service is configured with necessary environment variables, volume mounts, and ports to ensure proper operation within the Kubernetes cluster.
-1. The [infra-k8s-deployment.yml](infra-k8s-deployment.yml) file defines the Kubernetes resources required to deploy various services.  
-- **Namespace**: Creates a namespace named **`ksoot`**.
-- **MongoDB**: Deployment, PersistentVolumeClaim, and Service for MongoDB.
-- **ArangoDB**: Deployment, PersistentVolumeClaim, and Service for ArangoDB.
-- **PostgreSQL**: Deployment, PersistentVolumeClaim, ConfigMap (for initialization script), and Service for PostgreSQL.
-- **Zookeeper**: Deployment, PersistentVolumeClaims (for data and logs), and Service for Zookeeper.
-- **Kafka**: Deployment, PersistentVolumeClaim, and Service for Kafka.
-- **Kafka UI**: Deployment and Service for Kafka UI.
-2. The [spark-rbac.yml](spark-rbac.yml) file defines the Kubernetes RBAC (Role-Based Access Control) resources required to allow Spark to manage Driver and Executor pods within the `ksoot` namespace.  
-- **ClusterRoleBinding**: Binds the default ServiceAccount to the cluster-admin ClusterRole, allowing it to have cluster-wide administrative privileges.
-- **ServiceAccount**: Creates a ServiceAccount named spark .
-- **ClusterRoleBinding**: Binds the spark ServiceAccount to the edit ClusterRole, granting it permissions to edit resources within the namespace.
-
 ## Components
 The framework consists of following components. Refer to respective project's README for details.
 - [**spark-job-service**](spark-job-service/README.md): A Spring Boot application to launch Spark jobs and monitor their status.
@@ -180,6 +164,22 @@ The framework consists of following components. Refer to respective project's RE
 - [**spark-job-commons**](spark-job-commons/README.md): A library to provide common Job components and utilities for Spark jobs.
 - [**spark-batch-daily-sales-report-job**](spark-batch-daily-sales-report-job/README.md): A demo Spark Batch Job to generate daily sales reports.
 - [**spark-stream-logs-analysis-job**](spark-stream-logs-analysis-job/README.md): A demo Spark Streaming Job to analyze logs in real-time.
+
+## Kubernetes configuration files
+The framework includes Kubernetes configuration files to deploy the required infrastructure and services in a Kubernetes cluster in namespace `ksoot`. You can change the namespace in these two files as per your requirement.
+Each service is configured with necessary environment variables, volume mounts, and ports to ensure proper operation within the Kubernetes cluster.
+1. The [infra-k8s-deployment.yml](infra-k8s-deployment.yml) file defines the Kubernetes resources required to deploy various services.
+- **Namespace**: Creates a namespace named **`ksoot`**.
+- **MongoDB**: Deployment, PersistentVolumeClaim, and Service for MongoDB.
+- **ArangoDB**: Deployment, PersistentVolumeClaim, and Service for ArangoDB.
+- **PostgreSQL**: Deployment, PersistentVolumeClaim, ConfigMap (for initialization script), and Service for PostgreSQL.
+- **Zookeeper**: Deployment, PersistentVolumeClaims (for data and logs), and Service for Zookeeper.
+- **Kafka**: Deployment, PersistentVolumeClaim, and Service for Kafka.
+- **Kafka UI**: Deployment and Service for Kafka UI.
+2. The [spark-rbac.yml](spark-rbac.yml) file defines the Kubernetes RBAC (Role-Based Access Control) resources required to allow Spark to manage Driver and Executor pods within the `ksoot` namespace.
+- **ClusterRoleBinding**: Binds the default ServiceAccount to the cluster-admin ClusterRole, allowing it to have cluster-wide administrative privileges.
+- **ServiceAccount**: Creates a ServiceAccount named spark .
+- **ClusterRoleBinding**: Binds the spark ServiceAccount to the edit ClusterRole, granting it permissions to edit resources within the namespace.
 
 ## Running Jobs Locally
 - Individual Spark Jobs can be run as Spring boot application locally in your favorite IDE. Refer to [daily-sales-job README](spark-batch-daily-sales-report-job/README.md#intellij-run-configurations) and [log-analysis-job README](spark-stream-logs-analysis-job/README.md#intellij-run-configurations).
@@ -196,7 +196,7 @@ rm -f jars/protobuf-java-2.5.0.jar; \
 rm -f jars/guava-14.0.1.jar; \
 rm -f jars/HikariCP-2.5.1.jar; \
 ```
-In Terminal go to root project `spring-boot-spark-kubernetes` and execute the following command to build Spark base Docker image. All Job's Dockerfiles extend from this image.
+  In Terminal go to root project `spring-boot-spark-kubernetes` and execute the following command to build Spark base Docker image. All Job's Dockerfiles extend from this image.
 ```shell
 docker image build . -t ksoot/spark:3.5.3 -f Dockerfile
 ```
@@ -271,7 +271,7 @@ kubectl apply -f deployment.yml
 ```shell
 kubectl get pods
 ```
-Output should look like below.
+  Output should look like below.
 ```shell
 NAME                                READY   STATUS              RESTARTS   AGE
 spark-job-service-f545bd7d8-s4sn5   1/1     Running             0          9s
@@ -285,8 +285,25 @@ Output should look like below.
 Forwarding from 127.0.0.1:8090 -> 8090
 Forwarding from [::1]:8090 -> 8090
 ```
-* Now all done on Minikube, make API calls from Swagger or Postman to start and explore jobs.
-
+* Now Minikube is ready for Spark Jobs deployment, make API calls from [Swagger](http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs) or Postman to start and explore jobs.
+* If `spark-submit` command is executed successfully while Launching a Job, then you should be able to see the Spark Driver and Executor pods running in minikube.
+```shell
+kubectl get pods
+```
+  Output should look like below.
+```shell
+NAME                                             READY   STATUS    RESTARTS   AGE
+daily-sales-report-job-2e9c6f93ef784c17-driver   1/1     Running   0          11s
+daily-sales-report-job-9ac2e493ef78625a-exec-1   1/1     Running   0          6s
+daily-sales-report-job-9ac2e493ef78625a-exec-2   1/1     Running   0          6s
+```
+* Once the Job is complete, executor pods are terminated automatically. Though driver pod remains in `Completed` state, but it does not consume any resources.
+```shell
+NAME                                             READY   STATUS      RESTARTS   AGE
+daily-sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          2m56s
+```
+* If the Job fails, Executor pods are still terminated, but driver pod remains in `Error` state. For debugging, you can see pod logs.
+* Eventually you may want to clean up by deleting the pods or `minikube delete`.
 > [!IMPORTANT]  
 > All applications run in `default` profile on minikube.
 
@@ -302,6 +319,9 @@ There are two deployment modes for Spark Job deployment on Kubernetes.
 
 ![Spark Deployment on Kubernetes](img/Spark_Deployment_Cluster.png)
 
+#### Spark UI
+Access Spark UI at [**`http://localhost:4040`**](http://localhost:4040) to monitor and inspect Spark Batch job execution.
+
 #### Configurations precedence order
 Configurations can be provided at multiple levels. At individual project level, the precedence order is [Standard Spring Boot configurations precedence order](https://docs.spring.io/spring-boot/reference/features/external-config.html).
 * In `application.yml`s of individual Jobs projects and profile specific `yml`s.
@@ -312,6 +332,15 @@ Configurations can be provided at multiple levels. At individual project level, 
 **Configurations are resolved in the following order.**
 
 ![Configurations Precedence Order](img/Configurations_Precedence_Order.png)
+
+## Common Errors
+* `24/12/26 01:07:11 INFO KerberosConfDriverFeatureStep: You have not specified a krb5.conf file locally or via a ConfigMap. Make sure that you have the krb5.conf locally on the driver image.
+24/12/26 01:07:12 ERROR Client: Please check "kubectl auth can-i create pod" first. It should be yes.`
+Possible cause of this error is wrong `spark.master` value.  
+**Solution**: Set correct `spark.master` value in `application.yml` of `spark-job-service` and `deployment.yml` of `spark-job-service`.
+* `Factory method 'sparkSession' threw exception with message: class org.apache.spark.storage.StorageUtils$ (in unnamed module @0x2049a9c1) cannot access class sun.nio.ch.DirectBuffer (in module java.base) because module java.base does not export sun.nio.ch to unnamed module @0x2049a9c1`
+The error message indicates that your Spark application is trying to access an internal Java class (sun.nio.ch.DirectBuffer) in the java.base module, which is not exported to Spark’s unnamed module. This issue arises because Java modules introduced in JDK 9 restrict access to internal APIs.
+**Solution**: Add VM option `--add-exports java.base/sun.nio.ch=ALL-UNNAMED`
 
 ## Licence
 Open source [**The MIT License**](http://www.opensource.org/licenses/mit-license.php)

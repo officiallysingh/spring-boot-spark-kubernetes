@@ -158,7 +158,7 @@ Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) 
 ![Spark Deploy Local](../img/Spark_deploy_local.png)
 
 #### Minikube profile
-* For environment setup, refer to [Installation using minikube section](../README.md#minikube), can skip `spark-job-service` docker image building part, as we will run `spark-job-service` on local in this case.
+* For environment setup, refer to [Prepare for Minikube section](../README.md#preparing-for-minikube), you can skip `spark-job-service` docker image building part, as we will run `spark-job-service` on local in this case.
 * Get Minikube master port number by running the following command.
 ```shell
 kubectl cluster-info
@@ -199,6 +199,9 @@ daily-sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          
 * Eventually you may want to clean up by deleting the pods or `minikube delete`.
 > [!IMPORTANT]  
 > `spark-job-service` still runs on local, but Spark Jobs are launched on minikube using corresponding Job's Docker images.
+
+### Spark UI
+Access Spark UI at [**`http://localhost:4040`**](http://localhost:4040) to monitor and inspect Spark Batch job execution.
 
 ## API Reference
 
