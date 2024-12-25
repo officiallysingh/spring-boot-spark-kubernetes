@@ -104,7 +104,7 @@ docker compose up -d
 > While using docker compose make sure the required ports are free on your machine, otherwise port busy error could be thrown.
 
 #### Minikube
-* In Terminal go to project root `spring-boot-spark-kubernetes` and execute following commands to create a namespace `ksoot` and necessary Kubernetes services in given namespace.  
+* In Terminal go to project root `spring-boot-spark-kubernetes` and execute following commands to create a namespace `ksoot` and necessary Kubernetes services in given namespace. 
 Refer to [Kubernetes configuration files section](#kubernetes-configuration-files) for more details.
 ```shell
 kubectl apply -f infra-k8s-deployment.yml
