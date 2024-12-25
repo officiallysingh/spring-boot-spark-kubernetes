@@ -172,6 +172,13 @@ The Spark option constants to avoid typos and ensure reusability across Spark jo
 * [DateTimeUtils.java](src/main/java/com/ksoot/spark/common/util/DateTimeUtils.java) and [DateTimeFormatUtils.java](src/main/java/com/ksoot/spark/common/util/DateTimeFormatUtils.java): Utility methods for date and time manipulation and formatting.
 * [ExecutionContext](src/main/java/com/ksoot/spark/common/util/ExecutionContext.java): A cleaner way to share and manage shared data or dependencies without using global variables or static references.
 
+## Licence
+Open source [**The MIT License**](http://www.opensource.org/licenses/mit-license.php)
+
+## Authors and acknowledgment
+[**Rajveer Singh**](https://www.linkedin.com/in/rajveer-singh-589b3950/), In case you find any issues or need any support, please email me at raj14.1984@gmail.com.
+Give it a :star: on [Github](https://github.com/officiallysingh/spring-boot-spark-kubernetes) and a :clap: on [**medium.com**](https://officiallysingh.medium.com/spark-spring-boot-starter-e206def765b9) if you find it helpful.
+
 ## References
 - [Apache Spark](https://spark.apache.org/docs/3.5.3)
 - [Spark Data Sources](https://spark.apache.org/docs/latest/sql-data-sources.html)
