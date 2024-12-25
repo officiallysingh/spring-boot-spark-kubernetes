@@ -168,7 +168,7 @@ try {
   throw JobProblem.of("IOException while listing file by reading from aws").cause(e).build();
 }
 ```
-- On job exit and error is logged by [@AfterTask Listener method](../spark-job-commons/src/main/java/com/ksoot/spark/common/config/SparkExecutionManager.java).
+- On job exit and error is logged by [@AfterTask Listener method](../spark-job-commons/src/main/java/com/ksoot/spark/common/SparkExecutionManager.java).
 - For scenarios where you don't want the job to exit, Catch and Handle exceptions properly.
 
 ### Build
@@ -184,7 +184,7 @@ docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
 ```
 
 ### Spark UI
-Access Spark UI at `http://localhost:4040` to monitor and inspect Spark Batch job execution.
+Access Spark UI at [**`http://localhost:4040`**](http://localhost:4040) to monitor and inspect Spark Batch job execution.
 
 ![Spark Architecture](../img/Spark_UI_Batch.png)
 
