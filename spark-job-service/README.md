@@ -88,10 +88,10 @@ Each job must be provided with some basic mandatory configurations and a few opt
   You can also unset any configuration coming from common spark configuration by setting it to `` (blank) here.
 
 > [!IMPORTANT]  
-> Job names `daily-sales-report-job` and `logs-analysis-job` given as keys in `spark-launcher.jobs` Map, are used in Job start Request.
-> Refer to below given curl to start [daily-sales-report-job](../spark-batch-daily-sales-report-job) and Note that `jobName` in Request body must match the key name in `spark-launcher.jobs` Map for this job, `daily-sales-report-job` in this case.
-> It is recommended to have job name as `spring.application.name` in respective Job's `application.yml`.
-> Another thing to note about this job name is that the Driver and Executor pods created for this job in Kubernetes will have this job name as prefix.
+> Job names `daily-sales-report-job` and `logs-analysis-job` given as keys in `spark-launcher.jobs` Map, are used in Job start Request.  
+> Refer to below given curl to start [daily-sales-report-job](../spark-batch-daily-sales-report-job) and Note that `jobName` in Request body must match the key name in `spark-launcher.jobs` Map, `daily-sales-report-job` in this case.  
+> It is recommended to have job name as `spring.application.name` in respective Job's `application.yml`.  
+> Another thing to note about job name is that the Driver and Executor pods created for this job in Kubernetes will have this job name as prefix.
 ```curl
 curl -X 'POST' \
   'http://localhost:8090/v1/spark-jobs/start' \
