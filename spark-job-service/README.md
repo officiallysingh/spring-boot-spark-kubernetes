@@ -110,7 +110,7 @@ curl -X 'POST' \
 
 ## Launcher Implementation
 * At its core it uses [spark-submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html) to launch a Spark Job locally, on minikube or kubernetes in a unified way.
-* `spark-submit` command is derived with options coming through configurations in `application.yml`, `deployment.yml` (in case of Minikube/Kubernetes) and Job start request Object.  
+* `spark-submit` command is derived with options coming through configurations in `application.yml`, `deployment.yml` (in case of Minikube/Kubernetes) and Job start request Object.
   Refer to [SparkSubmitCommand Builder](src/main/java/com/ksoot/spark/launcher/SparkSubmitCommand.java) to see how the `spark-submit` command is built.
 * [SparkJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkJobLauncher.java) is the interface to launch a Spark Job.
   As of now the only implementation is [SparkSubmitJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkSubmitJobLauncher.java). However, similar Job Launcher can be implemented for EMR also, placeholder at [SparkEmrJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkEmrJobLauncher.java)
