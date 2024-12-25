@@ -116,7 +116,7 @@ ksoot:
 
 **Description**
 * `ksoot.hadoop-dll`:- To run Spark Job on Windows machine, you need to download [winutils](https://github.com/steveloughran/winutils/tree/master/hadoop-3.0.0/bin), extract and set the path in this config.
-* `ksoot.job.correlation-id`:- The Job Correlation Id used to track job status or stop a running job from [spark-job-service](../spark-job-service/src/main/java/com/ksoot/spark/api/SparkJobExplorerController.java) REST API.
+* `ksoot.job.correlation-id`:- The Job Correlation Id used to track job status or stop a running job from [Stop Job API](../spark-job-service/README.md#stop-spark-job) REST API.
   Its value is set to `spring.cloud.task.external-execution-id`. It is recommended but not required to be unique for each Job execution.
 * `ksoot.job.persist`:- If set to `true` the Job status is tracked in Postgres database `spark_job_db`, table `task_execution`.  
   Its value is set to `spring.cloud.task.initialize-enabled`. Default value `false`.
