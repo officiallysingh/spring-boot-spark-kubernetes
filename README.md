@@ -16,7 +16,7 @@ Here’s a brief breakdown of Spark’s architecture:
 - Executors: These are worker processes running on cluster nodes. They:
   - Execute the tasks assigned by the driver.
   - Store data partitions in memory or disk, enabling iterative computations.
-- Cluster Manager: Spark relies on a cluster manager (e.g., YARN, Mesos, Kubernetes etc.) to manage resources and schedule jobs across the cluster.
+- Cluster Manager: Spark relies on a cluster manager (e.g., YARN, Mesos and Kubernetes etc.) to manage resources and schedule jobs across the cluster.
 
 2. **Resilient Distributed Dataset (RDD)**  
 At the core of Spark’s architecture is the RDD, a fault-tolerant and immutable distributed collection of objects.  
@@ -32,6 +32,7 @@ The Latest Spark versions have introduced and recommend DataFrames and Datasets,
 - Within each stage, tasks are executed in parallel across the cluster.
 - The Directed Acyclic Graph (DAG) Scheduler optimizes task execution by constructing a dependency graph of RDD transformations.
 
+**Spark Distributed Architecture**
 ![Spark Architecture](img/Spark_Architecture.png)
 
 ## Introduction
@@ -177,11 +178,12 @@ The framework consists of following components. Refer to respective project's RE
 There are two deployment modes for Spark Job deployment on Kubernetes.
 - **Client Deploy Mode**: The driver runs in the client’s JVM process and communicates with the executors managed by the cluster.
 - **Cluster Deploy Mode**: The driver process runs as a separate JVM process in a cluster, and the cluster manages its resources.
+
 ![Spark Deploy Modes](img/Spark_Deploy_Modes.png)
 
 #### Deployment Process
 - **Build Spark base Docker Image**: Build custom base Docker image for Spark for more control over it, refer to [Dockerfile](Dockerfile) for details.  
-Spark contains a lot of jars, some of which may conflict with your application jars. So you may need to exclude such jars from Spark.  
+Spark contains a lot of jars at `${SPARK_HOME/jars}`, some of which may conflict with your application jars. So you may need to exclude such jars from Spark.  
 For example following conflicting jars are excluded from Spark.
 ```shell
 # Remove any spark jars that may be conflict with the ones in your application dependencies.
@@ -227,10 +229,10 @@ subjects:
   name: edit
   apiGroup: rbac.authorization.k8s.io
 ```
-* **Update `spark.master`** with your Kubernetes master URL in [spark-job-service deployment.yml](spark-job-service/deployment.yml).
+* **Update `spark.master`** with your Kubernetes master URL in [spark-job-service deployment.yml](spark-job-service/deployment.yml). For Minikube it should be `k8s://https://kubernetes.default.svc`.
 * **Deploy `spark-job-service`** using its [deployment.yml](spark-job-service/deployment.yml). Refer to [spark-job-service README](spark-job-service/README.md#running-on-minikube) for details.
 * **Deploy Spark Jobs** using [REST APIs](spark-job-service/README.md#api-reference) provided by `spark-job-service`.
-* You can override any configurations that are defined in [spark-job-service application.yml](spark-job-service/src/main/resources/config/application.yml) of spark-job-service and Spark Jobs using environment variables in [spark-job-service deployment.yml](spark-job-service/deployment.yml) as follows.
+* You can override any configurations **that are defined in** [spark-job-service application.yml](spark-job-service/src/main/resources/config/application.yml) of `spark-job-service` and Spark Jobs using environment variables in [spark-job-service deployment.yml](spark-job-service/deployment.yml) as follows.
 ```yaml
 env:
   - name: SPARK_MASTER
@@ -255,7 +257,7 @@ env:
   - name: CAPTURE_JOBS_LOGS
     value: "true"
 ```
-* You can override any configurations that are not defined in [spark-job-service application.yml](spark-job-service/src/main/resources/config/application.yml) as follows.
+* You can override any configurations **that are not defined in** [spark-job-service application.yml](spark-job-service/src/main/resources/config/application.yml) as follows.
 ```yaml
 args:
   - "--spark.executor.instances=2"
@@ -271,6 +273,17 @@ args:
 - At its core, it executes `spark-submit` command built dynamically using configurations provided at multiple levels when the request to Launch a Spark Job is received, as explained in [Job Launcher Implementation](spark-job-service/README.md#launcher-implementation).
 
 ![Spark Deploy Modes](img/Spark_Deployment_Cluster.png)
+
+#### Configurations precedence order
+Configurations can be provided at multiple levels. At individual project level, the precedence order is [Standard Spring Boot configurations precedence order](https://docs.spring.io/spring-boot/reference/features/external-config.html).
+* In `application.yml`s of individual Jobs projects and profile specific `yml`s.
+* In `application.yml`s of `spark-job-service`.
+* As environment in `deployment.yml` of `spark-job-service`.
+* As arguments in `deployment.yml` of `spark-job-service`.
+
+**They are resolved in the following order.**
+
+![Configurations Precedence Order](img/Configurations_Precedence_Order.png)
 
 ## Licence
 Open source [**The MIT License**](http://www.opensource.org/licenses/mit-license.php)
@@ -290,5 +303,6 @@ Give me a :star: and a :clap: on [**medium.com**](https://officiallysingh.medium
 - [Spark MongoDB Connector](https://www.mongodb.com/docs/spark-connector/v10.4)
 - [Spark Kafka Connector](https://spark.apache.org/docs/3.5.1/structured-streaming-kafka-integration.html)
 - [Spring Cloud Task](https://spring.io/projects/spring-cloud-task)
+- [Spring Boot Configurations](https://docs.spring.io/spring-boot/reference/features/external-config.html)
 - [Exception handling in Spring boot Web applications](https://github.com/officiallysingh/spring-boot-problem-handler).
 - [Spring boot starter for Spark](https://github.com/officiallysingh/spring-boot-starter-spark).
