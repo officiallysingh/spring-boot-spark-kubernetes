@@ -445,5 +445,6 @@ GET /v1/spark-jobs/executions/by-correlation-id/{correlationId}
 - [Apache Spark](https://spark.apache.org/docs/3.5.3)
 - [Spark Submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html)
 - [Running Spark on Kubernetes](https://spark.apache.org/docs/3.5.4/running-on-kubernetes.html)
+- [Spark UI](https://spark.apache.org/docs/3.5.3/web-ui.html)
 - [Spark Configurations](https://spark.apache.org/docs/3.5.3/configuration.html)
 - [Exception handling in Spring boot Web applications](https://github.com/officiallysingh/spring-boot-problem-handler).

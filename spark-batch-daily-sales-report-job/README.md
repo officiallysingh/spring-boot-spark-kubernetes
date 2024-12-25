@@ -193,6 +193,11 @@ mvn clean install
 docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
 ```
 
+### Spark UI
+Access Spark UI at `http://localhost:4040` to monitor and inspect Spark job execution.
+
+![Spark Architecture](../img/Spark_UI_Batch.png)
+
 ## Spring Cloud Task database
 When `ksoot.job.persist` is set to true, Spring cloud task initializes its database schema in Postgres database `spark_jobs_db`.
 

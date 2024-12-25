@@ -174,6 +174,11 @@ mvn clean install
 docker image build . -t spark-stream-logs-analysis-job:0.0.1 -f Dockerfile
 ```
 
+### Spark UI
+Access Spark UI at `http://localhost:4040` to monitor and inspect Spark job execution.
+
+![Spark Architecture](../img/Spark_UI_Batch.png)
+
 ## Spring Cloud Task database
 When `ksoot.job.persist` is set to true, Spring cloud task initializes its database schema in Postgres database `spark_jobs_db`.
 
@@ -195,5 +200,6 @@ This is a Spring Cloud Task feature, for details refer to [documentation](https:
 - [Spark Configurations](https://spark.apache.org/docs/3.5.3/configuration.html)
 - [Spark Streaming](https://spark.apache.org/docs/3.5.3/streaming-programming-guide.html)
 - [Spark Kafka Connector](https://spark.apache.org/docs/3.5.1/structured-streaming-kafka-integration.html)
+- [Spark UI](https://spark.apache.org/docs/3.5.3/web-ui.html)
 - [Spring Cloud Task](https://spring.io/projects/spring-cloud-task)
 - [Spring boot starter for Spark](https://github.com/officiallysingh/spring-boot-starter-spark).

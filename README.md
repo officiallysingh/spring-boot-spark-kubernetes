@@ -298,6 +298,7 @@ Give me a :star: and a :clap: on [**medium.com**](https://officiallysingh.medium
 - [Spark Configurations](https://spark.apache.org/docs/3.5.3/configuration.html)
 - [Spark Submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html)
 - [Running Spark on Kubernetes](https://spark.apache.org/docs/3.5.4/running-on-kubernetes.html)
+- [Spark UI](https://spark.apache.org/docs/3.5.3/web-ui.html)
 
 - [Spark Streaming](https://spark.apache.org/docs/3.5.3/streaming-programming-guide.html)
 - [Spark ArangoDB Connector](https://docs.arangodb.com/3.13/develop/integrations/arangodb-datasource-for-apache-spark)
