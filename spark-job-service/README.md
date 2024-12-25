@@ -158,8 +158,7 @@ Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) 
 ![Spark Deploy Local](../img/Spark_deploy_local.png)
 
 #### Minikube profile
-* For environment setup to run in `minikube` profile, refer to [Installation using minikube section](../README.md#minikube).
-* Set active profile as `minikube`. In IntelliJ, Go to `Modify options`, click on `Add VM options` and set `-Dspring.profiles.active=minikube`.
+* For environment setup, refer to [Installation using minikube section](../README.md#minikube), can skip `spark-job-service` docker image building part, as we will run `spark-job-service` on local in this case.
 * Get Minikube master port number by running the following command.
 ```shell
 kubectl cluster-info
@@ -171,31 +170,16 @@ CoreDNS is running at https://127.0.0.1:50537/api/v1/namespaces/kube-system/serv
 
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
-* Set above port number `50537` in configuration `spark.master` value `k8s://https://127.0.0.1:50537` in [application-minikube.yml](src/main/resources/config/application-minikube.yml)  
-Whenever minikube is restarted this port number changes, so make sure to get the new port and change in `spark.master` configuration.
-* In Terminal go to project `spring-boot-spark-kubernetes` and execute the following command to build base spark image.
-```shell
-docker image build . -t ksoot/spark:3.5.3 -f Dockerfile
-```
-* In Terminal go to project `spring-boot-spark-kubernetes/spark-batch-daily-sales-report-job` and execute following command to build docker image for `daily-sales-report-job`.
-```shell
-docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
-```
-* In Terminal go to project `spring-boot-spark-kubernetes/spark-stream-logs-analysis-job` and execute following command to build docker image for `logs-analysis-job`.
-```shell
-docker image build . -t spark-stream-logs-analysis-job:0.0.1 -f Dockerfile
-```
-* Load Job images in minikube.
-```shell
-minikube image load spark-batch-daily-sales-report-job:0.0.1
-minikube image load spark-stream-logs-analysis-job:0.0.1
-```
+* Set above port number `50537` in configuration `spark.master` value `k8s://https://127.0.0.1:50537` in [application-minikube.yml](src/main/resources/config/application-minikube.yml).
+> [!IMPORTANT]
+> Whenever minikube is restarted this port number changes, so make sure to get the new port and change in `spark.master` configuration again.
+* Set active profile as `minikube`. In IntelliJ, Go to `Modify options`, click on `Add VM options` and set `-Dspring.profiles.active=minikube`.
 * Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) as Spring boot application.
 * Make a call to Job Start API. API response should look like below.
 ```text
 Spark Job: 'daily-sales-report-job' submit request accepted for asynchronous execution. Correlation Id: 71643ba2-1177-4e10-a43b-a21177de1022. For real status of Job look into application logs or Driver POD logs if deploying on Kubernetes
 ```
-* If `spark-submit` command is successful, then you can see the Spark Driver and Executor pods running in minikube.
+* If `spark-submit` command is executed successfully, then you should be able to see the Spark Driver and Executor pods running in minikube.
 ```shell
 kubectl get pods
 ```
@@ -206,7 +190,7 @@ daily-sales-report-job-2e9c6f93ef784c17-driver   1/1     Running   0          11
 daily-sales-report-job-9ac2e493ef78625a-exec-1   1/1     Running   0          6s
 daily-sales-report-job-9ac2e493ef78625a-exec-2   1/1     Running   0          6s
 ```
-* Once the Job is complete, executor pods are terminated automatically. But driver pod remains in completed state, it does not consume any resources.
+* Once the Job is complete, executor pods are terminated automatically. Though driver pod remains in `Completed` state, but it does not consume any resources.
 ```shell
 NAME                                             READY   STATUS      RESTARTS   AGE
 daily-sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          2m56s
@@ -215,43 +199,6 @@ daily-sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          
 * Eventually you may want to clean up by deleting the pods or `minikube delete`.
 > [!IMPORTANT]  
 > `spark-job-service` still runs on local, but Spark Jobs are launched on minikube using corresponding Job's Docker images.
-
-### Running on Minikube
-* Make sure environment setup is already done and default namespace is set to `ksoot`, refer to [Installation using minikube section](../README.md#minikube).
-* In Terminal go to project `spring-boot-spark-kubernetes/spark-job-service` and execute following command to build docker image for `spark-job-service`.
-```shell
-docker image build . -t spark-job-service:0.0.1 -f Dockerfile
-```
-* Load Job `spark-job-service` image in minikube.
-```shell
-minikube image load spark-job-service:0.0.1
-```
-* Execute following command to deploy `spark-job-service` on minikube.
-```shell
-kubectl apply -f deployment.yml
-```
-* Verify that `spark-job-service` pod is running
-```shell
-kubectl get pods
-```
-Output should look like below.
-```shell
-NAME                                READY   STATUS              RESTARTS   AGE
-spark-job-service-f545bd7d8-s4sn5   1/1     Running             0          9s
-```
-* Port forward  `spark-job-service` server port in a separate terminal, to access it from local. Replace following POD name with your POD name.
-```shell
-kubectl port-forward spark-job-service-f545bd7d8-s4sn5 8090:8090
-```
-Output should look like below.
-```shell
-Forwarding from 127.0.0.1:8090 -> 8090
-Forwarding from [::1]:8090 -> 8090
-```
-* Now everything is ready on Minikube, make API calls from Swagger or Postman to start and stop or explore jobs.
-
-> [!IMPORTANT]  
-> All applications run in `default` profile on minikube.
 
 ## API Reference
 

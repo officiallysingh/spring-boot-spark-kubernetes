@@ -100,20 +100,20 @@ All these services can be installed locally on your machine, and should be acces
 ```shell
 docker compose up -d
 ```
-* Create databases `spark_jobs_db` and `error_logs_db` and Kafka topics `job-stop-requests` and `error-logs` if they do not exist.
+* Create databases `spark_jobs_db` and `error_logs_db` in Potgres and Kafka topics `job-stop-requests` and `error-logs` if they do not exist.
 
 > [!IMPORTANT]  
 > While using docker compose make sure the required ports are free on your machine otherwise it will throw port busy error.
 
 #### Minikube
-The [infra-k8s-deployment.yml](infra-k8s-deployment.yml) file defines the services and configurations to run required infrastructure in Minikube.
 * Set minikube cores to 4 and memory to 8GB atleast.
-* Make sure docker is running and minikube is started.
-* In Terminal go to project root `spring-boot-spark-kubernetes` and execute following command.
+* Make sure docker and minikube are up and running.
+* In Terminal go to project root `spring-boot-spark-kubernetes` and execute following commands to create a namespace `ksoot` and necessary Kubernetes in given namespace.
 ```shell
 kubectl apply -f infra-k8s-deployment.yml
+kubectl apply -f spark-rbac.yml
 ```
-* Set default namespace to `ksoot` in minikube. You can always rollback it to default namespace.
+* Set default namespace to `ksoot` in minikube. You can always rollback to default namespace.
 ```shell
 kubectl config set-context --current --namespace=ksoot
 ```
@@ -154,14 +154,32 @@ Keep it running in a separate terminal. Output should look like below.
 # Framework Architecture
 The proposed framework provides a comprehensive solution for building, running and deploying Spark jobs seamlessly.
 
-### Features
+## Features
 - **Job Launching**: Trigger Spark jobs via REST endpoint for deployment on local and kubernetes.
 - **Job Termination**: Accept requests to stop running jobs via REST endpoint, though not a gauranteed method. You may need to kill the job manually if not terminated by this.
 - **Job Monitoring**: Track job status, start and end time, duration taken, error messages if there is any, via REST endpoints.
 - **Auto-configurations**: of Common components such as `SparkSession`, Job lifecycle listener and Connectors to read and write to various datasources.
 - **Demo Jobs**: A [Spark Batch Job](spark-batch-daily-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job), to start with
 
-### Components
+## Kubernetes configuration files
+1. The **[infra-k8s-deployment.yml]**(infra-k8s-deployment.yml) file defines the Kubernetes resources required to deploy various services in namespace `ksoot` .  
+   It includes the following components:
+- Namespace: Creates a namespace named **`ksoot`**.
+- MongoDB: Deployment, PersistentVolumeClaim, and Service for MongoDB.
+- ArangoDB: Deployment, PersistentVolumeClaim, and Service for ArangoDB.
+- PostgreSQL: Deployment, PersistentVolumeClaim, ConfigMap (for initialization script), and Service for PostgreSQL.
+- Zookeeper: Deployment, PersistentVolumeClaims (for data and logs), and Service for Zookeeper.
+- Kafka: Deployment, PersistentVolumeClaim, and Service for Kafka.
+- Kafka UI: Deployment and Service for Kafka UI.
+  Each service is configured with necessary environment variables, volume mounts, and ports to ensure proper operation within the Kubernetes cluster.
+
+2. The **[spark-rbac.yml]**(spark-rbac.yml) file defines the Kubernetes RBAC (Role-Based Access Control) resources required to allow Spark to manage Driver and Executor pods within the `ksoot` namespace.  
+   It includes the following components:
+- ClusterRoleBinding: Binds the default ServiceAccount in the `ksoot` namespace to the cluster-admin ClusterRole, allowing it to have cluster-wide administrative privileges.
+- ServiceAccount: Creates a ServiceAccount named spark in the `ksoot` namespace.
+- ClusterRoleBinding: Binds the spark ServiceAccount in the `ksoot` namespace to the edit ClusterRole, granting it permissions to edit resources within the namespace.
+
+## Components
 The framework consists of following components. Refer to respective project's README for details.
 - [**spark-job-service**](spark-job-service/README.md): A Spring Boot application to launch Spark jobs and monitor their status.
 - [**spring-boot-starter-spark**](https://github.com/officiallysingh/spring-boot-starter-spark): Spring boot starter for Spark for Csutomizable `SparkSession` auto-configurations.
@@ -169,12 +187,12 @@ The framework consists of following components. Refer to respective project's RE
 - [**spark-batch-daily-sales-report-job**](spark-batch-daily-sales-report-job/README.md): A demo Spark Batch Job to generate daily sales report.
 - [**spark-stream-logs-analysis-job**](spark-stream-logs-analysis-job/README.md): A demo Spark Streaming Job to analyze logs in real-time.
 
-### Running Jobs Locally
+## Running Jobs Locally
 - Spark Jobs can be run as Spring boot application locally in your favorite IDE. Refer to [daily-sales-job README](spark-batch-daily-sales-report-job/README.md#intellij-run-configurations) and [log-analysis-job README](spark-stream-logs-analysis-job/README.md#intellij-run-configurations).
 - Spark Job can be Launched via REST API provided by `spark-job-service`. Refer to [spark-job-service README](spark-job-service/README.md#running-locally) for details.
-- You can Run `spark-job-service` and Launch Jobs on Minikube or Kubernetes. Refer to [spark-job-service README](spark-job-service/README.md#running-application-locally) for details.
+- You can Run `spark-job-service` locally and Launch Jobs on Minikube or Kubernetes. Refer to [spark-job-service README](spark-job-service/README.md#minikube-profile) for details.
 
-### Running Jobs on Kubernetes
+## Running Jobs on Minikube
 #### Deploy Modes
 There are two deployment modes for Spark Job deployment on Kubernetes.
 - **Client Deploy Mode**: The driver runs in the client’s JVM process and communicates with the executors managed by the cluster.
@@ -182,60 +200,49 @@ There are two deployment modes for Spark Job deployment on Kubernetes.
 
 ![Spark Deploy Modes](img/Spark_Deploy_Modes.png)
 
-#### Deployment Process
-- **Build Spark base Docker Image**: Build custom base Docker image for Spark for more control over it, refer to [Dockerfile](Dockerfile) for details.  
-Spark contains a lot of jars at `${SPARK_HOME/jars}`, some of which may conflict with your application jars. So you may need to exclude such jars from Spark.  
-For example following conflicting jars are excluded from Spark.
+### Deployment Process
+#### Preparing for Minikube
+* Make sure minikube infra is ready as mentioned in [Minikube Environment setup section](#minikube).
+* Build custom base Docker image for Spark for more control over it, Refer to base [Dockerfile](Dockerfile) for details. Spark contains a lot of jars at `${SPARK_HOME/jars}`, some of which may conflict with your application jars. So you may need to exclude such jars from Spark.  
+  For example following conflicting jars are excluded from Spark in base [Dockerfile](Dockerfile).
 ```shell
 # Remove any spark jars that may be conflict with the ones in your application dependencies.
 rm -f jars/protobuf-java-2.5.0.jar; \
 rm -f jars/guava-14.0.1.jar; \
 rm -f jars/HikariCP-2.5.1.jar; \
 ```
-- **Build Spark Jobs Docker Images**: Build Docker image for Spark Job, refer to [daily-sales-job README](spark-batch-daily-sales-report-job/README.md#build) and [logs-analysis-job README](spark-stream-logs-analysis-job/README.md#build) for details.
-- **Build `spark-job-service` Docker Image**: Refer to [spark-job-service README](spark-job-service/README.md#running-on-minikube).
-- **Deploy Infrastructure**: As described in [Spark Kubernetes deployment documentation](https://spark.apache.org/docs/3.4.1/running-on-kubernetes.html#rbac). The Following is required to allow Spark to be able to manage Driver and Executor pods.  
-Demo [infra-k8s-deployment.yml](infra-k8s-deployment.yml) is provided to deploy required infrastructure in namespace `ksoot`. You can change the namespace as per your requirement.
-```yaml
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-name: fabric8-rbac
-subjects:
-- kind: ServiceAccount
-  name: default
-  namespace: ksoot
-  roleRef:
-  kind: ClusterRole
-  name: cluster-admin
-  apiGroup: rbac.authorization.k8s.io
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-name: spark
-namespace: ksoot
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-name: spark-role
-subjects:
-- kind: ServiceAccount
-  name: spark
-  namespace: ksoot
-  roleRef:
-  kind: ClusterRole
-  name: edit
-  apiGroup: rbac.authorization.k8s.io
+In Terminal go to root project `spring-boot-spark-kubernetes` and execute the following command to build Spark base Docker image. All Job's Dockerfiles extend from this image.
+```shell
+docker image build . -t ksoot/spark:3.5.3 -f Dockerfile
 ```
-* **Update `spark.master`** with your Kubernetes master URL in [spark-job-service deployment.yml](spark-job-service/deployment.yml). For Minikube it should be `k8s://https://kubernetes.default.svc`.
-* **Deploy `spark-job-service`** using its [deployment.yml](spark-job-service/deployment.yml). Refer to [spark-job-service README](spark-job-service/README.md#running-on-minikube) for details.
-* **Deploy Spark Jobs** using [REST APIs](spark-job-service/README.md#api-reference) provided by `spark-job-service`.
-* You can override any configurations **that are defined in** [spark-job-service application.yml](spark-job-service/src/main/resources/config/application.yml) of `spark-job-service` and Spark Jobs using environment variables in [spark-job-service deployment.yml](spark-job-service/deployment.yml) as follows.
+* In Terminal go to project `spring-boot-spark-kubernetes/spark-batch-daily-sales-report-job` and execute following command to build docker image for `daily-sales-report-job`.
+```shell
+docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
+```
+* In Terminal go to project `spring-boot-spark-kubernetes/spark-stream-logs-analysis-job` and execute following command to build docker image for `logs-analysis-job`.
+```shell
+docker image build . -t spark-stream-logs-analysis-job:0.0.1 -f Dockerfile
+```
+* Load Job images in minikube.
+```shell
+minikube image load spark-batch-daily-sales-report-job:0.0.1
+minikube image load spark-stream-logs-analysis-job:0.0.1
+```
+* In Terminal go to project `spring-boot-spark-kubernetes/spark-job-service` and execute following command to build docker image for `spark-job-service`.
+```shell
+docker image build . -t spark-job-service:0.0.1 -f Dockerfile
+```
+* Load Job `spark-job-service` image in minikube.
+```shell
+minikube image load spark-job-service:0.0.1
+```
+
+### Running on Minikube
+* Make sure environment setup is already done and default namespace is set to `ksoot`, refer to [Installation using minikube section](../README.md#minikube).
+* You can override any configurations **that are defined in** [spark-job-service application.yml](spark-job-service/src/main/resources/config/application.yml) and Spark Jobs using environment variables in [spark-job-service deployment.yml](spark-job-service/deployment.yml) as follows.
 ```yaml
 env:
+  # Spark properties
   - name: SPARK_MASTER
     value: k8s://https://kubernetes.default.svc
   - name: SPARK_KUBERNETES_NAMESPACE
@@ -269,8 +276,35 @@ args:
   - "--spark-launcher.jobs.daily-sales-report-job.env.ARANGODB_URL=arango:8529"
   - "--spark-launcher.jobs.logs-analysis-job.env.JDBC_URL=jdbc:postgresql://postgres:5432"
 ```
+* Execute following command to deploy `spark-job-service` on minikube.
+```shell
+kubectl apply -f deployment.yml
+```
+* Verify that `spark-job-service` pod is running
+```shell
+kubectl get pods
+```
+Output should look like below.
+```shell
+NAME                                READY   STATUS              RESTARTS   AGE
+spark-job-service-f545bd7d8-s4sn5   1/1     Running             0          9s
+```
+* Port forward  `spark-job-service` server port in a separate terminal, to access it from local. Replace following POD name with your POD name.
+```shell
+kubectl port-forward spark-job-service-f545bd7d8-s4sn5 8090:8090
+```
+Output should look like below.
+```shell
+Forwarding from 127.0.0.1:8090 -> 8090
+Forwarding from [::1]:8090 -> 8090
+```
+* Now all done on Minikube, make API calls from Swagger or Postman to start and explore jobs.
+
+> [!IMPORTANT]  
+> All applications run in `default` profile on minikube.
+
 #### How Spark Job Deployment works
-- Each Docker image has Spark installed in the container.
+- Each Docker container has Spark installed in it.
 - At its core, it executes `spark-submit` command built dynamically using configurations provided at multiple levels when the request to Launch a Spark Job is received, as explained in [Job Launcher Implementation](spark-job-service/README.md#launcher-implementation).
 
 ![Spark Deploy Modes](img/Spark_Deployment_Cluster.png)
@@ -282,7 +316,7 @@ Configurations can be provided at multiple levels. At individual project level, 
 * As environment in `deployment.yml` of `spark-job-service`.
 * As arguments in `deployment.yml` of `spark-job-service`.
 
-**They are resolved in the following order.**
+**Configurations are resolved in the following order.**
 
 ![Configurations Precedence Order](img/Configurations_Precedence_Order.png)
 
