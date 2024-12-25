@@ -133,7 +133,7 @@ this.sparkJobLauncher.startJob(jobLaunchRequest);
 #### Job Request class
 * Each Job has a corresponding Request class to take the Job Start request parameters, as each job may have a different set of arguments.
 * Though some job arguments are common to all jobs, So a base abstract class [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) is defined with common arguments i.e. `jobName`, `correlationId` and `sparkConfigs`.
-* For each Job, a Request class extending [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) should be implemented.
+* For each Job, a Request class extending [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) should be implemented. Refer to Request class [DailySalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java) for [daily-sales-report-job](../spark-batch-daily-sales-report-job) and [LogsAnalysisJobLaunchRequest.java](src/main/java/ksoot/spark/dto/LogsAnalysisJobLaunchRequest.java) for [logs-analysis-job](../spark-stream-logs-analysis-job).
 * Provide a Map of arguments specific to this Job in `jobArgs` method implementation. [SparkSubmitJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkSubmitJobLauncher.java) will use these arguments to pass in `spark-submit` command. 
 For example, [DailySalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java) provides Statement month argument to `daily-sales-report-job` Job, which expects the month argument with name `STATEMENT_MONTH`, as you can see in [daily-sales-report-job application.yml](src/main/resources/config/application.yml) property `ksoot.job.month`.
 ```java
@@ -143,7 +143,6 @@ For example, [DailySalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spa
     return Map.of("STATEMENT_MONTH", month.toString());
   }
 ```
-* Refer to Request class [DailySalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java) for [daily-sales-report-job](../spark-batch-daily-sales-report-job) and [LogsAnalysisJobLaunchRequest.java](src/main/java/ksoot/spark/dto/LogsAnalysisJobLaunchRequest.java) for [logs-analysis-job](../spark-stream-logs-analysis-job).
 * Refer to [Jackson Inheritance](https://www.baeldung.com/jackson-inheritance#2-per-class-annotations) to understand implementing inheritance in request classes.
 > [!IMPORTANT]  
 > Also important to mention that the `sparkConfigs` in Request body enjoys the **highest precedence** hence overrides the configurations in `spark-launcher.jobs.<jobName>.spark-config`.
