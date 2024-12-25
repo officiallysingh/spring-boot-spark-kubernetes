@@ -101,7 +101,7 @@ docker compose up -d
 * Create databases `spark_jobs_db` and `error_logs_db` in Postgres and Kafka topics `job-stop-requests` and `error-logs` if they do not exist.
 
 > [!IMPORTANT]  
-> While using docker compose make sure the required ports are free on your machine otherwise it will throw port busy error.
+> While using docker compose make sure the required ports are free on your machine, otherwise port busy error could be thrown.
 
 #### Minikube
 * Set minikube cores to 4 and memory to 8GB atleast.
