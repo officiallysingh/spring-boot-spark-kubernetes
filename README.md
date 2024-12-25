@@ -298,11 +298,15 @@ Give me a :star: and a :clap: on [**medium.com**](https://officiallysingh.medium
 - [Spark Configurations](https://spark.apache.org/docs/3.5.3/configuration.html)
 - [Spark Submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html)
 - [Running Spark on Kubernetes](https://spark.apache.org/docs/3.5.4/running-on-kubernetes.html)
+
 - [Spark Streaming](https://spark.apache.org/docs/3.5.3/streaming-programming-guide.html)
 - [Spark ArangoDB Connector](https://docs.arangodb.com/3.13/develop/integrations/arangodb-datasource-for-apache-spark)
 - [Spark MongoDB Connector](https://www.mongodb.com/docs/spark-connector/v10.4)
 - [Spark Kafka Connector](https://spark.apache.org/docs/3.5.1/structured-streaming-kafka-integration.html)
+
+- [Spring Boot](https://docs.spring.io/spring-boot/index.html)
 - [Spring Cloud Task](https://spring.io/projects/spring-cloud-task)
 - [Spring Boot Configurations](https://docs.spring.io/spring-boot/reference/features/external-config.html)
+
 - [Exception handling in Spring boot Web applications](https://github.com/officiallysingh/spring-boot-problem-handler).
 - [Spring boot starter for Spark](https://github.com/officiallysingh/spring-boot-starter-spark).
