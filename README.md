@@ -153,7 +153,7 @@ Keep it running in a separate terminal. Output should look like below.
 ## Framework Architecture
 
 ### Features
-- **Job Launching**: Trigger Spark jobs via REST endpoint for deployment on local and kubernetes.
+- **Job Launching**: Trigger Spark jobs via REST endpoint for deployment on local and kubernetes. Either **Job jars** or **Docker images** can be launched using spark-submit
 - **Job Termination**: Accept requests to stop running jobs via REST endpoint, though not a gauranteed method. You may need to kill the job manually if not terminated by this.
 - **Job Monitoring**: Track job status, start and end time, duration taken, error messages if there is any, via REST endpoints.
 - **Auto-configurations**: of Common components such as `SparkSession`, Job lifecycle listener and Connectors to read and write to various datasources.
