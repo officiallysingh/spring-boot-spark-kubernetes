@@ -152,14 +152,14 @@ Keep it running in a separate terminal. Output should look like below.
 
 ## Framework Architecture
 
-## Features
+### Features
 - **Job Launching**: Trigger Spark jobs via REST endpoint for deployment on local and kubernetes.
 - **Job Termination**: Accept requests to stop running jobs via REST endpoint, though not a gauranteed method. You may need to kill the job manually if not terminated by this.
 - **Job Monitoring**: Track job status, start and end time, duration taken, error messages if there is any, via REST endpoints.
 - **Auto-configurations**: of Common components such as `SparkSession`, Job lifecycle listener and Connectors to read and write to various datasources.
 - **Demo Jobs**: A [Spark Batch Job](spark-batch-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job), to start with
 
-## Components
+### Components
 The framework consists of following components. Refer to respective project's README for details.
 - [**spark-job-service**](spark-job-service/README.md): A Spring Boot application to launch Spark jobs and monitor their status.
 - [**spring-boot-starter-spark**](https://github.com/officiallysingh/spring-boot-starter-spark): Spring boot starter for Spark.
@@ -167,7 +167,7 @@ The framework consists of following components. Refer to respective project's RE
 - [**spark-batch-sales-report-job**](spark-batch-sales-report-job/README.md): A demo Spark Batch Job to generate Monthly sales reports.
 - [**spark-stream-logs-analysis-job**](spark-stream-logs-analysis-job/README.md): A demo Spark Streaming Job to analyze logs in real-time.
 
-## Kubernetes configuration files
+### Kubernetes configuration files
 The framework includes Kubernetes configuration files to deploy the required infrastructure and services in a Kubernetes cluster in namespace **`ksoot`**. You can change the namespace in these two files as per your requirement.
 Each service is configured with necessary environment variables, volume mounts, and ports to ensure proper operation within the Kubernetes cluster.
 1. The [infra-k8s-deployment.yml](infra-k8s-deployment.yml) file defines the Kubernetes resources required to deploy various services.
@@ -183,12 +183,12 @@ Each service is configured with necessary environment variables, volume mounts, 
 - **ServiceAccount**: Creates a ServiceAccount named spark.
 - **ClusterRoleBinding**: Binds the spark ServiceAccount to the edit ClusterRole, granting it permissions to edit resources within the namespace.
 
-## Running Jobs Locally
+### Running Jobs Locally
 - Individual Spark Jobs can be run as Spring boot application locally in your favorite IDE. Refer to [sales-report-job](spark-batch-sales-report-job/README.md#intellij-run-configurations) and [logs-analysis-job](spark-stream-logs-analysis-job/README.md#intellij-run-configurations).
 - Spark Job can be Launched locally via REST API provided by `spark-job-service`. Refer to [spark-job-service](spark-job-service/README.md#running-locally) for details.
 
-## Running Jobs on Minikube
-### Preparing for Minikube
+### Running Jobs on Minikube
+#### Preparing for Minikube
 * Make sure minikube infra is ready as mentioned in [Minikube Environment setup section](#minikube).
 * Build custom base Docker image for Spark for more control over it, Refer to base [Dockerfile](Dockerfile) for details. Spark contains a lot of jars at `${SPARK_HOME/jars}`, some of which may conflict with your application jars. So you may need to exclude such jars from Spark.  
   For example following conflicting jars are excluded from Spark in base [Dockerfile](Dockerfile).
@@ -224,7 +224,7 @@ docker image build . -t spark-job-service:0.0.1 -f Dockerfile
 minikube image load spark-job-service:0.0.1
 ```
 
-### Running on Minikube
+#### Running on Minikube
 * Make sure [Environment setup on Minikube](#minikube) is already done and [application artifacts are ready](#preparing-for-minikube).
 > [!IMPORTANT]  
 > No configuration change is required except specifically asked to run this code locally.
