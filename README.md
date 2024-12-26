@@ -344,8 +344,8 @@ On Minikube or Kubernetes you may need to do port forwarding to access it, and i
 ## Common Errors
 * `24/12/26 01:07:11 INFO KerberosConfDriverFeatureStep: You have not specified a krb5.conf file locally or via a ConfigMap. Make sure that you have the krb5.conf locally on the driver image.
 24/12/26 01:07:12 ERROR Client: Please check "kubectl auth can-i create pod" first. It should be yes.`  
-**Possible cause**: Wrong `spark.master` value.    
-**Solution**: Set correct `spark.master` value in `application.yml` of `spark-job-service` and `deployment.yml` of `spark-job-service`.
+**Possible cause**: Wrong `spark.master` value or `spark-rbac.yml` is not applied properly in correct namespace.     
+**Solution**: Set correct `spark.master` value in `application.yml` of `spark-job-service` and `deployment.yml` of `spark-job-service` or apply `spark-rbac.yml` properly.
 * `Factory method 'sparkSession' threw exception with message: class org.apache.spark.storage.StorageUtils$ (in unnamed module @0x2049a9c1) cannot access class sun.nio.ch.DirectBuffer (in module java.base) because module java.base does not export sun.nio.ch to unnamed module @0x2049a9c1`.  
 **Possible cause**: The error message indicates that your Spark application is trying to access an internal Java class (sun.nio.ch.DirectBuffer) in the java.base module, which is not exported to Spark’s unnamed module. This issue arises because Java modules introduced in JDK 9 restrict access to internal APIs.  
 **Solution**: Add VM option `--add-exports java.base/sun.nio.ch=ALL-UNNAMED`
