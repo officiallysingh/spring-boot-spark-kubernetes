@@ -174,7 +174,7 @@ spark-launcher:
 #        SPARK_OUTPUT_PATH: spark-output
       # This job specific Spark configurations, overrides common Spark configurations
       spark-config:
-        spark.kubernetes.container.image: ${DAILY_SALES_REPORT_JOB_IMAGE:spark-batch-sales-report-job:0.0.1}
+        spark.kubernetes.container.image: ${SALES_REPORT_JOB_IMAGE:spark-batch-sales-report-job:0.0.1}
     logs-analysis-job:
       main-class-name: com.ksoot.spark.loganalysis.LogAnalysisJob
       jar-file: local:///opt/spark/job-apps/spark-stream-logs-analysis-job.jar

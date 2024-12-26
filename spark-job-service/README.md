@@ -56,7 +56,7 @@ spark-launcher:
         MONGODB_URL: "mongodb://mongo:27017"
         ARANGODB_URL: "arango:8529"
       spark-config:
-        spark.kubernetes.container.image: ${DAILY_SALES_REPORT_JOB_IMAGE:spark-batch-sales-report-job:0.0.1}
+        spark.kubernetes.container.image: ${SALES_REPORT_JOB_IMAGE:spark-batch-sales-report-job:0.0.1}
     logs-analysis-job:
       main-class-name: com.ksoot.spark.loganalysis.LogAnalysisJob
       jar-file: local:///opt/spark/job-apps/spark-stream-logs-analysis-job.jar
