@@ -23,16 +23,14 @@ import org.apache.commons.lang3.StringUtils;
     visible = true)
 @JsonSubTypes({
   @JsonSubTypes.Type(value = SparkExampleJobLaunchRequest.class, name = "spark-example"),
-  @JsonSubTypes.Type(
-      value = DailySalesReportJobLaunchRequest.class,
-      name = "daily-sales-report-job"),
+  @JsonSubTypes.Type(value = SalesReportJobLaunchRequest.class, name = "sales-report-job"),
   @JsonSubTypes.Type(value = LogsAnalysisJobLaunchRequest.class, name = "logs-analysis-job")
 })
 public abstract class JobLaunchRequest {
 
   @Schema(
       description = "Spark Job name, must be present in application.yml spark-submit.jobs",
-      example = "daily-sales-report-job")
+      example = "sales-report-job")
   @NotEmpty
   protected final String jobName;
 

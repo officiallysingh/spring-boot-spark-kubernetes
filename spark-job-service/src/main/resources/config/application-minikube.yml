@@ -61,13 +61,13 @@ spark-launcher:
     POSTGRES_URL: "jdbc:postgresql://postgres:5432/spark_jobs_db"
     KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
   jobs:
-    daily-sales-report-job:
-      jar-file: local:///opt/spark/job-apps/spark-batch-daily-sales-report-job.jar
+    sales-report-job:
+      jar-file: local:///opt/spark/job-apps/spark-batch-sales-report-job.jar
       env:
         MONGODB_URL: "mongodb://mongo:27017"
         ARANGODB_URL: "arango:8529"
       spark-config:
-        spark.kubernetes.container.image: spark-batch-daily-sales-report-job:0.0.1
+        spark.kubernetes.container.image: spark-batch-sales-report-job:0.0.1
     logs-analysis-job:
       jar-file: local:///opt/spark/job-apps/spark-stream-logs-analysis-job.jar
       env:

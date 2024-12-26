@@ -70,7 +70,7 @@ class SparkJobExplorerController {
       })
   @GetMapping(path = "/{jobName}", produces = MediaType.APPLICATION_JSON_VALUE)
   PaginatedResource<JobExecution> listJobExecutionsByJobName(
-      @Parameter(description = "Job name", required = true, example = "daily-sales-report-job")
+      @Parameter(description = "Job name", required = true, example = "sales-report-job")
           @PathVariable(name = "jobName")
           final String jobName,
       @ParameterObject @PageableDefault final Pageable pageRequest) {
@@ -93,7 +93,7 @@ class SparkJobExplorerController {
       })
   @GetMapping(path = "/{jobName}/running", produces = MediaType.APPLICATION_JSON_VALUE)
   PaginatedResource<JobExecution> listRunningJobExecutionsByJobName(
-      @Parameter(description = "Job name", required = true, example = "daily-sales-report-job")
+      @Parameter(description = "Job name", required = true, example = "sales-report-job")
           @PathVariable(name = "jobName")
           final String jobName,
       @ParameterObject @PageableDefault final Pageable pageRequest) {
@@ -114,7 +114,7 @@ class SparkJobExplorerController {
       })
   @GetMapping(path = "/{jobName}/latest", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<JobExecution> getLatestJobExecutionByJobName(
-      @Parameter(description = "Job name", required = true, example = "daily-sales-report-job")
+      @Parameter(description = "Job name", required = true, example = "sales-report-job")
           @PathVariable(name = "jobName")
           final String jobName) {
     final TaskExecution taskExecution =
@@ -230,7 +230,7 @@ class SparkJobExplorerController {
       })
   @GetMapping(path = "/count/{jobName}", produces = MediaType.APPLICATION_JSON_VALUE)
   ResponseEntity<Long> getJobExecutionsCountByJobName(
-      @Parameter(description = "Job name", required = true, example = "daily-sales-report-job")
+      @Parameter(description = "Job name", required = true, example = "sales-report-job")
           @PathVariable(name = "jobName")
           final String jobName) {
     final long executionCount = this.taskExplorer.getTaskExecutionCountByTaskName(jobName);

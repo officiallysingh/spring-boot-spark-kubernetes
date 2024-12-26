@@ -34,8 +34,8 @@ spark-launcher:
   capture-jobs-logs: true
   persist-jobs: true
   jobs:
-    daily-sales-report-job:
-      jar-file: ${M2_REPO}/com/ksoot/spark/spark-batch-daily-sales-report-job/0.0.1-SNAPSHOT/spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar
+    sales-report-job:
+      jar-file: ${M2_REPO}/com/ksoot/spark/spark-batch-sales-report-job/0.0.1-SNAPSHOT/spark-batch-sales-report-job-0.0.1-SNAPSHOT.jar
       #      Unsetting following properties as not required in local profile
       spark-config:
         spark.kubernetes.namespace:

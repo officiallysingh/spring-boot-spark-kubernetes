@@ -8,7 +8,7 @@ For prerequisites and environment setup, refer to [Installation Instructions](..
 
 ## Configurations
 ### Spark Configurations
-All possible [Spark configurations](https://spark.apache.org/docs/3.5.3/configuration.html) can be set in [application.yml](src/main/resources/config/application.yml) as follows. Remember, there are Spark configurations in individual Jobs such as [daily-sales-report-job's application.yml](../spark-batch-daily-sales-report-job/src/main/resources/config/application.yml) and [logs-analysis-job's application.yml](../spark-stream-logs-analysis-job/src/main/resources/config/application.yml) also.  
+All possible [Spark configurations](https://spark.apache.org/docs/3.5.3/configuration.html) can be set in [application.yml](src/main/resources/config/application.yml) as follows. Remember, there are Spark configurations in individual Jobs such as [sales-report-job's application.yml](../spark-batch-sales-report-job/src/main/resources/config/application.yml) and [logs-analysis-job's application.yml](../spark-stream-logs-analysis-job/src/main/resources/config/application.yml) also.  
 Any configuration set here takes higher precedence hence override all Job's default Spark configurations as given in respective Job's `application.yml`. So, set only those configuration overrides here, which are common to all Jobs. Individual Job configurations can be overridden in `spark-launcher.jobs` configuration as highlighted in next section.
 ```yaml
 #---------- Spark configurations common to all Jobs -------------------------
@@ -47,15 +47,16 @@ spark-launcher:
   env:
     POSTGRES_URL: "jdbc:postgresql://postgres:5432/spark_jobs_db"
     KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+  # This Map must contain entries for each Job you wish to trigger from this service.
   jobs:
-    daily-sales-report-job:
-      main-class-name: com.ksoot.spark.sales.DailySalesReportJob
-      jar-file: local:///opt/spark/job-apps/spark-batch-daily-sales-report-job.jar
+    sales-report-job:
+      main-class-name: com.ksoot.spark.sales.SalesReportJob
+      jar-file: local:///opt/spark/job-apps/spark-batch-sales-report-job.jar
       env:
         MONGODB_URL: "mongodb://mongo:27017"
         ARANGODB_URL: "arango:8529"
       spark-config:
-        spark.kubernetes.container.image: ${DAILY_SALES_REPORT_JOB_IMAGE:spark-batch-daily-sales-report-job:0.0.1}
+        spark.kubernetes.container.image: ${DAILY_SALES_REPORT_JOB_IMAGE:spark-batch-sales-report-job:0.0.1}
     logs-analysis-job:
       main-class-name: com.ksoot.spark.loganalysis.LogAnalysisJob
       jar-file: local:///opt/spark/job-apps/spark-stream-logs-analysis-job.jar
@@ -70,7 +71,7 @@ spark-launcher:
 * `persist-jobs`:- If set to `true` the Spring cloud task tracks the Jobs status in configured Postgres database, `spark_jobs_db`. Default value `false`. Recommended in production.
 * `env`:- Remember, there are environment variables defined in individual Job's `application.yml` such as `KAFKA_BOOTSTRAP_SERVERS`, `MONGODB_URL` etc.
 The values of these environment variables for jobs can be provided from here. This configuration property should have environment variables overrides that are common to all jobs.
-* `jobs`:- A Map of each Job's configurations you wish to trigger from this service.
+* `jobs`:- A Map of each Job's configurations you wish to trigger from this service. Must contain entries for each Job you wish to Launch.  
 Each job must be provided with some basic mandatory configurations and a few optional configurations.
   * `main-class-name`:- Fully qualified Main class name of the Spark Job. Its mandatory, as Spark needs it to launch the Job by running its main class.
   * `jar-file`:- Jar file path of the Spark Job. Its also mandatory, as this jar file is used in `spark-submit` command to launch the Job.
@@ -79,8 +80,8 @@ Each job must be provided with some basic mandatory configurations and a few opt
   You can also unset any configuration coming from common spark configuration by setting it to `` (blank) here.
 
 > [!IMPORTANT]  
-> Job names `daily-sales-report-job` and `logs-analysis-job` given as keys in `spark-launcher.jobs` Map, are used in Job start Request.  
-> Refer to below given curl to start [daily-sales-report-job](../spark-batch-daily-sales-report-job) and Note that `jobName` in Request body must match the key name in `spark-launcher.jobs` Map, `daily-sales-report-job` in this case.  
+> Job names `sales-report-job` and `logs-analysis-job` given as keys in `spark-launcher.jobs` Map, are used in Job start Request.  
+> Refer to below given curl to start [sales-report-job](../spark-batch-sales-report-job) and Note that `jobName` in Request body must match the key name in `spark-launcher.jobs` Map, `sales-report-job` in this case.  
 > It is recommended to have job name as `spring.application.name` in respective Job's `application.yml`.  
 > Another thing to note about job name is that the Driver and Executor pods created for this job in Kubernetes will have this job name as prefix.
 ```curl
@@ -89,7 +90,7 @@ curl -X 'POST' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
-  "jobName": "daily-sales-report-job",
+  "jobName": "sales-report-job",
   "correlationId": "71643ba2-1177-4e10-a43b-a21177de1022",
   "sparkConfigs": {
     "spark.executor.instances": 4,
@@ -105,13 +106,13 @@ curl -X 'POST' \
   Refer to [SparkSubmitCommand Builder](src/main/java/com/ksoot/spark/launcher/SparkSubmitCommand.java) to see how the `spark-submit` command is built.
 * [SparkJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkJobLauncher.java) is the interface to launch a Spark Job.
   As of now the only implementation is [SparkSubmitJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkSubmitJobLauncher.java). However, similar Job Launcher can be implemented for EMR also, placeholder at [SparkEmrJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkEmrJobLauncher.java)
-* [SparkSubmitJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkSubmitJobLauncher.java) launches the Job using `spark-submit`. Following is the `spark-submit` example command to launch `daily-sales-report-job` for local deployment.
+* [SparkSubmitJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkSubmitJobLauncher.java) launches the Job using `spark-submit`. Following is the `spark-submit` example command to launch `sales-report-job` for local deployment.
 ```shell
-./bin/spark-submit --verbose --name daily-sales-report-job --class com.ksoot.spark.sales.DailySalesReportJob 
+./bin/spark-submit --verbose --name sales-report-job --class com.ksoot.spark.sales.SalesReportJob 
 --conf spark.master=local --conf spark.executor.memory=2g --conf spark.driver.memory=1g --conf spark.driver.cores=3 
 --conf spark.executor.cores=1 --conf spark.submit.deployMode=client --conf spark.executor.instances=4 
 --conf spark.driver.extraJavaOptions="-Dspring.profiles.active=local -DSTATEMENT_MONTH=2024-11 -DCORRELATION_ID=71643ba2-1177-4e10-a43b-a21177de1022 -DPERSIST_JOB=true" 
- /Users/myusername/.m2/repository/com/ksoot/spark/spark-batch-daily-sales-report-job/0.0.1-SNAPSHOT/spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar
+ /Users/myusername/.m2/repository/com/ksoot/spark/spark-batch-sales-report-job/0.0.1-SNAPSHOT/spark-batch-sales-report-job-0.0.1-SNAPSHOT.jar
 ```
 * This command String is then passed to [spark-job-submit.sh](cmd/spark-job-submit.sh) on mac or linux and [spark-job-submit.bat](cmd/spark-job-submit.bat) on windows to execute the command, as command length could exceed java [Process](https://docs.oracle.com/javase/8/docs/api/java/lang/Process.html) API limit.
 * Currently Spark Job can be triggered using REST API only. However, implementation can be done to trigger spark jobs on arrival of Kafka messages, or Scheduler triggers or any other event also.
@@ -124,9 +125,9 @@ this.sparkJobLauncher.startJob(jobLaunchRequest);
 #### Job Request class
 * Each Job has a corresponding Request class to take the Job Start request parameters, as each job may have a different set of arguments.
 * Though some job arguments are common to all jobs, So a base abstract class [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) is defined with common arguments i.e. `jobName`, `correlationId` and `sparkConfigs`.
-* For each Job, a Request class extending [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) should be implemented. Refer to Request class [DailySalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java) for [daily-sales-report-job](../spark-batch-daily-sales-report-job) and [LogsAnalysisJobLaunchRequest.java](src/main/java/ksoot/spark/dto/LogsAnalysisJobLaunchRequest.java) for [logs-analysis-job](../spark-stream-logs-analysis-job).
+* For each Job, a Request class extending [JobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/JobLaunchRequest.java) should be implemented. Refer to Request class [SalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/SalesReportJobLaunchRequest.java) for [sales-report-job](../spark-batch-sales-report-job) and [LogsAnalysisJobLaunchRequest.java](src/main/java/ksoot/spark/dto/LogsAnalysisJobLaunchRequest.java) for [logs-analysis-job](../spark-stream-logs-analysis-job).
 * Provide a Map of arguments specific to this Job in `jobArgs` method implementation. [SparkSubmitJobLauncher.java](src/main/java/com/ksoot/spark/launcher/SparkSubmitJobLauncher.java) will use these arguments to pass in `spark-submit` command. 
-For example, [DailySalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java) provides Statement month argument to `daily-sales-report-job` Job, which expects the month argument with name `STATEMENT_MONTH`, as you can see in [daily-sales-report-job application.yml](src/main/resources/config/application.yml) property `ksoot.job.month`.
+For example, [SalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spark/dto/SalesReportJobLaunchRequest.java) provides Statement month argument to `sales-report-job` Job, which expects the month argument with name `STATEMENT_MONTH`, as you can see in [sales-report-job application.yml](src/main/resources/config/application.yml) property `ksoot.job.month`.
 ```java
   @Override
   public Map<String, String> jobArgs() {
@@ -177,7 +178,7 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 * Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) as Spring boot application.
 * Make a call to Job Start API. API response should look like below.
 ```text
-Spark Job: 'daily-sales-report-job' submit request accepted for asynchronous execution. Correlation Id: 71643ba2-1177-4e10-a43b-a21177de1022. For real status of Job look into application logs or Driver POD logs if deploying on Kubernetes
+Spark Job: 'sales-report-job' submit request accepted for asynchronous execution. Correlation Id: 71643ba2-1177-4e10-a43b-a21177de1022. For real status of Job look into application logs or Driver POD logs if deploying on Kubernetes
 ```
 * If `spark-submit` command is executed successfully, then you should be able to see the Spark Driver and Executor pods running in minikube.
 ```shell
@@ -186,14 +187,14 @@ kubectl get pods
 Output should look like below.
 ```shell
 NAME                                             READY   STATUS    RESTARTS   AGE
-daily-sales-report-job-2e9c6f93ef784c17-driver   1/1     Running   0          11s
-daily-sales-report-job-9ac2e493ef78625a-exec-1   1/1     Running   0          6s
-daily-sales-report-job-9ac2e493ef78625a-exec-2   1/1     Running   0          6s
+sales-report-job-2e9c6f93ef784c17-driver   1/1     Running   0          11s
+sales-report-job-9ac2e493ef78625a-exec-1   1/1     Running   0          6s
+sales-report-job-9ac2e493ef78625a-exec-2   1/1     Running   0          6s
 ```
 * Once the Job is complete, executor pods are terminated automatically. Though driver pod remains in `Completed` state, but it does not consume any resources.
 ```shell
 NAME                                             READY   STATUS      RESTARTS   AGE
-daily-sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          2m56s
+sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          2m56s
 ```
 * If the Job fails, Executor pods are still terminated, but driver pod remains in `Error` state. For debugging, you can see pod logs.
 * Eventually you may want to clean up by deleting the pods or `minikube delete`.
@@ -222,18 +223,18 @@ POST /v1/spark-jobs/start
 | `sparkConfigs`  | `Map<String, Object>` | Runtime Spark conf properties for this job                                                           | Empty                             | Yes      |
 
 **Supports three types of job launch requests. To support more jobs, Similarly write the corresponding Request class.**
-- [DailySalesReportJobLaunchRequest](src/main/java/com/ksoot/spark/dto/DailySalesReportJobLaunchRequest.java)
+- [SalesReportJobLaunchRequest](src/main/java/com/ksoot/spark/dto/SalesReportJobLaunchRequest.java)
 - [LogsAnalysisJobLaunchRequest](src/main/java/com/ksoot/spark/dto/LogsAnalysisJobLaunchRequest.java)
 - [SparkExampleJobLaunchRequest](src/main/java/com/ksoot/spark/dto/SparkExampleJobLaunchRequest.java) Just to test the example jar included in Spark distribution.
 
-Example curl to start [spark-batch-daily-sales-report-job](../spark-batch-daily-sales-report-job):
+Example curl to start [sales-report-job](../spark-batch-sales-report-job):
 ```curl
 curl -X 'POST' \
   'http://localhost:8090/v1/spark-jobs/start' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
-  "jobName": "daily-sales-report-job",
+  "jobName": "sales-report-job",
   "correlationId": "71643ba2-1177-4e10-a43b-a21177de1022",
   "sparkConfigs": {
     "spark.executor.instances": 4,
@@ -243,7 +244,7 @@ curl -X 'POST' \
 }'
 ```
 
-Similarly, curl to start [spark-stream-logs-analysis-job](../spark-stream-logs-analysis-job):
+Similarly, curl to start [logs-analysis-job](../spark-stream-logs-analysis-job):
 ```curl
 curl -X 'POST' \
   'http://localhost:8090/v1/spark-jobs/start' \

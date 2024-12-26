@@ -24,7 +24,7 @@ public class SparkJobService {
 
   @PostConstruct
   public void init() {
-    log.info("Initializing DailySalesReportJob ...");
+    log.info("Logging Spring boot environment ...");
     if (environment instanceof ConfigurableEnvironment) {
       final List<PropertySource<?>> propertySources =
           ((ConfigurableEnvironment) environment)

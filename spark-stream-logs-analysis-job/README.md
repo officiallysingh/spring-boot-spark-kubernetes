@@ -1,4 +1,4 @@
-# Log Analysis Job
+# Logs Analysis Job
 Demo **Spark Streaming job** implemented as [Spring Cloud Task](https://spring.io/projects/spring-cloud-task).
 
 ## Environment setup
@@ -255,8 +255,8 @@ This is a Spring Cloud Task feature, for details refer to [documentation](https:
 |-------------------|----------------------------|----------------------------|-------------------|-----------|--------------|------------------------------------------------------------------------------------------|-------------------------------|--------------------------------------|-----------------------|
 | 1                 | 2024-12-21 13:15:52.849979 | 2024-12-21 13:17:57.044739 | logs-analysis-job | 1         | Failed       | com.ksoot.spark.common.util.StreamRetryableException: Exception in spark streaming ..... | 2024-12-21 13:17:57.058191    | 6056ece7-b9b2-4dfc-96ec-e7b9b21dfc7b | NULL                  |
 | 2                 | 2024-12-21 13:38:09.022006 | 2024-12-21 13:38:39.857139 | logs-analysis-job | 1         | Failed       | com.ksoot.spark.common.util.StreamRetryableException: Exception in spark streaming ..... | 2024-12-21 13:38:39.86834     | 6056ece7-b9b2-4dfc-96ec-e7b9b21dfc7b | NULL                  |
-| 3                 | 2024-12-21 13:38:48.227212 | 2024-12-21 13:38:51.117856 | logs-analysis-job | 0         | Completed    | NULL                                                                                     | 2024-12-21 13:38:51.54849     | daily-sales-report-job-1             | NULL                  |
-| 4                 | 2024-12-21 13:40:22.491883 | 2024-12-21 13:40:25.539387 | logs-analysis-job | 0         | Completed    | NULL                                                                                     | 2024-12-21 13:40:25.827281    | daily-sales-report-job-2             | NULL                  |
+| 3                 | 2024-12-21 13:38:48.227212 | 2024-12-21 13:38:51.117856 | logs-analysis-job | 0         | Completed    | NULL                                                                                     | 2024-12-21 13:38:51.54849     | logs-analysis-job-1                  | NULL                  |
+| 4                 | 2024-12-21 13:40:22.491883 | 2024-12-21 13:40:25.539387 | logs-analysis-job | 0         | Completed    | NULL                                                                                     | 2024-12-21 13:40:25.827281    | logs-analysis-job-2                  | NULL                  |
 | 5                 | 2024-12-21 13:40:42.24037  | 2024-12-21 13:41:53.290863 | logs-analysis-job | 0         | Terminated   | NULL                                                                                     | 2024-12-21 13:41:53.789612    | db68fc3a-61ec-4b92-a8fc-3a61ec8b9256 | NULL                  |
 | 6                 | 2024-12-21 13:45:09.334699 | 2024-12-21 13:45:50.076483 | logs-analysis-job | 0         | Terminated   | NULL                                                                                     | 2024-12-21 13:46:32.726645    | 2ef21e4b-d31b-45f2-b21e-4bd31b75f2f9 | NULL                  |
 

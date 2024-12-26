@@ -15,27 +15,27 @@ import lombok.*;
 @Getter
 @ToString(callSuper = true)
 @Valid
-@JsonTypeName("daily-sales-report-job")
+@JsonTypeName("sales-report-job")
 // Should be Immutable
-public class DailySalesReportJobLaunchRequest extends JobLaunchRequest {
+public class SalesReportJobLaunchRequest extends JobLaunchRequest {
 
   @Schema(description = "Report for the month", example = "2024-11", nullable = true)
   @NotNull
   @PastOrPresent
   private YearMonth month;
 
-  private DailySalesReportJobLaunchRequest(
+  private SalesReportJobLaunchRequest(
       final String jobName, final Map<String, Object> sparkConfigs, final YearMonth month) {
     super(jobName, sparkConfigs);
     this.month = Objects.nonNull(month) ? month : YearMonth.now();
   }
 
   @JsonCreator
-  public static DailySalesReportJobLaunchRequest of(
+  public static SalesReportJobLaunchRequest of(
       @JsonProperty("jobName") final String jobName,
       @JsonProperty("sparkConfigs") final Map<String, Object> sparkConfigs,
       @JsonProperty("month") final YearMonth month) {
-    return new DailySalesReportJobLaunchRequest(jobName, sparkConfigs, month);
+    return new SalesReportJobLaunchRequest(jobName, sparkConfigs, month);
   }
 
   @Override

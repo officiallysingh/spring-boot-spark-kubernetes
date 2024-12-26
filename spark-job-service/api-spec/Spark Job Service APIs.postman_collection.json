@@ -23,7 +23,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"jobName\": \"daily-sales-report-job\",\n  \"correlationId\": \"71643ba2-1177-4e10-a43b-a21177de1022\",\n  \"sparkConfigs\": {\n    \"spark.executor.instances\": 4,\n    \"spark.driver.cores\": 3\n  },\n  \"month\": \"2024-11\"\n}",
+					"raw": "{\n  \"jobName\": \"sales-report-job\",\n  \"correlationId\": \"71643ba2-1177-4e10-a43b-a21177de1022\",\n  \"sparkConfigs\": {\n    \"spark.executor.instances\": 4,\n    \"spark.driver.cores\": 3\n  },\n  \"month\": \"2024-11\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -43,7 +43,7 @@
 						"submit"
 					]
 				},
-				"description": "Generated from cURL: curl -X 'POST' \\\n  'http://localhost:8090/v1/spark-jobs/submit' \\\n  -H 'accept: */*' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"jobName\": \"daily-sales-report-job\",\n  \"correlationId\": \"71643ba2-1177-4e10-a43b-a21177de1022\",\n  \"sparkConfigs\": {\n    \"spark.executor.instances\": 4,\n    \"spark.driver.cores\": 3\n  },\n  \"month\": \"2024-11\"\n}'"
+				"description": "Generated from cURL: curl -X 'POST' \\\n  'http://localhost:8090/v1/spark-jobs/submit' \\\n  -H 'accept: */*' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"jobName\": \"sales-report-job\",\n  \"correlationId\": \"71643ba2-1177-4e10-a43b-a21177de1022\",\n  \"sparkConfigs\": {\n    \"spark.executor.instances\": 4,\n    \"spark.driver.cores\": 3\n  },\n  \"month\": \"2024-11\"\n}'"
 			},
 			"response": []
 		},
@@ -170,7 +170,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8090/v1/spark-jobs/executions/count/daily-sales-report-job",
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/count/sales-report-job",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -181,10 +181,10 @@
 						"spark-jobs",
 						"executions",
 						"count",
-						"daily-sales-report-job"
+						"sales-report-job"
 					]
 				},
-				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/count/daily-sales-report-job' \\\n  -H 'accept: application/json'"
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/count/sales-report-job' \\\n  -H 'accept: application/json'"
 			},
 			"response": []
 		},
@@ -228,7 +228,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8090/v1/spark-jobs/executions/daily-sales-report-job/running?page=0&size=10",
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/sales-report-job/running?page=0&size=10",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -238,7 +238,7 @@
 						"v1",
 						"spark-jobs",
 						"executions",
-						"daily-sales-report-job",
+						"sales-report-job",
 						"running"
 					],
 					"query": [
@@ -252,7 +252,7 @@
 						}
 					]
 				},
-				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/daily-sales-report-job/running?page=0&size=10' \\\n  -H 'accept: application/json'"
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/sales-report-job/running?page=0&size=10' \\\n  -H 'accept: application/json'"
 			},
 			"response": []
 		},
@@ -267,7 +267,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8090/v1/spark-jobs/executions/daily-sales-report-job/latest",
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/sales-report-job/latest",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -277,11 +277,11 @@
 						"v1",
 						"spark-jobs",
 						"executions",
-						"daily-sales-report-job",
+						"sales-report-job",
 						"latest"
 					]
 				},
-				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/daily-sales-report-job/latest' \\\n  -H 'accept: application/json'"
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/sales-report-job/latest' \\\n  -H 'accept: application/json'"
 			},
 			"response": []
 		},
@@ -296,7 +296,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8090/v1/spark-jobs/executions/latest?jobNames=daily-sales-report-job&jobNames=logs-analysis-job",
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/latest?jobNames=sales-report-job&jobNames=logs-analysis-job",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -311,7 +311,7 @@
 					"query": [
 						{
 							"key": "jobNames",
-							"value": "daily-sales-report-job"
+							"value": "sales-report-job"
 						},
 						{
 							"key": "jobNames",
@@ -319,7 +319,7 @@
 						}
 					]
 				},
-				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/latest?jobNames=daily-sales-report-job&jobNames=logs-analysis-job' \\\n  -H 'accept: application/json'"
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/latest?jobNames=sales-report-job&jobNames=logs-analysis-job' \\\n  -H 'accept: application/json'"
 			},
 			"response": []
 		},
@@ -371,7 +371,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8090/v1/spark-jobs/executions/daily-sales-report-job?page=0&size=10",
+					"raw": "http://localhost:8090/v1/spark-jobs/executions/sales-report-job?page=0&size=10",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -381,7 +381,7 @@
 						"v1",
 						"spark-jobs",
 						"executions",
-						"daily-sales-report-job"
+						"sales-report-job"
 					],
 					"query": [
 						{
@@ -394,7 +394,7 @@
 						}
 					]
 				},
-				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/daily-sales-report-job?page=0&size=10' \\\n  -H 'accept: application/json'"
+				"description": "Generated from cURL: curl -X 'GET' \\\n  'http://localhost:8090/v1/spark-jobs/executions/sales-report-job?page=0&size=10' \\\n  -H 'accept: application/json'"
 			},
 			"response": []
 		},

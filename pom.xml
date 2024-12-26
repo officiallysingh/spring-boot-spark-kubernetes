@@ -17,7 +17,7 @@
 
     <modules>
         <module>spark-job-commons</module>
-        <module>spark-batch-daily-sales-report-job</module>
+        <module>spark-batch-sales-report-job</module>
         <module>spark-stream-logs-analysis-job</module>
         <module>spark-job-service</module>
     </modules>

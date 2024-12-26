@@ -87,7 +87,7 @@
               "schema": {
                 "oneOf": [
                   {
-                    "$ref": "#/components/schemas/DailySalesReportJobLaunchRequest"
+                    "$ref": "#/components/schemas/SalesReportJobLaunchRequest"
                   },
                   {
                     "$ref": "#/components/schemas/LogsAnalysisJobLaunchRequest"
@@ -228,7 +228,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "daily-sales-report-job"
+            "example": "sales-report-job"
           },
           {
             "name": "page",
@@ -315,7 +315,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "daily-sales-report-job"
+            "example": "sales-report-job"
           },
           {
             "name": "page",
@@ -402,7 +402,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "daily-sales-report-job"
+            "example": "sales-report-job"
           }
         ],
         "responses": {
@@ -599,7 +599,7 @@
             "schema": {
               "type": "string"
             },
-            "example": "daily-sales-report-job"
+            "example": "sales-report-job"
           }
         ],
         "responses": {
@@ -818,7 +818,7 @@
   },
   "components": {
     "schemas": {
-      "DailySalesReportJobLaunchRequest": {
+      "SalesReportJobLaunchRequest": {
         "required": [
           "correlationId",
           "jobName",
@@ -884,7 +884,7 @@
           "jobName": {
             "type": "string",
             "description": "Spark Job name, must be present in application.yml spark-submit.jobs",
-            "example": "daily-sales-report-job"
+            "example": "sales-report-job"
           },
           "correlationId": {
             "type": "string",

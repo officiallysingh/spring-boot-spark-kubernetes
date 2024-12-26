@@ -62,9 +62,9 @@ spark:
 ```java
 this.sparkSession
     .read()
-    .option(SparkOptions.Aws.S3_ACCESS_KEY, dataSourceConfig.getAws().getAccessKey())
-    .option(SparkOptions.Aws.S3_SECRET_KEY, dataSourceConfig.getAws().getSecretKey())
-    .option(SparkOptions.Aws.S3_ENDPOINT, dataSourceConfig.getAws().getEndpoint())
+    .option("fs. s3a. access. key", "<put your aws access key>")
+    .option("fs. s3a. secret. key", "<put your aws secret key>")
+    .option("spark.hadoop.fs.s3a.endpoint", "<put your aws s3 endpoint>")
 ```
 
 #### MongoDB Connector

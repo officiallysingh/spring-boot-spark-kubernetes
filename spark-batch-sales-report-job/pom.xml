@@ -9,10 +9,10 @@
     </parent>
 
     <!--    <groupId>com.ksoot.spark</groupId>-->
-    <artifactId>spark-batch-daily-sales-report-job</artifactId>
+    <artifactId>spark-batch-sales-report-job</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spark-batch-daily-sales-report-job</name>
-    <description>Spark Daily sales Batch Job</description>
+    <name>spark-batch-sales-report-job</name>
+    <description>Spark Sales report Batch Job</description>
 
     <!--    <properties>-->
     <!--    </properties>-->

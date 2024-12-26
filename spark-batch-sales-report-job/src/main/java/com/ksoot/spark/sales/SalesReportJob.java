@@ -16,20 +16,20 @@ import org.springframework.kafka.annotation.EnableKafka;
 @EnableTask
 @EnableKafka
 @SpringBootApplication
-public class DailySalesReportJob {
+public class SalesReportJob {
 
   @Value("${ksoot.hadoop-dll:null}")
   private String hadoopDll;
 
   public static void main(String[] args) {
-    SpringApplication.run(DailySalesReportJob.class, args);
+    SpringApplication.run(SalesReportJob.class, args);
   }
 
   @Autowired private DataPopulator dataPopulator;
 
   @PostConstruct
   public void init() {
-    log.info("Initializing DailySalesReportJob ...");
+    log.info("Initializing SalesReportJob ...");
 
     String osName = System.getProperty("os.name").toLowerCase();
     if (osName.contains("win")) {

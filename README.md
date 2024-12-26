@@ -155,14 +155,14 @@ Keep it running in a separate terminal. Output should look like below.
 - **Job Termination**: Accept requests to stop running jobs via REST endpoint, though not a gauranteed method. You may need to kill the job manually if not terminated by this.
 - **Job Monitoring**: Track job status, start and end time, duration taken, error messages if there is any, via REST endpoints.
 - **Auto-configurations**: of Common components such as `SparkSession`, Job lifecycle listener and Connectors to read and write to various datasources.
-- **Demo Jobs**: A [Spark Batch Job](spark-batch-daily-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job), to start with
+- **Demo Jobs**: A [Spark Batch Job](spark-batch-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job), to start with
 
 ## Components
 The framework consists of following components. Refer to respective project's README for details.
 - [**spark-job-service**](spark-job-service/README.md): A Spring Boot application to launch Spark jobs and monitor their status.
 - [**spring-boot-starter-spark**](https://github.com/officiallysingh/spring-boot-starter-spark): Spring boot starter for Spark.
 - [**spark-job-commons**](spark-job-commons/README.md): A library to provide common Job components and utilities for Spark jobs.
-- [**spark-batch-daily-sales-report-job**](spark-batch-daily-sales-report-job/README.md): A demo Spark Batch Job to generate daily sales reports.
+- [**spark-batch-sales-report-job**](spark-batch-sales-report-job/README.md): A demo Spark Batch Job to generate Monthly sales reports.
 - [**spark-stream-logs-analysis-job**](spark-stream-logs-analysis-job/README.md): A demo Spark Streaming Job to analyze logs in real-time.
 
 ## Kubernetes configuration files
@@ -182,7 +182,7 @@ Each service is configured with necessary environment variables, volume mounts, 
 - **ClusterRoleBinding**: Binds the spark ServiceAccount to the edit ClusterRole, granting it permissions to edit resources within the namespace.
 
 ## Running Jobs Locally
-- Individual Spark Jobs can be run as Spring boot application locally in your favorite IDE. Refer to [daily-sales-job](spark-batch-daily-sales-report-job/README.md#intellij-run-configurations) and [log-analysis-job](spark-stream-logs-analysis-job/README.md#intellij-run-configurations).
+- Individual Spark Jobs can be run as Spring boot application locally in your favorite IDE. Refer to [sales-report-job](spark-batch-sales-report-job/README.md#intellij-run-configurations) and [logs-analysis-job](spark-stream-logs-analysis-job/README.md#intellij-run-configurations).
 - Spark Job can be Launched locally via REST API provided by `spark-job-service`. Refer to [spark-job-service](spark-job-service/README.md#running-locally) for details.
 
 ## Running Jobs on Minikube
@@ -200,9 +200,9 @@ rm -f jars/HikariCP-2.5.1.jar; \
 ```shell
 docker image build . -t ksoot/spark:3.5.3 -f Dockerfile
 ```
-* In Terminal go to project `spring-boot-spark-kubernetes/spark-batch-daily-sales-report-job` and execute following command to build docker image for `daily-sales-report-job`.
+* In Terminal go to project `spring-boot-spark-kubernetes/spark-batch-sales-report-job` and execute following command to build docker image for `sales-report-job`.
 ```shell
-docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
+docker image build . -t spark-batch-sales-report-job:0.0.1 -f Dockerfile
 ```
 * In Terminal go to project `spring-boot-spark-kubernetes/spark-stream-logs-analysis-job` and execute following command to build docker image for `logs-analysis-job`.
 ```shell
@@ -210,7 +210,7 @@ docker image build . -t spark-stream-logs-analysis-job:0.0.1 -f Dockerfile
 ```
 * Load Job images in minikube.
 ```shell
-minikube image load spark-batch-daily-sales-report-job:0.0.1
+minikube image load spark-batch-sales-report-job:0.0.1
 minikube image load spark-stream-logs-analysis-job:0.0.1
 ```
 * In Terminal go to project `spring-boot-spark-kubernetes/spark-job-service` and execute following command to build docker image for `spark-job-service`.
@@ -259,8 +259,8 @@ args:
   - "--spark.default.parallelism=16"
   - "--spark-launcher.env.POSTGRES_URL=jdbc:postgresql://postgres:5432/spark_jobs_db"
   - "--spark-launcher.env.KAFKA_BOOTSTRAP_SERVERS=kafka:9092"
-  - "--spark-launcher.jobs.daily-sales-report-job.env.MONGODB_URL=mongodb://mongo:27017"
-  - "--spark-launcher.jobs.daily-sales-report-job.env.ARANGODB_URL=arango:8529"
+  - "--spark-launcher.jobs.sales-report-job.env.MONGODB_URL=mongodb://mongo:27017"
+  - "--spark-launcher.jobs.sales-report-job.env.ARANGODB_URL=arango:8529"
   - "--spark-launcher.jobs.logs-analysis-job.env.JDBC_URL=jdbc:postgresql://postgres:5432"
 ```
 * **In Production, it is recommended to use Kubernetes Secrets for sensitive information like passwords, tokens, and keys etc.**  
@@ -294,14 +294,14 @@ kubectl get pods
   Output should look like below.
 ```shell
 NAME                                             READY   STATUS    RESTARTS   AGE
-daily-sales-report-job-2e9c6f93ef784c17-driver   1/1     Running   0          11s
-daily-sales-report-job-9ac2e493ef78625a-exec-1   1/1     Running   0          6s
-daily-sales-report-job-9ac2e493ef78625a-exec-2   1/1     Running   0          6s
+sales-report-job-2e9c6f93ef784c17-driver   1/1     Running   0          11s
+sales-report-job-9ac2e493ef78625a-exec-1   1/1     Running   0          6s
+sales-report-job-9ac2e493ef78625a-exec-2   1/1     Running   0          6s
 ```
 * Once the Job is complete, executor pods are terminated automatically. Though driver pod remains in `Completed` state, but it does not consume any resources.
 ```shell
 NAME                                             READY   STATUS      RESTARTS   AGE
-daily-sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          2m56s
+sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          2m56s
 ```
 * If the Job fails, Executor pods are still terminated, but driver pod remains in `Error` state. For debugging, you can see pod logs.
 * Eventually you may want to clean up by deleting the pods or `minikube delete`.

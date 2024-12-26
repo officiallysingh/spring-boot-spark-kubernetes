@@ -1,17 +1,17 @@
-# Daily Sales Report Job
+# Sales Report Job
 Demo **Spark Batch job** implemented as [Spring Cloud Task](https://spring.io/projects/spring-cloud-task).
 
 ## Environment setup
 For prerequisites and environment setup, refer to [Installation Instructions](../README.md#installation)
 
 ### IntelliJ Run Configurations
-* Got to main class [**`DailySalesReportJob`**](src/main/java/com/ksoot/spark/sales/DailySalesReportJob.java) and Modify run
+* Got to main class [**`SalesReportJob`**](src/main/java/com/ksoot/spark/sales/SalesReportJob.java) and Modify run
   configurations as follows.
 * Go to `Modify options`, click on `Add VM options` and set `-Dspring.profiles.active=local` to run in `local` profile.
 * Go to `Modify options`, click on `Add VM options` and add option `--add-exports java.base/sun.nio.ch=ALL-UNNAMED`  
   to avoid exception `Factory method 'sparkSession' threw exception with message: class org.apache.spark.storage.StorageUtils$ (in unnamed module @0x2049a9c1) cannot access class sun.nio.ch.DirectBuffer (in module java.base) because module java.base does not export sun.nio.ch to unnamed module @0x2049a9c1`.
 * Go to `Modify options` and make sure `Add dependencies with "provided" scope to classpath` is checked.
-* Run [**`DailySalesReportJob`**](src/main/java/com/ksoot/spark/sales/DailySalesReportJob.java) as Spring boot application. 
+* Run [**`SalesReportJob`**](src/main/java/com/ksoot/spark/sales/SalesReportJob.java) as Spring boot application. 
 
 ## Spark Job implementation
 ### Spark Configurations
@@ -53,7 +53,7 @@ Refer to [DataPopulator](src/main/java/com/ksoot/spark/sales/DataPopulator.java)
 - Following is the Spark pipeline code
 ```java
 public void execute() {
-    log.info("Generating Daily sales report for month: {}", this.jobProperties.getMonth());
+    log.info("Generating Sales report for month: {}", this.jobProperties.getMonth());
 
     Dataset<Row> salesDataset = this.mongoConnector.read("sales");
     SparkUtils.logDataset("Sales Dataset", salesDataset);
@@ -78,7 +78,7 @@ public void execute() {
         productsDataset.select(col("_key").as("product_id"), col("name").as("product_name"));
 
     // Join with the product details dataset
-    Dataset<Row> dailySalesReport =
+    Dataset<Row> monthlySalesReport =
         aggregatedSales
             .join(
                 productsDataset,
@@ -90,11 +90,11 @@ public void execute() {
             .orderBy(col("product_name"), col("date"));
 
     // Show the final result
-    SparkUtils.logDataset("Daily Sales report", dailySalesReport);
+    SparkUtils.logDataset("Sales report", monthlySalesReport);
 
     final String salesReportCollection = "sales_report_" + statementMonth.replace('-', '_');
-    //    this.fileConnector.write(dailySalesReport); // For testing
-    this.mongoConnector.write(dailySalesReport, salesReportCollection);
+    //    this.fileConnector.write(monthlySalesReport); // For testing
+    this.mongoConnector.write(monthlySalesReport, salesReportCollection);
   }
 ```
 
@@ -180,14 +180,14 @@ mvn clean install
 ```
 * To build Docker image, execute following command. Refer to project [Dockerfile](Dockerfile) and [Base Dockerfile](../Dockerfile) for details.
 ```shell
-docker image build . -t spark-batch-daily-sales-report-job:0.0.1 -f Dockerfile
+docker image build . -t spark-batch-sales-report-job:0.0.1 -f Dockerfile
 ```
 
 ## Deploy on minikube
 The job jar can be manually deployed on Minikube using a mounted volume as follows. The `jar` size is too large to `spark-submit` without mounting volume.
 * For environment setup, refer to [Installation using minikube section](../README.md#minikube).
 * Create a folder `kubevol/spark-apps` in your local `HOME` directory.
-* Copy Job Jar [`spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar`](target/spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar) in this folder.
+* Copy Job Jar [`spark-batch-sales-report-job-0.0.1-SNAPSHOT.jar`](target/spark-batch-sales-report-job-0.0.1-SNAPSHOT.jar) in this folder.
 * Mount this folder in minikube. Execute following command in a separate terminal and keep it running.
 ```shell
 echo $HOME
@@ -239,8 +239,8 @@ cd $SPARK_HOME
 ./bin/spark-submit \
     --master k8s://https://127.0.0.1:50537 \
     --deploy-mode cluster \
-    --name daily-sales-report-job \
-    --class com.ksoot.spark.sales.DailySalesReportJob \
+    --name sales-report-job \
+    --class com.ksoot.spark.sales.SalesReportJob \
     --conf spark.kubernetes.container.image=officiallysingh/spark:3.5.3 \
     --conf spark.kubernetes.namespace=ksoot \
     --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
@@ -252,7 +252,7 @@ cd $SPARK_HOME
     --conf spark.kubernetes.driver.volumes.hostPath.spark-host-mount.options.path=/tmp/spark-apps \
     --conf spark.kubernetes.executor.volumes.hostPath.spark-host-mount.mount.path=/tmp/spark-apps \
     --conf spark.kubernetes.executor.volumes.hostPath.spark-host-mount.options.path=/tmp/spark-apps \
-    local:///tmp/spark-apps/spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar
+    local:///tmp/spark-apps/spark-batch-sales-report-job-0.0.1-SNAPSHOT.jar
 ```
 
 ### Spark UI
@@ -267,14 +267,14 @@ When `ksoot.job.persist` is set to true, Spring cloud task initializes its datab
 If `ksoot.job.persist` is set to `true` then Job status log is tracked as follows in database `spark_jobs_db` table `task_execution`.  
 This is a Spring Cloud Task feature, for details refer to [documentation](https://docs.spring.io/spring-cloud-task/reference/features.html)
 
-| task_execution_id | start_time                 | end_time                   | task_name              | exit_code | exit_message | error_message                                                                            | last_updated                  | external_execution_id                | parent_execution_id   |
-|-------------------|----------------------------|----------------------------|------------------------|-----------|--------------|------------------------------------------------------------------------------------------|-------------------------------|--------------------------------------|-----------------------|
-| 1                 | 2024-12-21 13:15:52.849979 | 2024-12-21 13:17:57.044739 | daily-sales-report-job | 1         | Failed       | com.ksoot.spark.common.util.StreamRetryableException: Exception in spark streaming ..... | 2024-12-21 13:17:57.058191    | d63965ff-2123-4c0e-b965-ff21234c0e9b | NULL                  |
-| 2                 | 2024-12-21 13:38:09.022006 | 2024-12-21 13:38:39.857139 | daily-sales-report-job | 1         | Failed       | com.ksoot.spark.common.util.StreamRetryableException: Exception in spark streaming ..... | 2024-12-21 13:38:39.86834     | c1c5ceb1-3574-4ac3-85ce-b13574bac35a | NULL                  |
-| 3                 | 2024-12-21 13:38:48.227212 | 2024-12-21 13:38:51.117856 | daily-sales-report-job | 0         | Completed    | NULL                                                                                     | 2024-12-21 13:38:51.54849     | daily-sales-report-job-1             | NULL                  |
-| 4                 | 2024-12-21 13:40:22.491883 | 2024-12-21 13:40:25.539387 | daily-sales-report-job | 0         | Completed    | NULL                                                                                     | 2024-12-21 13:40:25.827281    | daily-sales-report-job-2             | NULL                  |
-| 5                 | 2024-12-21 13:40:42.24037  | 2024-12-21 13:41:53.290863 | daily-sales-report-job | 0         | Terminated   | NULL                                                                                     | 2024-12-21 13:41:53.789612    | d63965ff-2123-4c0e-b965-ff21234c0e9b | NULL                  |
-| 6                 | 2024-12-21 13:45:09.334699 | 2024-12-21 13:45:50.076483 | daily-sales-report-job | 0         | Terminated   | NULL                                                                                     | 2024-12-21 13:46:32.726645    | d63965ff-2123-4c0e-b965-ff21234c0e9b | NULL                  |
+| task_execution_id | start_time                 | end_time                   | task_name        | exit_code | exit_message | error_message                                                                            | last_updated                  | external_execution_id                | parent_execution_id   |
+|-------------------|----------------------------|----------------------------|------------------|-----------|--------------|------------------------------------------------------------------------------------------|-------------------------------|--------------------------------------|-----------------------|
+| 1                 | 2024-12-21 13:15:52.849979 | 2024-12-21 13:17:57.044739 | sales-report-job | 1         | Failed       | com.ksoot.spark.common.util.StreamRetryableException: Exception in spark streaming ..... | 2024-12-21 13:17:57.058191    | d63965ff-2123-4c0e-b965-ff21234c0e9b | NULL                  |
+| 2                 | 2024-12-21 13:38:09.022006 | 2024-12-21 13:38:39.857139 | sales-report-job | 1         | Failed       | com.ksoot.spark.common.util.StreamRetryableException: Exception in spark streaming ..... | 2024-12-21 13:38:39.86834     | c1c5ceb1-3574-4ac3-85ce-b13574bac35a | NULL                  |
+| 3                 | 2024-12-21 13:38:48.227212 | 2024-12-21 13:38:51.117856 | sales-report-job | 0         | Completed    | NULL                                                                                     | 2024-12-21 13:38:51.54849     | sales-report-job-1                   | NULL                  |
+| 4                 | 2024-12-21 13:40:22.491883 | 2024-12-21 13:40:25.539387 | sales-report-job | 0         | Completed    | NULL                                                                                     | 2024-12-21 13:40:25.827281    | sales-report-job-2                   | NULL                  |
+| 5                 | 2024-12-21 13:40:42.24037  | 2024-12-21 13:41:53.290863 | sales-report-job | 0         | Terminated   | NULL                                                                                     | 2024-12-21 13:41:53.789612    | d63965ff-2123-4c0e-b965-ff21234c0e9b | NULL                  |
+| 6                 | 2024-12-21 13:45:09.334699 | 2024-12-21 13:45:50.076483 | sales-report-job | 0         | Terminated   | NULL                                                                                     | 2024-12-21 13:46:32.726645    | d63965ff-2123-4c0e-b965-ff21234c0e9b | NULL                  |
 
 ## Licence
 Open source [**The MIT License**](http://www.opensource.org/licenses/mit-license.php)

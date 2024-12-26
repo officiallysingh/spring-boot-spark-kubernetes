@@ -32,7 +32,7 @@ public class SparkPipelineExecutor {
   private final ArangoConnector arangoConnector;
 
   public void execute() {
-    log.info("Generating Daily sales report for month: {}", this.jobProperties.getMonth());
+    log.info("Generating Sales report for month: {}", this.jobProperties.getMonth());
 
     Dataset<Row> salesDataset = this.mongoConnector.read("sales");
     SparkUtils.logDataset("Sales Dataset", salesDataset);
@@ -57,7 +57,7 @@ public class SparkPipelineExecutor {
         productsDataset.select(col("_key").as("product_id"), col("name").as("product_name"));
 
     // Join with the product details dataset
-    Dataset<Row> dailySalesReport =
+    Dataset<Row> monthlySalesReport =
         aggregatedSales
             .join(
                 productsDataset,
@@ -69,10 +69,10 @@ public class SparkPipelineExecutor {
             .orderBy(col("product_name"), col("date"));
 
     // Show the final result
-    SparkUtils.logDataset("Daily Sales report", dailySalesReport);
+    SparkUtils.logDataset("Sales report", monthlySalesReport);
 
     final String salesReportCollection = "sales_report_" + statementMonth.replace('-', '_');
-    //    this.fileConnector.write(dailySalesReport); // For testing
-    this.mongoConnector.write(dailySalesReport, salesReportCollection);
+    //    this.fileConnector.write(monthlySalesReport); // For testing
+    this.mongoConnector.write(monthlySalesReport, salesReportCollection);
   }
 }
