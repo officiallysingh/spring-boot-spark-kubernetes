@@ -75,7 +75,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="yfoGOaeAojlxQzWnKSBf-20" value="&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;./bin/spark-submit --verbose --name sales-report-job&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;--class com.ksoot.spark.sales.SalesReportJob&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;&amp;nbsp;--conf spark.master=k8s://https://kubernetes.default.svc&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;--conf spark.submit.deployMode=cluster&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;--conf spark.executor.instances=3 --conf spark.executor.memory=2g&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;--conf spark.default.parallelism=32&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;--conf spark.kubernetes.namespace=ksoot&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;&amp;nbsp;--conf spark.driver.extraJavaOptions=&quot;&lt;/span&gt;&lt;span style=&quot;font-size: 26px; background-color: initial;&quot;&gt;-DSTATEMENT_MONTH=2024-11&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px; background-color: initial;&quot;&gt;-DCORRELATION_ID=71643ba2&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;-DPERSIST_JOB=true&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial; font-size: 26px;&quot;&gt;-DKAFKA_BOOTSTRAP_SERVERS=kafka:9092&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial; font-size: 26px;&quot;&gt;-DMONGODB_URL=mongodb://mongo:27017&lt;/span&gt;&lt;span style=&quot;font-size: 26px; background-color: initial;&quot;&gt;&quot;&amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;&amp;nbsp;.m2/repository/com/ksoot/spark/spark-batch-sales-report-job/0.0.1-SNAPSHOT/spark-batch-sales-report-job-0.0.1-SNAPSHOT.jar&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+        <mxCell id="yfoGOaeAojlxQzWnKSBf-20" value="&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;./bin/spark-submit --verbose --name sales-report-job&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;--class com.ksoot.spark.sales.SalesReportJob&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;&amp;nbsp;--conf spark.master=k8s://https://kubernetes.default.svc&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;--conf spark.submit.deployMode=cluster&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;--conf spark.executor.instances=3 --conf spark.executor.memory=2g&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;--conf spark.default.parallelism=32&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;--conf spark.kubernetes.namespace=ksoot&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;&amp;nbsp;--conf spark.driver.extraJavaOptions=&quot;&lt;/span&gt;&lt;span style=&quot;font-size: 26px; background-color: initial;&quot;&gt;-DSTATEMENT_MONTH=2024-11&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px; background-color: initial;&quot;&gt;-DCORRELATION_ID=71643ba2&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;-DPERSIST_JOB=true&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial; font-size: 26px;&quot;&gt;-DKAFKA_BOOTSTRAP_SERVERS=kafka:9092&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial; font-size: 26px;&quot;&gt;-DMONGODB_URL=mongodb://mongo:27017&lt;/span&gt;&lt;span style=&quot;font-size: 26px; background-color: initial;&quot;&gt;&quot;&amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;font-size: 26px;&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: initial; font-size: 26px;&quot;&gt;local:///opt/spark/job-apps/spark-batch-sales-report-job.jar&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="-10" y="500" width="880" height="520" as="geometry" />
         </mxCell>
         <mxCell id="yfoGOaeAojlxQzWnKSBf-23" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" parent="1" source="yfoGOaeAojlxQzWnKSBf-4" edge="1">
@@ -93,7 +93,7 @@
         <mxCell id="yfoGOaeAojlxQzWnKSBf-25" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0.818;exitY=0.182;exitDx=0;exitDy=0;exitPerimeter=0;strokeWidth=3;dashed=1;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-245" y="761" as="sourcePoint" />
-            <mxPoint x="290" y="800" as="targetPoint" />
+            <mxPoint x="290" y="820" as="targetPoint" />
             <Array as="points">
               <mxPoint x="-205" y="721" />
               <mxPoint x="-155" y="681" />
@@ -112,21 +112,20 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="yfoGOaeAojlxQzWnKSBf-27" value="" style="curved=1;endArrow=classic;html=1;rounded=0;strokeWidth=3;dashed=1;exitX=0.545;exitY=0.727;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.875;entryY=0.558;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="yfoGOaeAojlxQzWnKSBf-14" target="yfoGOaeAojlxQzWnKSBf-20" edge="1">
+        <mxCell id="yfoGOaeAojlxQzWnKSBf-27" value="" style="curved=1;endArrow=classic;html=1;rounded=0;strokeWidth=3;dashed=1;exitX=0.545;exitY=0.727;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="yfoGOaeAojlxQzWnKSBf-14" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-242" y="849" as="sourcePoint" />
-            <mxPoint x="-7" y="731" as="targetPoint" />
+            <mxPoint x="770" y="800" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-200" y="860" />
-              <mxPoint x="230" y="850" />
-              <mxPoint x="760" y="840" />
+              <mxPoint x="310" y="830" />
+              <mxPoint x="770" y="880" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="yfoGOaeAojlxQzWnKSBf-28" value="" style="curved=1;endArrow=classic;html=1;rounded=0;strokeWidth=3;dashed=1;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="160" y="1200" as="sourcePoint" />
-            <mxPoint x="410" y="660" as="targetPoint" />
+            <mxPoint x="400" y="680" as="targetPoint" />
             <Array as="points">
               <mxPoint x="320" y="1130" />
               <mxPoint x="330" y="930" />
@@ -206,7 +205,7 @@
             <mxPoint x="-17" y="1405" as="sourcePoint" />
             <mxPoint x="35.285714285714675" y="256.99999999999955" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-269" y="1295" />
+              <mxPoint x="-200" y="1290" />
               <mxPoint x="-119" y="835" />
               <mxPoint x="-89" y="685" />
               <mxPoint x="-159" y="305" />
@@ -223,7 +222,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="yfoGOaeAojlxQzWnKSBf-29" value="" style="curved=1;endArrow=classic;html=1;rounded=0;strokeWidth=3;dashed=1;entryX=0.205;entryY=0.227;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.535;exitY=0.549;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="yfoGOaeAojlxQzWnKSBf-49" target="yfoGOaeAojlxQzWnKSBf-20" edge="1">
+        <mxCell id="yfoGOaeAojlxQzWnKSBf-29" value="" style="curved=1;endArrow=classic;html=1;rounded=0;strokeWidth=3;dashed=1;entryX=0.205;entryY=0.288;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.535;exitY=0.549;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="yfoGOaeAojlxQzWnKSBf-49" target="yfoGOaeAojlxQzWnKSBf-20" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="10" y="1030" as="sourcePoint" />
             <mxPoint x="310.3800000000001" y="667.96" as="targetPoint" />
@@ -234,10 +233,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="yfoGOaeAojlxQzWnKSBf-51" value="" style="curved=1;endArrow=classic;html=1;rounded=0;strokeWidth=3;dashed=1;entryX=0.523;entryY=0.731;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.884;exitY=0.292;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="yfoGOaeAojlxQzWnKSBf-49" target="yfoGOaeAojlxQzWnKSBf-20" edge="1">
+        <mxCell id="yfoGOaeAojlxQzWnKSBf-51" value="" style="curved=1;endArrow=classic;html=1;rounded=0;strokeWidth=3;dashed=1;exitX=0.884;exitY=0.292;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="yfoGOaeAojlxQzWnKSBf-49" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-420" y="1180" as="sourcePoint" />
-            <mxPoint x="180" y="628" as="targetPoint" />
+            <mxPoint x="450" y="900" as="targetPoint" />
             <Array as="points">
               <mxPoint x="-130" y="1060" />
               <mxPoint x="-70" y="1010" />
@@ -246,10 +245,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="yfoGOaeAojlxQzWnKSBf-52" value="" style="curved=1;endArrow=classic;html=1;rounded=0;strokeWidth=3;dashed=1;entryX=0.523;entryY=0.481;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.185;exitY=0.677;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="yfoGOaeAojlxQzWnKSBf-49" target="yfoGOaeAojlxQzWnKSBf-20" edge="1">
+        <mxCell id="yfoGOaeAojlxQzWnKSBf-52" value="" style="curved=1;endArrow=classic;html=1;rounded=0;strokeWidth=3;dashed=1;exitX=0.185;exitY=0.677;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="yfoGOaeAojlxQzWnKSBf-49" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-420" y="1180" as="sourcePoint" />
-            <mxPoint x="180" y="628" as="targetPoint" />
+            <mxPoint x="440" y="770" as="targetPoint" />
             <Array as="points">
               <mxPoint x="-250" y="970" />
               <mxPoint x="110" y="890" />
@@ -262,9 +261,9 @@
             <mxPoint x="-340" y="1490" as="sourcePoint" />
             <mxPoint x="360" y="1358" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="210" y="1710" />
-              <mxPoint x="270" y="1690" />
-              <mxPoint x="320" y="1630" />
+              <mxPoint x="130" y="1660" />
+              <mxPoint x="200" y="1620" />
+              <mxPoint x="260" y="1560" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -373,16 +372,16 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="yfoGOaeAojlxQzWnKSBf-15" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0.576;exitY=0.227;exitDx=0;exitDy=0;exitPerimeter=0;strokeWidth=3;dashed=1;entryX=0.591;entryY=0.077;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="yfoGOaeAojlxQzWnKSBf-14" target="yfoGOaeAojlxQzWnKSBf-20" edge="1">
+        <mxCell id="yfoGOaeAojlxQzWnKSBf-15" value="" style="curved=1;endArrow=classic;html=1;rounded=0;exitX=0.576;exitY=0.227;exitDx=0;exitDy=0;exitPerimeter=0;strokeWidth=3;dashed=1;" parent="1" source="yfoGOaeAojlxQzWnKSBf-14" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-170" y="730" as="sourcePoint" />
-            <mxPoint x="430" y="570" as="targetPoint" />
+            <mxPoint x="500" y="570" as="targetPoint" />
             <Array as="points">
               <mxPoint x="-210" y="650" />
               <mxPoint x="-90" y="580" />
               <mxPoint x="-10" y="530" />
               <mxPoint x="160" y="500" />
-              <mxPoint x="460" y="500" />
+              <mxPoint x="450" y="530" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -422,12 +421,22 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="0xrCPZ1beF0Nvzpc6FTi-18" value="" style="curved=1;endArrow=classic;html=1;rounded=0;strokeWidth=3;dashed=1;" parent="1" edge="1">
+        <mxCell id="0xrCPZ1beF0Nvzpc6FTi-18" value="" style="curved=1;endArrow=classic;html=1;rounded=0;strokeWidth=3;dashed=1;exitX=0.159;exitY=0.135;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" edge="1" source="yfoGOaeAojlxQzWnKSBf-20">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="122.5" y="539.9961904761905" as="sourcePoint" />
             <mxPoint x="-330" y="561" as="targetPoint" />
             <Array as="points">
               <mxPoint x="-5" y="477.1390476190476" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IvVwdXWLOCdxualNIIzT-2" value="" style="curved=1;endArrow=classic;html=1;rounded=0;strokeWidth=3;dashed=1;entryX=0.068;entryY=0.885;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="40" y="1370" as="sourcePoint" />
+            <mxPoint x="50" y="960" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="150" y="1140" />
+              <mxPoint x="130" y="1060" />
             </Array>
           </mxGeometry>
         </mxCell>
