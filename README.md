@@ -363,6 +363,7 @@ Give it a :star: on [Github](https://github.com/officiallysingh/spring-boot-spar
 - [Spark in Action](https://www.manning.com/books/spark-in-action-second-edition)
 - [Spark Configurations](https://spark.apache.org/docs/3.5.3/configuration.html)
 - [Spark Submit](https://spark.apache.org/docs/3.5.4/submitting-applications.html)
+- [Spark Launcher](https://mallikarjuna_g.gitbooks.io/spark/content/spark-SparkLauncher.html)
 - [Running Spark on Kubernetes](https://spark.apache.org/docs/3.5.4/running-on-kubernetes.html)
 - [Spark UI](https://spark.apache.org/docs/3.5.3/web-ui.html)
 
