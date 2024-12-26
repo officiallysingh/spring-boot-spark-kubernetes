@@ -5,13 +5,13 @@ Demo **Spark Batch job** implemented as [Spring Cloud Task](https://spring.io/pr
 For prerequisites and environment setup, refer to [Installation Instructions](../README.md#installation)
 
 ### IntelliJ Run Configurations
-* Got to main class [**`SalesReportJob`**](src/main/java/com/ksoot/spark/sales/SalesReportJob.java) and Modify run
+* Got to main class [**`SalesReportJob.java`**](src/main/java/com/ksoot/spark/sales/SalesReportJob.java) and Modify run
   configurations as follows.
 * Go to `Modify options`, click on `Add VM options` and set `-Dspring.profiles.active=local` to run in `local` profile.
 * Go to `Modify options`, click on `Add VM options` and add option `--add-exports java.base/sun.nio.ch=ALL-UNNAMED`  
   to avoid exception `Factory method 'sparkSession' threw exception with message: class org.apache.spark.storage.StorageUtils$ (in unnamed module @0x2049a9c1) cannot access class sun.nio.ch.DirectBuffer (in module java.base) because module java.base does not export sun.nio.ch to unnamed module @0x2049a9c1`.
 * Go to `Modify options` and make sure `Add dependencies with "provided" scope to classpath` is checked.
-* Run [**`SalesReportJob`**](src/main/java/com/ksoot/spark/sales/SalesReportJob.java) as Spring boot application. 
+* Run [**`SalesReportJob.java`**](src/main/java/com/ksoot/spark/sales/SalesReportJob.java) as Spring boot application. 
 
 ## Spark Job implementation
 ### Spark Configurations

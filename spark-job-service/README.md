@@ -142,7 +142,7 @@ For example, [SalesReportJobLaunchRequest.java](src/main/java/com/ksoot/spark/dt
 ![Requests](../img/Job_Launch_Request.png)
 
 ### Running locally
-Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) locally in either [`local`](#local-profile) or [`minikube`](#minikube-profile) profile. Once application is up and running.
+Run [**`SparkJobService.java`**](src/main/java/com/ksoot/spark/SparkJobService.java) locally in either [`local`](#local-profile) or [`minikube`](#minikube-profile) profile. Once application is up and running.
 * Import the [**Postman Collection**](api-spec/Spark%20Job%20Service%20APIs.postman_collection.json) and make API calls to start, stop or track jobs.
 * Alternatively, you can open Swagger at http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs and make API calls.
 
