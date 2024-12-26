@@ -4,7 +4,9 @@ import com.ksoot.spark.common.error.ErrorType;
 
 public enum SalesJobErrors implements ErrorType {
   INVALID_DATE(
-      "sales.report.job.invalid.date", "Invalid Request", "Job date: {0}, {1} can not be in future");
+      "sales.report.job.invalid.date",
+      "Invalid Request",
+      "Job date: {0}, {1} can not be in future");
 
   private final String code;
 
