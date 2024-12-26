@@ -28,12 +28,15 @@ public abstract class AbstractSparkJobLauncher implements SparkJobLauncher {
   protected Properties sparkConfigurations(
       final SparkJobProperties sparkJobProperties,
       final Map<String, Object> sparkRuntimeJobSpecificProperties) {
-    Properties confProperties =
-        this.effectiveSparkConfigurations(
-            sparkJobProperties.getSparkConfig(), sparkRuntimeJobSpecificProperties);
+    final Properties sparkJobSpecificProperties = sparkJobProperties.getSparkConfig();
+    final Properties confProperties = new Properties();
+    // Overriding properties with low precedence by that with high precedence.
+    confProperties.putAll(this.sparkProperties);
+    confProperties.putAll(sparkJobSpecificProperties);
+    confProperties.putAll(sparkRuntimeJobSpecificProperties);
 
     if (!confProperties.containsKey(DEPLOY_MODE)) {
-      log.warn(DEPLOY_MODE + " not specified, falling back to: " + DEPLOY_MODE_CLIENT);
+      log.info(DEPLOY_MODE + " not specified, falling back to: " + DEPLOY_MODE_CLIENT);
       confProperties.putIfAbsent(DEPLOY_MODE, DEPLOY_MODE_CLIENT);
     }
     return confProperties.entrySet().stream()
@@ -47,21 +50,7 @@ public abstract class AbstractSparkJobLauncher implements SparkJobLauncher {
                 Properties::new));
   }
 
-  // Merge common properties with job-specific properties, giving precedence to job-specific
-  // properties
-  protected Properties effectiveSparkConfigurations(
-      final Properties sparkJobSpecificProperties,
-      final Map<String, Object> sparkRuntimeJobSpecificProperties) {
-    final Properties confProperties = new Properties();
-    // Overriding properties with low precedence by that with high precedence.
-    confProperties.putAll(this.sparkProperties);
-    confProperties.putAll(sparkJobSpecificProperties);
-    confProperties.putAll(sparkRuntimeJobSpecificProperties);
-    return confProperties;
-  }
-
-  protected Map<String, Object> effectiveEnvironmentVariables(
-      final SparkJobProperties sparkJobProperties) {
+  protected Map<String, Object> environmentVariables(final SparkJobProperties sparkJobProperties) {
     Map<String, Object> mergedEnvVars = new LinkedHashMap<>();
     mergedEnvVars.putAll(this.sparkLauncherProperties.getEnv());
     mergedEnvVars.putAll(sparkJobProperties.getEnv());
