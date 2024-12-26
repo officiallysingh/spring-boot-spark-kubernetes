@@ -370,6 +370,8 @@ Give it a :star: on [Github](https://github.com/officiallysingh/spring-boot-spar
 - [Spark ArangoDB Connector](https://docs.arangodb.com/3.13/develop/integrations/arangodb-datasource-for-apache-spark)
 - [Spark MongoDB Connector](https://www.mongodb.com/docs/spark-connector/v10.4)
 - [Spark Kafka Connector](https://spark.apache.org/docs/3.5.1/structured-streaming-kafka-integration.html)
+- [Spark Performance Tuning](https://spark.apache.org/docs/3.5.3/sql-performance-tuning.html)
+- Spark Performance Optimization [Part 1](https://blog.cloudera.com/how-to-tune-your-apache-spark-jobs-part-1) and [Part 2](https://blog.cloudera.com/how-to-tune-your-apache-spark-jobs-part-2)
 
 - [Spring Boot](https://docs.spring.io/spring-boot/index.html)
 - [Spring Cloud Task](https://spring.io/projects/spring-cloud-task)
