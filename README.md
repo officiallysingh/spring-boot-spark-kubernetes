@@ -332,7 +332,8 @@ Configurations can be provided at multiple levels. At individual project level, 
 ![Configurations Precedence Order](img/Configurations_Precedence_Order.png)
 
 #### Spark UI
-Access Spark UI at [**`http://localhost:4040`**](http://localhost:4040) to monitor and inspect Spark Batch job execution.
+Access Spark UI at [**`http://localhost:4040`**](http://localhost:4040) to monitor and inspect Spark Batch job execution. 
+On Minikube or Kubernetes you may need to do port forwarding to access it, and it may not be accessible if Job is not in running state at the moment.
 
 ![Spark UI](img/Spark_UI_Streaming.png)
 
