@@ -265,7 +265,9 @@ args:
   - "--spark-launcher.jobs.sales-report-job.env.ARANGODB_URL=arango:8529"
   - "--spark-launcher.jobs.logs-analysis-job.env.JDBC_URL=jdbc:postgresql://postgres:5432"
 ```
-* **In Production, it is recommended to use Kubernetes Secrets for sensitive information like passwords, tokens, and keys etc.**  
+> [!IMPORTANT]  
+> In Production, it is recommended to use Kubernetes Secrets for sensitive information like passwords, tokens, and keys etc.
+
 * Execute following command to deploy `spark-job-service` on minikube.
 ```shell
 kubectl apply -f deployment.yml
@@ -279,7 +281,7 @@ kubectl get pods
 NAME                                READY   STATUS              RESTARTS   AGE
 spark-job-service-f545bd7d8-s4sn5   1/1     Running             0          9s
 ```
-* Port forward  `spark-job-service` server port in a separate terminal, to access it from local. Replace following POD name with your POD name.
+* Port forward  `spark-job-service` server port in a separate terminal, to access it from local. **Replace following POD name with your POD name**.
 ```shell
 kubectl port-forward spark-job-service-f545bd7d8-s4sn5 8090:8090
 ```
