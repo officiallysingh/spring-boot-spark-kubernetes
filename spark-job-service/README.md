@@ -175,7 +175,7 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 > [!IMPORTANT]
 > Whenever minikube is restarted this port number changes, so make sure to get the new port and change in `spark.master` configuration again.
 * Set active profile as `minikube`. In IntelliJ, Go to `Modify options`, click on `Add VM options` and set `-Dspring.profiles.active=minikube`.
-* Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) as Spring boot application.
+* Run [**`SparkJobService.java`**](src/main/java/com/ksoot/spark/SparkJobService.java) as Spring boot application.
 * Make a call to Job Start API. API response should look like below.
 ```text
 Spark Job: 'sales-report-job' submit request accepted for asynchronous execution. Correlation Id: 71643ba2-1177-4e10-a43b-a21177de1022. For real status of Job look into application logs or Driver POD logs if deploying on Kubernetes
