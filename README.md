@@ -1,4 +1,4 @@
-# A Unified Framework for Building Spark Jobs with Spring boot and Running on Local and Kubernetes
+# Unified Framework for Building Spark Jobs with Spring boot and Running on Local and Kubernetes
 An innovative approach to implementing Spark Jobs with Spring Boot ecosystem, enabling developer-friendly environment. 
 It integrates cross-cutting concerns as reusable libraries to minimize boilerplate code. 
 Moreover, the framework supports one-click deployment of Spark jobs with RESTful APIs, making it a breeze to run jobs locally, on Minikube or Kubernetes.  
