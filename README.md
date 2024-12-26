@@ -198,7 +198,7 @@ rm -f jars/protobuf-java-2.5.0.jar; \
 rm -f jars/guava-14.0.1.jar; \
 rm -f jars/HikariCP-2.5.1.jar; \
 ```
-  In Terminal go to root project `spring-boot-spark-kubernetes` and execute the following command to build Spark base Docker image. All Job's Dockerfiles extend from this image.
+* In Terminal go to root project `spring-boot-spark-kubernetes` and execute the following command to build Spark base Docker image. All Job's Dockerfiles extend from this image.
 ```shell
 docker image build . -t ksoot/spark:3.5.3 -f Dockerfile
 ```
