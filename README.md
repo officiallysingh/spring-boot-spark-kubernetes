@@ -298,14 +298,14 @@ kubectl get pods
   Output should look like below.
 ```shell
 NAME                                             READY   STATUS    RESTARTS   AGE
-sales-report-job-2e9c6f93ef784c17-driver   1/1     Running   0          11s
-sales-report-job-9ac2e493ef78625a-exec-1   1/1     Running   0          6s
-sales-report-job-9ac2e493ef78625a-exec-2   1/1     Running   0          6s
+sales-report-job-2e9c6f93ef784c17-driver         1/1   Running   0          11s
+sales-report-job-9ac2e493ef78625a-exec-1         1/1   Running   0          6s
+sales-report-job-9ac2e493ef78625a-exec-2         1/1   Running   0          6s
 ```
 * Once the Job is complete, executor pods are terminated automatically. Though driver pod remains in `Completed` state, but it does not consume any resources.
 ```shell
 NAME                                             READY   STATUS      RESTARTS   AGE
-sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          2m56s
+sales-report-job-2e9c6f93ef784c17-driver         0/1     Completed   0          2m56s
 ```
 * If the Job fails, Executor pods are still terminated, but driver pod remains in `Error` state. For debugging, you can see pod logs.
 * Eventually you may want to clean up by deleting the pods or `minikube delete`.
