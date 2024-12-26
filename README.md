@@ -291,16 +291,16 @@ Forwarding from 127.0.0.1:8090 -> 8090
 Forwarding from [::1]:8090 -> 8090
 ```
 * Now Minikube is ready for Spark Jobs deployment, make API calls from [Swagger](http://localhost:8090/swagger-ui/index.html?urls.primaryName=Spark+Jobs) or Postman to start and explore jobs.
-* If `spark-submit` command is executed successfully while Launching a Job, then you should be able to see the Spark Driver and Executor pods running in minikube.
+* If `spark-submit` command is executed successfully while Launching a Job, then you should be able to see the Spark Driver and Executor pods running for respective Job in minikube.
 ```shell
 kubectl get pods
 ```
   Output should look like below.
 ```shell
 NAME                                             READY   STATUS    RESTARTS   AGE
-sales-report-job-2e9c6f93ef784c17-driver         1/1   Running   0          11s
-sales-report-job-9ac2e493ef78625a-exec-1         1/1   Running   0          6s
-sales-report-job-9ac2e493ef78625a-exec-2         1/1   Running   0          6s
+sales-report-job-2e9c6f93ef784c17-driver         1/1     Running   0          11s
+sales-report-job-9ac2e493ef78625a-exec-1         1/1     Running   0          6s
+sales-report-job-9ac2e493ef78625a-exec-2         1/1     Running   0          6s
 ```
 * Once the Job is complete, executor pods are terminated automatically. Though driver pod remains in `Completed` state, but it does not consume any resources.
 ```shell
