@@ -171,17 +171,17 @@ The framework consists of following components. Refer to respective project's RE
 The framework includes Kubernetes configuration files to deploy the required infrastructure and services in a Kubernetes cluster in namespace **`ksoot`**. You can change the namespace in these two files as per your requirement.
 Each service is configured with necessary environment variables, volume mounts, and ports to ensure proper operation within the Kubernetes cluster.
 1. The [infra-k8s-deployment.yml](infra-k8s-deployment.yml) file defines the Kubernetes resources required to deploy various services.
-- **Namespace**: Creates a namespace named **`ksoot`**.
+- **Namespace**: Creates a namespace **`ksoot`**.
 - **MongoDB**: Deployment, PersistentVolumeClaim, and Service for MongoDB.
 - **ArangoDB**: Deployment, PersistentVolumeClaim, and Service for ArangoDB.
 - **PostgreSQL**: Deployment, PersistentVolumeClaim, ConfigMap (for initialization script), and Service for PostgreSQL.
 - **Zookeeper**: Deployment, PersistentVolumeClaims (for data and logs), and Service for Zookeeper.
 - **Kafka**: Deployment, PersistentVolumeClaim, and Service for Kafka.
 - **Kafka UI**: Deployment and Service for Kafka UI.
-2. The [spark-rbac.yml](spark-rbac.yml) file defines the Kubernetes RBAC (Role-Based Access Control) resources required to allow Spark to manage Driver and Executor pods within the **`ksoot`** namespace.
-- **ClusterRoleBinding**: Binds the default ServiceAccount to the cluster-admin ClusterRole, allowing it to have cluster-wide administrative privileges.
-- **ServiceAccount**: Creates a ServiceAccount named spark.
-- **ClusterRoleBinding**: Binds the spark ServiceAccount to the edit ClusterRole, granting it permissions to edit resources within the namespace.
+2. The [spark-rbac.yml](spark-rbac.yml) file defines the Kubernetes `RBAC` (Role-Based Access Control) resources required to allow Spark to manage Driver and Executor pods within the **`ksoot`** namespace.
+- **ClusterRoleBinding**: Binds the default `ServiceAccount` to the `cluster-admin` `ClusterRole`, allowing it to have cluster-wide administrative privileges.
+- **ServiceAccount**: Creates a ServiceAccount named `spark`.
+- **ClusterRoleBinding**: Binds the spark ServiceAccount to the `edit` `ClusterRole`, granting it permissions to edit resources within the namespace.
 
 ### Running Jobs Locally
 - Individual Spark Jobs can be run as Spring boot application locally in your favorite IDE. Refer to [sales-report-job](spark-batch-sales-report-job/README.md#intellij-run-configurations) and [logs-analysis-job](spark-stream-logs-analysis-job/README.md#intellij-run-configurations).
