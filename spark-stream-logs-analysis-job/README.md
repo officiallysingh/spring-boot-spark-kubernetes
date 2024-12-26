@@ -169,7 +169,7 @@ docker image build . -t spark-stream-logs-analysis-job:0.0.1 -f Dockerfile
 
 ## Deploy on minikube
 The job jar can be manually deployed on Minikube using a mounted volume as follows. The `jar` size is too large to `spark-submit` without mounting volume.
-* For environment setup, refer to [Installation using minikube section](../README.md#minikube).
+* For environment setup, refer to [Environment setup using minikube section](../README.md#minikube).
 * Create a folder `kubevol/spark-apps` in your local `HOME` directory.
 * Copy Job Jar [`spark-stream-logs-analysis-job-0.0.1-SNAPSHOT.jar`](target/spark-stream-logs-analysis-job-0.0.1-SNAPSHOT.jar) in this folder.
 * Mount this folder in minikube. Execute following command in a separate terminal and keep it running.
