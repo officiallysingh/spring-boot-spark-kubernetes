@@ -223,7 +223,7 @@ minikube image load spark-job-service:0.0.1
 ```
 
 ### Running on Minikube
-* Make sure [Environment setup on Minikube]((#minikube)) is already done and [application artifacts are ready](#preparing-for-minikube).
+* Make sure [Environment setup on Minikube](#minikube) is already done and [application artifacts are ready](#preparing-for-minikube).
 > [!IMPORTANT]  
 > No configuration change is required except specifically asked to run this code locally.
 * You can override any configurations **that are defined in** [spark-job-service application.yml](spark-job-service/src/main/resources/config/application.yml) and Spark Jobs using environment variables in [spark-job-service deployment.yml](spark-job-service/deployment.yml) as follows.
