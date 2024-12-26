@@ -2,6 +2,7 @@
 An innovative approach to implementing Spark Jobs with Spring Boot ecosystem, enabling developer-friendly environment. 
 It integrates cross-cutting concerns as reusable libraries to minimize boilerplate code. 
 Moreover, the framework supports one-click deployment of Spark jobs with RESTful APIs, making it a breeze to run jobs locally, on Minikube or Kubernetes.
+![Thumbnail](img/Thumbnail.png)
 
 ## Apache Spark overview
 [Apache Spark](https://spark.apache.org/docs/3.5.3/index.html) is a distributed computing framework designed for fast and efficient large-scale data processing.  
