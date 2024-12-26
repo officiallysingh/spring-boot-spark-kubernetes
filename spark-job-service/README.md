@@ -149,7 +149,7 @@ Run [**`SparkJobService.java`**](src/main/java/com/ksoot/spark/SparkJobService.j
 ![Swagger](../img/Swagger.png)
 
 #### Local profile
-* For environment setup to run in `local` profile, refer to [Installation preferably using docker compose section](../README.md#docker-compose).
+* For environment setup to run in `local` profile, refer to [Environment setup preferably using docker compose section](../README.md#docker-compose).
 * Set active profile as `local`. In IntelliJ, Go to `Modify options`, click on `Add VM options` and set `-Dspring.profiles.active=local`.
 * Run [**`SparkJobService`**](src/main/java/com/ksoot/spark/SparkJobService.java) as Spring boot application.
 > [!IMPORTANT]  
