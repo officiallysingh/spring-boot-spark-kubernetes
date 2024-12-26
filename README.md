@@ -130,7 +130,7 @@ mongo-6785c5cf8b-mtbk7       1/1     Running   0          6m16s
 postgres-685b766f66-7dnsl    1/1     Running   0          6m16s
 zookeeper-6fc87d48df-2t5pf   1/1     Running   0          6m16s
 ```
-* Establish minikube tunnel to expose services of type `LoadBalancer` running in Minikube cluster to local machine.  
+* Establish minikube tunnel to expose services of type `LoadBalancer` running in Minikube cluster to local machine. 
 It creates a bridge between your local network and the Minikube cluster, making the required infrastructure accessible to local.
 ```shell
 minikube tunnel
@@ -157,7 +157,7 @@ Keep it running in a separate terminal. Output should look like below.
 - **Job Termination**: Accept requests to stop running jobs via REST endpoint, though not a gauranteed method. You may need to kill the job manually if not terminated by this.
 - **Job Monitoring**: Track job status, start and end time, duration taken, error messages if there is any, via REST endpoints.
 - **Auto-configurations**: of Common components such as `SparkSession`, Job lifecycle listener and Connectors to read and write to various datasources.
-- **Demo Jobs**: A [Spark Batch Job](spark-batch-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job), to start with
+- **Demo Jobs**: A [Spark Batch Job](spark-batch-sales-report-job) and another [Spark Streaming Job](spark-stream-logs-analysis-job), to start with.
 
 ### Components
 The framework consists of following components. Refer to respective project's README for details.
