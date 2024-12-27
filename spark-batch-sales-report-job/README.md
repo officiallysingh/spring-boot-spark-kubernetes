@@ -212,6 +212,10 @@ minikube ssh
 ls -ld /tmp/spark-apps
 ls /tmp/spark-apps
 ```
+* Load `officiallysingh/spark:3.5.3` image into minikube as follows, if not present.
+```shell
+minikube image load officiallysingh/spark:3.5.3
+```
 * Get Minikube master port number by running the following command.
 ```shell
 kubectl cluster-info
@@ -226,10 +230,7 @@ To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 * Set above port number `50537` in configuration `--master` value `k8s://https://127.0.0.1:50537` in following `spark-submit` command.
 > [!IMPORTANT]
 > Whenever minikube is restarted this port number changes, so make sure to get the new port and change in `--master` configuration again.
-* Load `officiallysingh/spark:3.5.3` image into minikube as follows.
-```shell
-minikube image load officiallysingh/spark:3.5.3
-```
+
 * Go to `SPARK_HOME` in terminal.
 ```shell
 cd $SPARK_HOME
