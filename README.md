@@ -185,7 +185,9 @@ Each service is configured with necessary environment variables, volume mounts, 
 
 ### Running Jobs Locally
 - Individual Spark Jobs can be run as Spring boot application locally in your favorite IDE. Refer to [sales-report-job](spark-batch-sales-report-job/README.md#intellij-run-configurations) and [logs-analysis-job](spark-stream-logs-analysis-job/README.md#intellij-run-configurations).
-- Spark Job can be Launched locally via REST API provided by `spark-job-service`. Refer to [spark-job-service](spark-job-service/README.md#running-locally) for details.
+- Spark Job can be Launched locally via REST API provided by `spark-job-service`. Refer to [spark-job-service](spark-job-service/README.md#running-locally) for details.  
+> [!IMPORTANT]  
+> Spark Job's `jar` files from Maven repository are deployed on local via `spark-submit` command.
 
 ### Running Jobs on Minikube
 #### Preparing for Minikube
@@ -310,7 +312,8 @@ sales-report-job-2e9c6f93ef784c17-driver         0/1     Completed   0          
 * If the Job fails, Executor pods are still terminated, but driver pod remains in `Error` state. For debugging, you can see pod logs.
 * Eventually you may want to clean up by deleting the pods or `minikube delete`.
 > [!IMPORTANT]  
-> All applications run in `default` profile on minikube.
+> All applications run in `default` profile on minikube.  
+> Spark Job's Docker images are deployed on Kubernetes via `spark-submit` command.
 
 ### Deployment architecture
 #### Deploy Modes
