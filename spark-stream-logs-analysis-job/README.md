@@ -207,7 +207,7 @@ CoreDNS is running at https://127.0.0.1:50537/api/v1/namespaces/kube-system/serv
 
 To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
-* Set above port number `50537` in configuration `--master` value `k8s://https://127.0.0.1:50537` following `spark-submit` command.
+* Set above port number `50537` in configuration `--master` value `k8s://https://127.0.0.1:50537` in following `spark-submit` command.
 > [!IMPORTANT]
 > Whenever minikube is restarted this port number changes, so make sure to get the new port and change in `--master` configuration again.
 * Load `officiallysingh/spark:3.5.3` image into minikube as follows.
