@@ -44,7 +44,7 @@ This framework aims to simplify this process by providing a unified solution for
 
 ## Installation
 ### Prerequisites
-- Java 17
+- Java 17, Spark does not support java versions above 17 yet. See [Spark Java compatibility](https://spark.apache.org/docs/latest/#downloading).
 - [Maven](https://maven.apache.org), Make sure environment variable `M2_REPO` is set to local maven repository
 - [Scala 2.12.18](https://www.scala-lang.org/download/2.12.18.html)
 - [Spark 3.5.3](https://spark.apache.org/docs/3.5.3), Make sure environment variable `SPARK_HOME` is set to local spark installation.
@@ -54,7 +54,6 @@ This framework aims to simplify this process by providing a unified solution for
 - Optional [Configure Formatter in intelliJ](https://github.com/google/google-java-format/blob/master/README.md#intellij-android-studio-and-other-jetbrains-ides), refer to [fmt-maven-plugin](https://github.com/spotify/fmt-maven-plugin) for details.
 
 #### Java
-Spark does not support java versions above 17 yet. See Spark Java compatibility [here](https://spark.apache.org/docs/latest/#downloading).
 Recommended [sdkman](https://sdkman.io/install/) for managing Java, Scala installations.
 Make sure `JAVA_HOME` set to Java 17 installation path and `PATH` variable contains entry for `$JAVA_HOME/bin`
 Check Java version as follows. It should look like following, showing major version 17.
