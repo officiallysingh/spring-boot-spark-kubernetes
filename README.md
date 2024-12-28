@@ -34,7 +34,7 @@ The Latest Spark versions have introduced and recommend DataFrames and Datasets,
 - Within each stage, tasks are executed in parallel across the cluster.
 - The Directed Acyclic Graph (DAG) Scheduler optimizes task execution by constructing a dependency graph of RDD transformations.
 
-**Apache Spark Distributed Architecture**
+**Apache Spark Distributed Architecture** from [Spark in Action](https://www.manning.com/books/spark-in-action-second-edition).
 ![Spark Architecture](img/Spark_Architecture.png)
 
 ## Introduction
