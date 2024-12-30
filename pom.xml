@@ -57,6 +57,9 @@
         <arangodb-spring-boot-starter.version>3.3-0</arangodb-spring-boot-starter.version>
 
         <fmt-maven-plugin.version>2.25</fmt-maven-plugin.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>
