@@ -29,6 +29,7 @@
         <spring-cloud.version>2023.0.4</spring-cloud.version>
         <spring-cloud-aws.version>3.2.0</spring-cloud-aws.version>
         <aws-java-sdk.version>2.28.28</aws-java-sdk.version>
+<!--        <opentelemetry.version>2.11.0</opentelemetry.version>-->
 
         <!-- Misc dependency versions-->
         <springdoc-openapi-starter-webmvc-ui.version>2.7.0</springdoc-openapi-starter-webmvc-ui.version>
@@ -85,6 +86,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+<!--            <dependency>-->
+<!--                <groupId>io.opentelemetry.instrumentation</groupId>-->
+<!--                <artifactId>opentelemetry-instrumentation-bom</artifactId>-->
+<!--                <version>${opentelemetry.version}</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
 
             <dependency>
                 <groupId>org.springdoc</groupId>

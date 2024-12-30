@@ -2,9 +2,11 @@ logging:
   logback:
     rollingpolicy:
       clean-history-on-start: true
+#  file:
+#    path: logs
+#    name: ${logging.file.path}/application.log
   file:
-    path: logs
-    name: ${logging.file.path}/application.log
+    name: ${spring.application.home:.}/logs/${spring.application.name}.log
   level:
     ROOT: info
 debug: false
