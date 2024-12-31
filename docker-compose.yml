@@ -17,7 +17,7 @@ services:
 #      - "mongo_data:/data/db"
 #      - "mongo_config:/data/configdb"
 #    networks:
-#      - mynetwork
+#      - ksoot
 
   arango:
     image: arangodb/arangodb:latest
@@ -30,7 +30,7 @@ services:
     volumes:
       - arango_data:/var/lib/arangodb3
     networks:
-      - mynetwork
+      - ksoot
 
 #  postgres:
 #    image: postgres:latest
@@ -45,7 +45,7 @@ services:
 #    volumes:
 #      - postgres_data:/var/lib/postgresql/data
 #    networks:
-#      - mynetwork
+#      - ksoot
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
@@ -58,7 +58,7 @@ services:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_SERVERS: zookeeper:2888:3888
     networks:
-      - mynetwork
+      - ksoot
 
   kafka:
     image: confluentinc/cp-kafka:7.3.2
@@ -85,7 +85,7 @@ services:
     depends_on:
       - zookeeper
     networks:
-      - mynetwork
+      - ksoot
 
   kafka-ui:
     container_name: kafka-ui
@@ -102,7 +102,7 @@ services:
     depends_on:
       - kafka
     networks:
-      - mynetwork
+      - ksoot
 
   prometheus:
     container_name: prometheus
@@ -129,9 +129,11 @@ services:
       - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
       - ./docker/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
       - ./docker/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
-      - ./docker/grafana/provisioning/alerting:/etc/grafana/provisioning/alerting:ro
+#      - ./docker/grafana/provisioning/alerting:/etc/grafana/provisioning/alerting:ro
     ports:
       - "3000:3000"
+    networks:
+      - ksoot
   tempo-init:
     # Tempo runs as user 10001, and docker compose creates the volume as root.
     # As such, we need to chown the volume in order for Tempo to start correctly.
@@ -146,6 +148,8 @@ services:
       - "/var/tempo"
     volumes:
       - tempo_data:/var/tempo
+    networks:
+      - ksoot
   tempo:
     container_name: tempo
     image: *tempoImage
@@ -158,6 +162,8 @@ services:
     ports:
       - "3200:3200"    # tempo
       - "9411:9411"    # zipkin
+    networks:
+      - ksoot
   loki:
     container_name: loki
     image: grafana/loki:3.0.1 # https://hub.docker.com/r/grafana/loki/tags and https://github.com/grafana/loki/releases
@@ -165,6 +171,19 @@ services:
     command: ['-config.file=/etc/loki/local-config.yaml']
     ports:
       - "3100:3100"
+    networks:
+      - ksoot
+
+  promtail:
+    container_name: promtail
+    image: grafana/promtail:3.0.1
+    extra_hosts: ['host.docker.internal:host-gateway']
+    volumes:
+      - /var/log:/var/log
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - ksoot
+
 #  otel-collector:
 #    image: otel/opentelemetry-collector-contrib
 #    volumes:
@@ -188,5 +207,5 @@ volumes:
   tempo_data:
 
 networks:
-  mynetwork:
+  ksoot:
     driver: bridge

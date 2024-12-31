@@ -5,8 +5,8 @@ logging:
 #  file:
 #    path: logs
 #    name: ${logging.file.path}/application.log
-  file:
-    name: ${spring.application.home:.}/logs/${spring.application.name}.log
+#  file:
+#    name: ${spring.application.home:.}/logs/${spring.application.name}.log
   level:
     ROOT: info
 debug: false

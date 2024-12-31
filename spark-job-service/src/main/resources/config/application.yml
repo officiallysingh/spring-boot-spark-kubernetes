@@ -149,6 +149,18 @@ management:
   tracing:
     sampling:
       probability: 1.0
+
+logging:
+  file.name: ${spring.application.home:.}/logs/${spring.application.name}.log
+  level:
+    #    ROOT: info
+    '[org.springframework.web.servlet.DispatcherServlet]': debug
+    '[org.springframework.cloud.task]': debug
+    '[org.apache.kafka.clients.admin.KafkaAdminClient]': error
+    '[org.apache.kafka.clients]': error
+
+debug: false
+
 #------------------------------------------------------------
 server:
   port: 8090
@@ -158,13 +170,6 @@ server:
   tomcat:
     mbeanregistry:
       enabled: true
-logging:
-  level:
-    ROOT: info
-    '[org.springframework.cloud.task]': debug
-    '[org.apache.kafka.clients.admin.KafkaAdminClient]': error
-    '[org.apache.kafka.clients]': error
-debug: false
 
 #---------- Spark configurations common to all Jobs -------------------------
 spark:

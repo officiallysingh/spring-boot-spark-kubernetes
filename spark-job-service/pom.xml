@@ -13,6 +13,9 @@
     <name>spark-job-service</name>
     <description>Spark Job Trigger service to spark-submit jobs</description>
 
+    <properties>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -82,7 +85,6 @@
         <dependency>
             <groupId>com.github.loki4j</groupId>
             <artifactId>loki-logback-appender</artifactId>
-            <version>1.5.2</version>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
@@ -92,9 +94,11 @@
             <groupId>io.zipkin.reporter2</groupId>
             <artifactId>zipkin-reporter-brave</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.ttddyy.observation</groupId>
+            <artifactId>datasource-micrometer</artifactId>
+        </dependency>
 
-<!--        implementation 'io.micrometer:micrometer-tracing-bridge-brave'-->
-<!--        implementation 'io.zipkin.reporter2:zipkin-reporter-brave'-->
 <!--        <dependency>-->
 <!--            <groupId>io.micrometer</groupId>-->
 <!--            <artifactId>micrometer-registry-otlp</artifactId>-->
