@@ -151,6 +151,7 @@ management:
       probability: 1.0
 
 logging:
+  loki.url: http://localhost:3100/loki/api/v1/push
   file.name: ${spring.application.home:.}/logs/${spring.application.name}.log
   level:
     #    ROOT: info

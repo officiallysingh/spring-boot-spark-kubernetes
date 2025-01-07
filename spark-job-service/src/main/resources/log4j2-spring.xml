@@ -3,12 +3,13 @@
     <!-- Set properties -->
     <Properties>
         <Property name="ORG_NAME">${spring:spring.application.org}</Property>
+        <Property name="LOKI_URL">${spring:logging.loki.url}</Property>
         <Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
         <Property name="LOG_LEVEL_PATTERN">%5p</Property>
         <Property name="LOG_DATEFORMAT_PATTERN">yyyy-MM-dd'T'HH:mm:ss.SSSXXX</Property>
         <Property name="CONSOLE_LOG_PATTERN">%clr{%d{${sys:LOG_DATEFORMAT_PATTERN}}}{faint} %clr{${sys:LOG_LEVEL_PATTERN}} %clr{%pid}{magenta} %clr{--- %esb{${sys:APPLICATION_NAME:-}}%esb{${sys:APPLICATION_GROUP:-}}[%15.15t] ${sys:LOG_CORRELATION_PATTERN:-}}{faint}%clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
-<!--        <Property name="FILE_LOG_PATTERN">%d{${sys:LOG_DATEFORMAT_PATTERN}} ${sys:LOG_LEVEL_PATTERN} %pid -&#45;&#45; %esb{${sys:APPLICATION_NAME:-}}%esb{${sys:APPLICATION_GROUP:-}}[%t] ${sys:LOG_CORRELATION_PATTERN:-}%-40.40c{1.} : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>-->
-        <Property name="FILE_LOG_PATTERN">%d{${sys:LOG_DATEFORMAT_PATTERN}} ${sys:LOG_LEVEL_PATTERN} %pid --- %esb{${sys:ORG_NAME:-}}%esb{${sys:APPLICATION_NAME:-}}%esb{${sys:APPLICATION_GROUP:-}}[%t] ${sys:LOG_CORRELATION_PATTERN:-}%-40.40c{1.} : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+        <Property name="FILE_LOG_PATTERN">%d{${sys:LOG_DATEFORMAT_PATTERN}} ${sys:LOG_LEVEL_PATTERN} %pid --- %esb{${sys:APPLICATION_NAME:-}}%esb{${sys:APPLICATION_GROUP:-}}[%t] ${sys:LOG_CORRELATION_PATTERN:-}%-40.40c{1.} : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+<!--        <Property name="FILE_LOG_PATTERN">%d{${sys:LOG_DATEFORMAT_PATTERN}} ${sys:LOG_LEVEL_PATTERN} %pid -&#45;&#45; %esb{${sys:ORG_NAME:-}}%esb{${sys:APPLICATION_NAME:-}}%esb{${sys:APPLICATION_GROUP:-}}[%t] ${sys:LOG_CORRELATION_PATTERN:-}%-40.40c{1.} : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>-->
     </Properties>
 
     <Appenders>
@@ -42,40 +43,37 @@
             </Policies>
         </RollingFile>
         <Loki name="LOKI">
-            <url>http://localhost:3100/loki/api/v1/push</url>
-<!--            <host>${sys:loki.host}</host>-->
-<!--            <port>${sys:loki.port}</port>-->
+<!--            <url>http://localhost:3100/loki/api/v1/push</url>-->
+            <url>${sys:LOKI_URL}</url>
             <PatternLayout pattern="${sys:FILE_LOG_PATTERN}" charset="${sys:FILE_LOG_CHARSET}"/>
-<!--            <PatternLayout>-->
-<!--                <Pattern>org=${sys:orgName},application=${sys:appName},host=${HOSTNAME},level=%level</Pattern>-->
-<!--            </PatternLayout>-->
-
-<!--            <Label name="server" value="${hostName}"/>-->
             <Label name="server" value="${HOSTNAME}"/>
             <Label name="service_name" value="${sys:APPLICATION_NAME}"/>
         </Loki>
     </Appenders>
 
-    <!-- Console Appender -->
-<!--    <Appender type="Console" name="CONSOLE">-->
-<!--        <Layout type="PatternLayout" pattern="${fileLogPattern}" />-->
-<!--    </Appender>-->
-
-    <!-- Rolling File Appender -->
-<!--    <Appender type="RollingFile" name="FILE">-->
-<!--        <FileName>${payloadFileName}</FileName>-->
-<!--        <FilePattern>${payloadFileName}.%i</FilePattern>-->
-<!--        <Policy type="SizeBasedTriggeringPolicy" size="10MB" />-->
-<!--        <Layout type="PatternLayout" pattern="${fileLogPattern}" />-->
-<!--    </Appender>-->
-
     <!-- Root Logger -->
     <Loggers>
+        <Logger name="org.apache.catalina.startup.DigesterFactory" level="ERROR"/>
+        <Logger name="org.apache.catalina.util.LifecycleBase" level="ERROR"/>
+        <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="WARN"/>
+        <Logger name="org.apache.sshd.common.util.SecurityUtils" level="WARN"/>
+        <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="WARN"/>
+        <Logger name="org.eclipse.jetty.util.component.AbstractLifeCycle" level="ERROR"/>
+        <Logger name="org.hibernate.validator.internal.util.Version" level="WARN"/>
+        <Logger name="org.springframework.boot.actuate.endpoint.jmx" level="WARN"/>
+
         <Root level="INFO">
-            <AppenderRef ref="CONSOLE" />
-            <AppenderRef ref="FILE" />
+<!--            <AppenderRef ref="CONSOLE" />-->
+<!--            <AppenderRef ref="FILE" />-->
 <!--            <AppenderRef ref="LOKI" condition="$${springProfileActive:loki}" />-->
-            <AppenderRef ref="LOKI" />
+            <SpringProfile name="local">
+                <AppenderRef ref="CONSOLE" />
+            </SpringProfile>
+            <SpringProfile name="production">
+                <AppenderRef ref="CONSOLE" />
+                <AppenderRef ref="FILE" />
+                <AppenderRef ref="LOKI" />
+            </SpringProfile>
         </Root>
     </Loggers>
 </Configuration>
