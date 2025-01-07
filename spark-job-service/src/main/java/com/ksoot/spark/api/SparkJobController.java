@@ -9,14 +9,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/spark-jobs")
 @Tag(name = "Spark Job Launcher", description = "APIs")
-@Slf4j
+@Log4j2
 @RequiredArgsConstructor
 class SparkJobController {
 

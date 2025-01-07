@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" packages="pl.tkowalcz.tjahzi.log4j2">
+    <!-- Set properties -->
+    <Properties>
+        <Property name="ORG_NAME">${spring:spring.application.org}</Property>
+        <Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
+        <Property name="LOG_LEVEL_PATTERN">%5p</Property>
+        <Property name="LOG_DATEFORMAT_PATTERN">yyyy-MM-dd'T'HH:mm:ss.SSSXXX</Property>
+        <Property name="CONSOLE_LOG_PATTERN">%clr{%d{${sys:LOG_DATEFORMAT_PATTERN}}}{faint} %clr{${sys:LOG_LEVEL_PATTERN}} %clr{%pid}{magenta} %clr{--- %esb{${sys:APPLICATION_NAME:-}}%esb{${sys:APPLICATION_GROUP:-}}[%15.15t] ${sys:LOG_CORRELATION_PATTERN:-}}{faint}%clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+<!--        <Property name="FILE_LOG_PATTERN">%d{${sys:LOG_DATEFORMAT_PATTERN}} ${sys:LOG_LEVEL_PATTERN} %pid -&#45;&#45; %esb{${sys:APPLICATION_NAME:-}}%esb{${sys:APPLICATION_GROUP:-}}[%t] ${sys:LOG_CORRELATION_PATTERN:-}%-40.40c{1.} : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>-->
+        <Property name="FILE_LOG_PATTERN">%d{${sys:LOG_DATEFORMAT_PATTERN}} ${sys:LOG_LEVEL_PATTERN} %pid --- %esb{${sys:ORG_NAME:-}}%esb{${sys:APPLICATION_NAME:-}}%esb{${sys:APPLICATION_GROUP:-}}[%t] ${sys:LOG_CORRELATION_PATTERN:-}%-40.40c{1.} : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="CONSOLE" target="SYSTEM_OUT" follow="true">
+            <Select>
+                <SystemPropertyArbiter propertyName="CONSOLE_LOG_STRUCTURED_FORMAT">
+                    <StructuredLogLayout format="${sys:CONSOLE_LOG_STRUCTURED_FORMAT}" charset="${sys:CONSOLE_LOG_CHARSET}"/>
+                </SystemPropertyArbiter>
+                <DefaultArbiter>
+                    <PatternLayout pattern="${sys:CONSOLE_LOG_PATTERN}" charset="${sys:CONSOLE_LOG_CHARSET}"/>
+                </DefaultArbiter>
+            </Select>
+            <Filters>
+                <ThresholdFilter level="${sys:CONSOLE_LOG_THRESHOLD:-TRACE}"/>
+            </Filters>
+        </Console>
+        <RollingFile name="FILE" fileName="${sys:LOG_FILE}" filePattern="${sys:LOG_PATH}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
+            <Select>
+                <SystemPropertyArbiter propertyName="FILE_LOG_STRUCTURED_FORMAT">
+                    <StructuredLogLayout format="${sys:FILE_LOG_STRUCTURED_FORMAT}" charset="${sys:FILE_LOG_CHARSET}"/>
+                </SystemPropertyArbiter>
+                <DefaultArbiter>
+                    <PatternLayout pattern="${sys:FILE_LOG_PATTERN}" charset="${sys:FILE_LOG_CHARSET}"/>
+                </DefaultArbiter>
+            </Select>
+            <Filters>
+                <ThresholdFilter level="${sys:FILE_LOG_THRESHOLD:-TRACE}"/>
+            </Filters>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+        </RollingFile>
+        <Loki name="LOKI">
+            <url>http://localhost:3100/loki/api/v1/push</url>
+<!--            <host>${sys:loki.host}</host>-->
+<!--            <port>${sys:loki.port}</port>-->
+            <PatternLayout pattern="${sys:FILE_LOG_PATTERN}" charset="${sys:FILE_LOG_CHARSET}"/>
+<!--            <PatternLayout>-->
+<!--                <Pattern>org=${sys:orgName},application=${sys:appName},host=${HOSTNAME},level=%level</Pattern>-->
+<!--            </PatternLayout>-->
+
+<!--            <Label name="server" value="${hostName}"/>-->
+            <Label name="server" value="${HOSTNAME}"/>
+            <Label name="service_name" value="${sys:APPLICATION_NAME}"/>
+        </Loki>
+    </Appenders>
+
+    <!-- Console Appender -->
+<!--    <Appender type="Console" name="CONSOLE">-->
+<!--        <Layout type="PatternLayout" pattern="${fileLogPattern}" />-->
+<!--    </Appender>-->
+
+    <!-- Rolling File Appender -->
+<!--    <Appender type="RollingFile" name="FILE">-->
+<!--        <FileName>${payloadFileName}</FileName>-->
+<!--        <FilePattern>${payloadFileName}.%i</FilePattern>-->
+<!--        <Policy type="SizeBasedTriggeringPolicy" size="10MB" />-->
+<!--        <Layout type="PatternLayout" pattern="${fileLogPattern}" />-->
+<!--    </Appender>-->
+
+    <!-- Root Logger -->
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="CONSOLE" />
+            <AppenderRef ref="FILE" />
+<!--            <AppenderRef ref="LOKI" condition="$${springProfileActive:loki}" />-->
+            <AppenderRef ref="LOKI" />
+        </Root>
+    </Loggers>
+</Configuration>

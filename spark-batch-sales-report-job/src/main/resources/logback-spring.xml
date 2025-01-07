@@ -2,7 +2,7 @@
 <configuration>
     <jmxConfigurator />
     <include resource="org/springframework/boot/logging/logback/base.xml" />
-    <property scope="local" name="payloadFileName" value="${spring.application.home:-.}/logs/spark-job-service.payload.log" />
+    <property scope="local" name="payloadFileName" value="${spring.application.home:-.}/logs/sales-report-job.payload.log" />
     <springProperty scope="context" name="appName" source="spring.application.name" />
     <springProperty scope="context" name="orgName" source="spring.application.org" />
 

@@ -13,4 +13,11 @@ scrape_configs:
       metrics_path: '/actuator/prometheus'
       scrape_interval: 3s
       static_configs:
-        - targets: ['192.168.1.2:8090']
+        - targets: ['192.168.1.12:8090']
+    - job_name: 'prom-push-gateway'
+      metrics_path: /metrics
+      scheme: http
+      static_configs:
+        - targets: ['host.docker.internal:9091']
+          labels:
+            service: 'push-gateway'

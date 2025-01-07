@@ -1,18 +1,14 @@
 package com.ksoot.spark;
 
 import jakarta.annotation.PostConstruct;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.PropertySource;
 
 @SpringBootApplication
-@Slf4j
+@Log4j2
 @RequiredArgsConstructor
 public class SparkJobService {
 
@@ -25,18 +21,19 @@ public class SparkJobService {
   @PostConstruct
   public void init() {
     log.info("Logging Spring boot environment ...");
-    if (environment instanceof ConfigurableEnvironment) {
-      final List<PropertySource<?>> propertySources =
-          ((ConfigurableEnvironment) environment)
-              .getPropertySources().stream().collect(Collectors.toList());
-      propertySources.forEach(
-          propertySource -> {
-            System.out.println("Source: " + propertySource.getName());
-            if (propertySource.getSource() instanceof java.util.Map) {
-              ((java.util.Map<?, ?>) propertySource.getSource())
-                  .forEach((key, value) -> System.out.println(key + ": " + value));
-            }
-          });
-    }
+    // Just for debugging, otherwise sensitive info could be logged.
+    //    if (environment instanceof ConfigurableEnvironment) {
+    //      final List<PropertySource<?>> propertySources =
+    //          ((ConfigurableEnvironment) environment)
+    //              .getPropertySources().stream().collect(Collectors.toList());
+    //      propertySources.forEach(
+    //          propertySource -> {
+    //            System.out.println("Source: " + propertySource.getName());
+    //            if (propertySource.getSource() instanceof java.util.Map) {
+    //              ((java.util.Map<?, ?>) propertySource.getSource())
+    //                  .forEach((key, value) -> System.out.println(key + ": " + value));
+    //            }
+    //          });
+    //    }
   }
 }

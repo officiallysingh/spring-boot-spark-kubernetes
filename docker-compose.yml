@@ -106,7 +106,7 @@ services:
 
   prometheus:
     container_name: prometheus
-    image: prom/prometheus:v2.54.0 # https://hub.docker.com/r/prom/prometheus
+    image: prom/prometheus:v3.0.1 # https://hub.docker.com/r/prom/prometheus
     extra_hosts: ['host.docker.internal:host-gateway']
     command:
       - --enable-feature=exemplar-storage
@@ -117,9 +117,17 @@ services:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
       - "9090:9090"
+  push-gateway:
+    container_name: push-gateway
+    image: prom/pushgateway:v1.10.0
+    extra_hosts: ['host.docker.internal:host-gateway']
+    ports:
+      - "9091:9091"
+    networks:
+      - ksoot
   grafana:
     container_name: grafana
-    image: grafana/grafana:11.1.4 # https://hub.docker.com/r/grafana/grafana/tags and https://github.com/grafana/grafana/releases
+    image: grafana/grafana:11.4.0 # https://hub.docker.com/r/grafana/grafana/tags and https://github.com/grafana/grafana/releases
     extra_hosts: ['host.docker.internal:host-gateway']
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
@@ -140,7 +148,7 @@ services:
     # This should not be needed but this is the official solution recommended by Tempo maintainers
     # See: https://github.com/grafana/tempo/blob/a21001a72a5865bfcfc1b0d2dfa30160c5a26103/example/docker-compose/local/docker-compose.yaml
     # See: https://github.com/grafana/tempo/issues/1657
-    image: &tempoImage grafana/tempo:2.5.0 # https://hub.docker.com/r/grafana/tempo/tags and https://github.com/grafana/tempo/releases
+    image: &tempoImage grafana/tempo:2.6.1 # https://hub.docker.com/r/grafana/tempo/tags and https://github.com/grafana/tempo/releases
     user: root
     entrypoint:
       - "chown"
@@ -173,7 +181,6 @@ services:
       - "3100:3100"
     networks:
       - ksoot
-
   promtail:
     container_name: promtail
     image: grafana/promtail:3.0.1

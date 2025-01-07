@@ -12,16 +12,16 @@
 
 spring:
   application:
+    org: ksoot
     name: sales-report-job
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration
-  docker:
-    compose:
-      enabled: false
   cloud:
     task:
       initialize-enabled: ${ksoot.job.persist}
       external-execution-id: ${ksoot.job.correlation-id}
+      observation:
+        enabled: true
   main:
     log-startup-info: true
 
@@ -78,8 +78,14 @@ arangodb:
       password: ${ARANGODB_PASSWORD:admin}
       database: ${ARANGODB_DATABASE:products_db}
 
+management:
+  metrics:
+    tags:
+      service: ${spring.application.name}
+      application: ${spring.application.name}
 #------------------------- Logging configuration -------------------------
 logging:
+  file.name: ${spring.application.home:.}/logs/${spring.application.name}.log
   level:
     ROOT: info
     '[org.mongodb.driver]': warn
