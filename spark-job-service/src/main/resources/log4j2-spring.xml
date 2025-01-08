@@ -69,7 +69,7 @@
             <SpringProfile name="local">
                 <AppenderRef ref="CONSOLE" />
             </SpringProfile>
-            <SpringProfile name="production">
+            <SpringProfile name="default">
                 <AppenderRef ref="CONSOLE" />
                 <AppenderRef ref="FILE" />
                 <AppenderRef ref="LOKI" />
