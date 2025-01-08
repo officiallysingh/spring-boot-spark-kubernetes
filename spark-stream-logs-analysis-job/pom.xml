@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.ksoot.spark</groupId>
-        <artifactId>spring-boot-spark-kubernetes</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
-
-    <!--        <groupId>com.ksoot.spark</groupId>-->
-    <artifactId>spark-stream-logs-analysis-job</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>spark-stream-logs-analysis-job</name>
-    <description>Spark Logs analysis Streaming Job</description>
-
     <dependencies>
         <!-- Spring Dependencies -->
         <dependency>
@@ -34,10 +21,6 @@
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -62,13 +45,70 @@
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-sql-kafka-${spark-connector-kafka.version}_${scala.compact.version}</artifactId>
         </dependency>
+        <!-- Misc dependencies -->
         <dependency>
             <groupId>com.ksoot.spark</groupId>
             <artifactId>spark-job-commons</artifactId>
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Misc dependencies -->
+
+        <!--  Logging and Observability  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-spring-boot</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jcl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>prometheus-metrics-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>prometheus-metrics-instrumentation-jvm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>prometheus-metrics-exporter-pushgateway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.zipkin.reporter2</groupId>
+            <artifactId>zipkin-reporter-brave</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>pl.tkowalcz.tjahzi</groupId>
+            <artifactId>log4j2-appender</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.ttddyy.observation</groupId>
+            <artifactId>datasource-micrometer</artifactId>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
@@ -77,6 +117,19 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--        <groupId>com.ksoot.spark</groupId>-->
+    <parent>
+        <groupId>com.ksoot.spark</groupId>
+        <artifactId>spring-boot-spark-kubernetes</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>spark-stream-logs-analysis-job</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>spark-stream-logs-analysis-job</name>
+
+    <description>Spark Logs analysis Streaming Job</description>
 
     <build>
         <plugins>

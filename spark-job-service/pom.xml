@@ -30,16 +30,6 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
                 <exclusion>
@@ -47,14 +37,6 @@
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-spring-boot</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -97,22 +79,34 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!--  Logging and Observability  -->
         <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.github.loki4j</groupId>-->
-<!--            <artifactId>loki-logback-appender</artifactId>-->
-<!--        </dependency>-->
         <dependency>
-            <groupId>pl.tkowalcz.tjahzi</groupId>
-            <artifactId>log4j2-appender</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-spring-boot</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jcl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
@@ -123,18 +117,13 @@
             <artifactId>zipkin-reporter-brave</artifactId>
         </dependency>
         <dependency>
+            <groupId>pl.tkowalcz.tjahzi</groupId>
+            <artifactId>log4j2-appender</artifactId>
+        </dependency>
+        <dependency>
             <groupId>net.ttddyy.observation</groupId>
             <artifactId>datasource-micrometer</artifactId>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>io.micrometer</groupId>-->
-<!--            <artifactId>micrometer-registry-otlp</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>io.opentelemetry.instrumentation</groupId>-->
-<!--            <artifactId>opentelemetry-spring-boot-starter</artifactId>-->
-<!--        </dependency>-->
 
         <!-- Misc dependencies -->
         <dependency>

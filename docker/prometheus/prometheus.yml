@@ -17,6 +17,7 @@ scrape_configs:
     - job_name: 'prom-push-gateway'
       metrics_path: /metrics
       scheme: http
+      honor_labels: true
       static_configs:
         - targets: ['host.docker.internal:9091']
           labels:

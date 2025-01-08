@@ -11,9 +11,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Slf4j
 @EnableTask
+@EnableScheduling
 @EnableKafka
 @SpringBootApplication
 public class SalesReportJob {

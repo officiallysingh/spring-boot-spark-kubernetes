@@ -85,6 +85,7 @@ management:
       application: ${spring.application.name}
 #------------------------- Logging configuration -------------------------
 logging:
+  loki.url: http://localhost:3100/loki/api/v1/push
   file.name: ${spring.application.home:.}/logs/${spring.application.name}.log
   level:
     ROOT: info
@@ -168,3 +169,6 @@ ksoot:
     kafka-options:
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
       fail-on-data-loss: ${KAFKA_FAIL_ON_DATA_LOSS:false}
+    prometheus:
+      pushgateway:
+        url: http://localhost:9091/metrics

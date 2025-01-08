@@ -2,9 +2,9 @@ logging:
   logback:
     rollingpolicy:
       clean-history-on-start: true
-  file:
-    path: logs
-    name: ${logging.file.path}/application.log
+#  file:
+#    path: logs
+#    name: ${logging.file.path}/application.log
   level:
     ROOT: INFO
     '[org.mongodb.driver]': warn
