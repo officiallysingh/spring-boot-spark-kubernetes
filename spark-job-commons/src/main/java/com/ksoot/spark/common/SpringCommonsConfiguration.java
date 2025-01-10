@@ -28,8 +28,10 @@ public class SpringCommonsConfiguration {
     SparkExecutionManager sparkExecutionManager(
         final SparkSession sparkSession,
         final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry,
+        final PushMetricsScheduledTask pushMetricsScheduledTask,
         final MessageSource messageSource) {
-      return new SparkExecutionManager(sparkSession, kafkaListenerEndpointRegistry, messageSource);
+      return new SparkExecutionManager(
+          sparkSession, kafkaListenerEndpointRegistry, pushMetricsScheduledTask, messageSource);
     }
   }
 

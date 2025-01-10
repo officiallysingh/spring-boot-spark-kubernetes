@@ -23,4 +23,8 @@ public class JobProperties {
   /** Unique correlation id for each Job execution. */
   @Size(min = 1, max = 50, message = "Correlation id should be between 2 and 50 characters")
   private String correlationId;
+
+  private String traceId;
+
+  private String spanId;
 }

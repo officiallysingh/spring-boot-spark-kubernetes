@@ -15,7 +15,10 @@ spring:
     org: ksoot
     name: sales-report-job
   autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration
+    exclude:
+    - org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration
+    - org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration
+    - org.springframework.boot.actuate.autoconfigure.endpoint.jmx.JmxEndpointAutoConfiguration
   cloud:
     task:
       initialize-enabled: ${ksoot.job.persist}
@@ -24,6 +27,8 @@ spring:
         enabled: true
   main:
     log-startup-info: true
+  jmx:
+    enabled: false
 
   #------------------------- Kafka configuration -------------------------
   kafka:
@@ -78,11 +83,53 @@ arangodb:
       password: ${ARANGODB_PASSWORD:admin}
       database: ${ARANGODB_DATABASE:products_db}
 
+#------------------------- Actuators configuration -------------------------
+# If not specified '/actuator' is taken as default. If specified must start with '/'
+#management.endpoints.web.base-path=/
+# Set it as "*", if you want to expose all actuator endpoints
 management:
+  info:
+    env:
+      enabled: true
+    java:
+      enabled: true
+    os:
+      enabled: true
+    process:
+      enabled: true
+  observations:
+    key-values:
+      #      application: ${spring.application.name}
+      org: "${spring.application.org}"
   metrics:
     tags:
-      service: ${spring.application.name}
-      application: ${spring.application.name}
+      application: "${spring.application.name}"
+      org: "${spring.application.org}"
+      profiles: "${spring.profiles.active}"
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+          client:
+            requests: true
+  prometheus:
+    metrics:
+      export:
+        step: 3s
+  tracing:
+    sampling:
+      probability: 1.0
+#    baggage:
+#      local-fields: traceId,spanId
+#      correlation:
+#        enabled: true
+#        fields: traceId,spanId
+  jmx:
+    metrics:
+      export:
+        enabled: false
+
 #------------------------- Logging configuration -------------------------
 logging:
   loki.url: http://localhost:3100/loki/api/v1/push
@@ -147,6 +194,8 @@ ksoot:
     correlation-id: ${CORRELATION_ID:${spring.application.name}-1}
     persist: ${PERSIST_JOB:false}
     job-stop-topic: ${JOB_STOP_TOPIC:job-stop-requests}
+    trace-id: ${X-B3-TraceId:677fdd923228b9b98c6f7dd19d0e5772}
+    span-id: ${X-B3-SpanId:8c6f7dd19d0e5772}
   connector:
     save-mode: Append
     output-mode: Update

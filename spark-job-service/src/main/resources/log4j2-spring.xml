@@ -63,17 +63,20 @@
         <Logger name="org.springframework.boot.actuate.endpoint.jmx" level="WARN"/>
 
         <Root level="INFO">
+            <AppenderRef ref="CONSOLE" />
+            <AppenderRef ref="FILE" />
+            <AppenderRef ref="LOKI" />
 <!--            <AppenderRef ref="CONSOLE" />-->
 <!--            <AppenderRef ref="FILE" />-->
 <!--            <AppenderRef ref="LOKI" condition="$${springProfileActive:loki}" />-->
-            <SpringProfile name="local">
-                <AppenderRef ref="CONSOLE" />
-            </SpringProfile>
-            <SpringProfile name="default">
-                <AppenderRef ref="CONSOLE" />
-                <AppenderRef ref="FILE" />
-                <AppenderRef ref="LOKI" />
-            </SpringProfile>
+<!--            <SpringProfile name="local">-->
+<!--                <AppenderRef ref="CONSOLE" />-->
+<!--            </SpringProfile>-->
+<!--            <SpringProfile name="default">-->
+<!--                <AppenderRef ref="CONSOLE" />-->
+<!--                <AppenderRef ref="FILE" />-->
+<!--                <AppenderRef ref="LOKI" />-->
+<!--            </SpringProfile>-->
         </Root>
     </Loggers>
 </Configuration>

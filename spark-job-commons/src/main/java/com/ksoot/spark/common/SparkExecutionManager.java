@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.spark.SparkContext;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.streaming.StreamingQuery;
@@ -19,7 +21,6 @@ import org.springframework.cloud.task.listener.annotation.AfterTask;
 import org.springframework.cloud.task.listener.annotation.BeforeTask;
 import org.springframework.cloud.task.listener.annotation.FailedTask;
 import org.springframework.cloud.task.repository.TaskExecution;
-import org.springframework.context.Lifecycle;
 import org.springframework.context.MessageSource;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
@@ -33,12 +34,20 @@ public class SparkExecutionManager {
 
   private final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
 
+  private final PushMetricsScheduledTask pushMetricsScheduledTask;
+
   private final MessageSource messageSource;
 
   private final List<StreamingQuery> streamingQueries = new ArrayList<>();
 
   @Value("${ksoot.job.correlation-id}")
   private String jobCorrelationId;
+
+  @Value("${ksoot.job.trace-id}")
+  private String traceId;
+
+  @Value("${ksoot.job.span-id}")
+  private String spanId;
 
   private int exitCode = -1;
 
@@ -125,8 +134,7 @@ public class SparkExecutionManager {
         taskExecution.getExitCode(),
         taskExecution.getExitMessage(),
         duration);
-
-    this.stopKafkaListeners();
+    this.stopServices();
   }
 
   @FailedTask
@@ -163,7 +171,7 @@ public class SparkExecutionManager {
     final String message = this.getMessage("message." + code, defaultMessage, args);
 
     log.error("Spark Exception[ Code: {}, Title: {}, Message: {} ]", code, title, message);
-    this.stopKafkaListeners();
+    this.stopServices();
   }
 
   private String getMessage(final String messageCode, final String defaultMessage) {
@@ -175,7 +183,33 @@ public class SparkExecutionManager {
     return this.messageSource.getMessage(messageCode, params, defaultMessage, Locale.getDefault());
   }
 
-  private void stopKafkaListeners() {
-    this.kafkaListenerEndpointRegistry.getAllListenerContainers().forEach(Lifecycle::stop);
+  private void stopServices() {
+    try {
+      this.kafkaListenerEndpointRegistry
+          .getAllListenerContainers()
+          .forEach(
+              container -> {
+                try {
+                  container.stop();
+                } catch (Exception e) {
+                  // Ingnore
+                }
+              });
+    } catch (Exception e) {
+      // Ingnore
+    }
+    try {
+      this.pushMetricsScheduledTask.stopTask();
+    } catch (Exception e) {
+      // Ingnore
+    }
+    try {
+      // Access the LoggerContext and stop explicitly otherwise application will not exit
+      LoggerContext context = (LoggerContext) LogManager.getContext(false);
+      //      context.stop(5, TimeUnit.SECONDS);
+      context.stop();
+    } catch (Exception e) {
+      // Ingnore
+    }
   }
 }

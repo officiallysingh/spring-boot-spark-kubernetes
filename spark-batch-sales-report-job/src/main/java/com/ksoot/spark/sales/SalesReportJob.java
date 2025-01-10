@@ -1,6 +1,7 @@
 package com.ksoot.spark.sales;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,13 +48,10 @@ public class SalesReportJob {
   }
 
   @Slf4j
+  @RequiredArgsConstructor
   static class SparkStatementJobRunner implements ApplicationRunner {
 
     private final SparkPipelineExecutor sparkPipelineExecutor;
-
-    public SparkStatementJobRunner(final SparkPipelineExecutor sparkPipelineExecutor) {
-      this.sparkPipelineExecutor = sparkPipelineExecutor;
-    }
 
     @Override
     public void run(final ApplicationArguments args) {

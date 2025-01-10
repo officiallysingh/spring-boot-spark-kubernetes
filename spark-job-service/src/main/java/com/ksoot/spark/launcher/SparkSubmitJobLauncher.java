@@ -6,6 +6,7 @@ import com.ksoot.problem.core.Problems;
 import com.ksoot.spark.conf.SparkJobProperties;
 import com.ksoot.spark.conf.SparkLauncherProperties;
 import com.ksoot.spark.dto.JobLaunchRequest;
+import io.micrometer.tracing.Tracer;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
@@ -32,19 +33,27 @@ public class SparkSubmitJobLauncher extends AbstractSparkJobLauncher {
 
   private final String jobStopTopic;
 
+  private final Tracer tracer;
+
   public SparkSubmitJobLauncher(
       @Qualifier("sparkProperties") final Properties sparkProperties,
       final SparkLauncherProperties sparkLauncherProperties,
       final KafkaTemplate<String, String> kafkaTemplate,
-      @Value("${spark-launcher.job-stop-topic}") final String jobStopTopic) {
+      @Value("${spark-launcher.job-stop-topic}") final String jobStopTopic,
+      final Tracer tracer) {
     super(sparkProperties, sparkLauncherProperties);
     this.kafkaTemplate = kafkaTemplate;
     this.jobStopTopic = jobStopTopic;
+    this.tracer = tracer;
     this.executor = Executors.newCachedThreadPool();
   }
 
   public void startJob(final JobLaunchRequest jobLaunchRequest) {
     log.info("============================================================");
+    //    headers.set("X-B3-TraceId", "abc123");
+    //    headers.set("X-B3-SpanId", "spanA");
+    String traceId = this.tracer.currentTraceContext().context().traceId();
+    String spanId = this.tracer.currentTraceContext().context().spanId();
 
     final SparkJobProperties sparkJobProperties =
         Optional.ofNullable(
