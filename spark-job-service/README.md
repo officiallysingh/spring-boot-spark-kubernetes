@@ -6,6 +6,13 @@ Spring boot service providing Simple REST APIs to Start, Stop Spark Jobs and Tra
 ### Environment setup
 For prerequisites and environment setup, refer to [Installation Instructions](../README.md#installation)
 
+> [!IMPORTANT]
+> To Run `spark-job-service` locally and launching Jobs using REST APIs, Provide execute permissions to [spark-job-submit.sh](cmd/spark-job-submit.bat) and [spark-job-submit.sh](cmd/spark-job-submit.sh) as follows.
+Go to root directory of `spark-job-service` and execute following command.
+```shell
+chmod -R +x cmd/*
+```
+
 ## Configurations
 ### Spark Configurations
 All possible [Spark configurations](https://spark.apache.org/docs/3.5.3/configuration.html) can be set in [application.yml](src/main/resources/config/application.yml) as follows. Remember, there are Spark configurations in individual Jobs such as [sales-report-job's application.yml](../spark-batch-sales-report-job/src/main/resources/config/application.yml) and [logs-analysis-job's application.yml](../spark-stream-logs-analysis-job/src/main/resources/config/application.yml) also.  

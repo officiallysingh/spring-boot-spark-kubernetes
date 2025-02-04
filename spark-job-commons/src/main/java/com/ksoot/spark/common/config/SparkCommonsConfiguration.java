@@ -1,7 +1,7 @@
-package com.ksoot.spark.common;
+package com.ksoot.spark.common.config;
 
-import com.ksoot.spark.common.config.SparkConnectorConfiguration;
-import com.ksoot.spark.common.config.SpringCloudTaskConfiguration;
+import com.ksoot.spark.common.SparkExecutionManager;
+import com.ksoot.spark.common.SparkStreamLauncher;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
@@ -19,7 +19,7 @@ import org.springframework.retry.annotation.Retryable;
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
 @ImportAutoConfiguration(
     classes = {SparkConnectorConfiguration.class, SpringCloudTaskConfiguration.class})
-public class SpringCommonsConfiguration {
+public class SparkCommonsConfiguration {
 
   @ConditionalOnClass(TaskExecution.class)
   static class SparkExecutionManagerConfiguration {

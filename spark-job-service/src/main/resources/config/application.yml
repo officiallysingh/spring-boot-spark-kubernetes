@@ -13,9 +13,6 @@
 spring:
   application:
     name: spark-job-service
-  docker:
-    compose:
-      enabled: false
 #  autoconfigure:
 #    exclude: org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
   devtools:
@@ -122,7 +119,12 @@ server:
 logging:
   level:
     ROOT: info
+    '[org.mongodb.driver]': warn
+    '[org.apache.spark]': warn
+    '[org.apache.hadoop]': warn
+    '[org.sparkproject]': warn
     '[org.springframework.cloud.task]': debug
+    '[com.mongodb.spark.sql.connector.read.partitioner.Partitioner]': warn
     '[org.apache.kafka.clients.admin.KafkaAdminClient]': error
     '[org.apache.kafka.clients]': error
 debug: false
