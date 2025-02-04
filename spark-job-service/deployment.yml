@@ -42,11 +42,6 @@ spec:
 #            Job Properties
 #            - name: SPARK_OUTPUT_PATH
 #              value: gs://fetch-bucket/spark-output
-#              value: spark-output
-#            - name: SALES_REPORT_JOB_IMAGE
-#              value: spark-batch-sales-report-job:0.0.1
-#            - name: LOGS_ANALYSIS_JOB_IMAGE
-#              value: spark-stream-logs-analysis-job:0.0.1
 #              Spark properties
             - name: SPARK_MASTER
               value: k8s://https://kubernetes.default.svc
