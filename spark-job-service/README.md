@@ -211,6 +211,10 @@ sales-report-job-2e9c6f93ef784c17-driver   0/1     Completed   0          2m56s
 ### Spark UI
 Access Spark UI at [**`http://localhost:4040`**](http://localhost:4040) to monitor and inspect Spark Batch job execution.
 
+> [!IMPORTANT]
+> In case port 4040 is busy Spark UI would be started on another port, and this new port would be logged into application logs,
+> so you can check logs to get the correct port.
+
 ![Spark UI](../img/Spark_UI_Streaming.png)
 
 ## API Reference

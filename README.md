@@ -342,6 +342,10 @@ Configurations can be provided at multiple levels. At individual project level, 
 Access Spark UI at [**`http://localhost:4040`**](http://localhost:4040) to monitor and inspect Spark Batch job execution. 
 On Minikube or Kubernetes you may need to do port forwarding to access it, and it may not be accessible if Job is not in running state at the moment.
 
+> [!IMPORTANT]
+> In case port 4040 is busy Spark UI would be started on another port, and this new port would be logged into application logs,
+> so you can check logs to get the correct port.
+
 ![Spark UI](img/Spark_UI_Streaming.png)
 
 ## Common Errors
