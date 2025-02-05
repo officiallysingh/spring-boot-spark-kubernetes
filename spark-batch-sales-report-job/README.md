@@ -135,7 +135,7 @@ ksoot:
 ```
 
 **Description**
-* `ksoot.hadoop-dll`:- To run Spark Job on Windows machine, you need to download [winutils](https://github.com/steveloughran/winutils/tree/master/hadoop-3.0.0/bin), extract and set the path in this config.
+* `ksoot.hadoop-dll`:- To run Spark Job on Windows machine, you need to download [winutils](https://github.com/steveloughran/winutils/tree/master/hadoop-3.0.0/bin), extract and set the path `<your directory>/hadoop-3.0.0/bin/hadoop.dll` in this config.
 * `ksoot.job.month`:- The input month for which to generate sales report. The current month is taken as default if not specified. Example `2024-11`.
 * `ksoot.job.correlation-id`:- The Job Correlation Id used to track job status or stop a running job from [Job Stop API](../spark-job-service/README.md#stop-spark-job) REST API.
   Its value is set to `spring.cloud.task.external-execution-id`. It is recommended but not required to be unique for each Job execution.
