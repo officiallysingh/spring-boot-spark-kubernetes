@@ -21,7 +21,7 @@
     {
       "name": "ksoot.job.job-stop-topic",
       "type": "java.lang.String",
-      "defaultValue": "false",
+      "defaultValue": "job-stop-requests",
       "description": "Kafka topic name to listen to receive Job stop requests."
     },
     {
