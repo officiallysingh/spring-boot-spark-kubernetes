@@ -45,7 +45,7 @@ This framework aims to simplify this process by providing a unified solution for
 ## Installation
 ### Prerequisites
 - Java 17, Spark does not support java versions above 17 yet. See [Spark Java compatibility](https://spark.apache.org/docs/latest/#downloading).
-- [Maven](https://maven.apache.org), Make sure environment variable `M2_REPO` is set to local maven repository
+- [Maven](https://maven.apache.org), Make sure environment variable `M2_REPO` is set to local maven repository `<your user home>/.m2/repository`
 - [Scala 2.12.18](https://www.scala-lang.org/download/2.12.18.html)
 - [Spark 3.5.3](https://spark.apache.org/docs/3.5.3), Make sure environment variable `SPARK_HOME` is set to local spark installation.
 - [Docker](https://www.docker.com), Make sure Docker is allocated with enough resources.
