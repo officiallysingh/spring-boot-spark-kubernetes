@@ -1,23 +1,23 @@
 services:
-#  mongo:
-#    image: mongo:latest
-#    container_name: mongo
-#    command: [ "--replSet", "rs0", "--bind_ip_all", "--port", "27017" ]
-#    ports:
-#      - "27017:27017"
-#    extra_hosts:
-#      - "host.docker.internal:host-gateway"
-#    healthcheck:
-#      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'host.docker.internal:27017'}]}) }" | mongosh --port 27017 --quiet
-#      interval: 5s
-#      timeout: 30s
-#      start_period: 0s
-#      retries: 30
-#    volumes:
-#      - "mongo_data:/data/db"
-#      - "mongo_config:/data/configdb"
-#    networks:
-#      - ksoot
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    command: [ "--replSet", "rs0", "--bind_ip_all", "--port", "27017" ]
+    ports:
+      - "27017:27017"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'host.docker.internal:27017'}]}) }" | mongosh --port 27017 --quiet
+      interval: 5s
+      timeout: 30s
+      start_period: 0s
+      retries: 30
+    volumes:
+      - "mongo_data:/data/db"
+      - "mongo_config:/data/configdb"
+    networks:
+      - ksoot
 
   arango:
     image: arangodb/arangodb:latest
@@ -32,20 +32,20 @@ services:
     networks:
       - ksoot
 
-#  postgres:
-#    image: postgres:latest
-#    hostname: postgres
-#    container_name: postgres
-#    environment:
-#      POSTGRES_DB: spark_jobs_db
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: admin
-#    ports:
-#      - "5432:5432"
-#    volumes:
-#      - postgres_data:/var/lib/postgresql/data
-#    networks:
-#      - ksoot
+  postgres:
+    image: postgres:latest
+    hostname: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_DB: spark_jobs_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ksoot
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
@@ -117,6 +117,8 @@ services:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
       - "9090:9090"
+    networks:
+      - ksoot
   push-gateway:
     container_name: push-gateway
     image: prom/pushgateway:v1.10.0
@@ -176,7 +178,10 @@ services:
     container_name: loki
     image: grafana/loki:3.0.1 # https://hub.docker.com/r/grafana/loki/tags and https://github.com/grafana/loki/releases
     extra_hosts: ['host.docker.internal:host-gateway']
-    command: ['-config.file=/etc/loki/local-config.yaml']
+    command: ['-config.file=/etc/loki/local-config.yml']
+    volumes:
+      - loki_data:/var/loki
+      - ./docker/loki/local-config.yml:/etc/loki/local-config.yml:ro
     ports:
       - "3100:3100"
     networks:
@@ -205,13 +210,14 @@ services:
 #      - 55679:55679 # zpages extension
 
 volumes:
-#  mongo_data:
+  mongo_data:
   mongo_config:
   arango_data:
-#  postgres_data:
+  postgres_data:
   conduktor_data:
   prometheus_data:
   tempo_data:
+  loki_data:
 
 networks:
   ksoot:
