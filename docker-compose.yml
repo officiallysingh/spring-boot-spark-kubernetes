@@ -114,7 +114,7 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
     volumes:
       - prometheus_data:/prometheus
-      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
       - "9090:9090"
     networks:
@@ -136,10 +136,10 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
     volumes:
-      - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
-      - ./docker/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
-      - ./docker/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
-#      - ./docker/grafana/provisioning/alerting:/etc/grafana/provisioning/alerting:ro
+      - ./observability/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./observability/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./observability/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+#      - ./observability/grafana/provisioning/alerting:/etc/grafana/provisioning/alerting:ro
     ports:
       - "3000:3000"
     networks:
@@ -168,7 +168,7 @@ services:
     depends_on: ['tempo-init']
     volumes:
       - tempo_data:/var/tempo
-      - ./docker/grafana/tempo.yml:/etc/tempo.yml:ro
+      - ./observability/grafana/tempo.yml:/etc/tempo.yml:ro
     ports:
       - "3200:3200"    # tempo
       - "9411:9411"    # zipkin
@@ -178,10 +178,10 @@ services:
     container_name: loki
     image: grafana/loki:3.0.1 # https://hub.docker.com/r/grafana/loki/tags and https://github.com/grafana/loki/releases
     extra_hosts: ['host.docker.internal:host-gateway']
-    command: ['-config.file=/etc/loki/local-config.yml']
     volumes:
       - loki_data:/var/loki
-      - ./docker/loki/local-config.yml:/etc/loki/local-config.yml:ro
+      - ./observability/loki/local-config.yml:/etc/loki/local-config.yml:ro
+    command: ['-config.file=/etc/loki/local-config.yml']
     ports:
       - "3100:3100"
     networks:
